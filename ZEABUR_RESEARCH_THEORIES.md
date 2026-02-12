@@ -11,8 +11,12 @@ Deploy this repo on Zeabur with no loss of core product behavior (alias manageme
   - `redis` (`698e0ee441ffaebc08e95841`) status `RUNNING`
   - `anonaddy` (`698e0f00eceac33904f68a05`) status `RUNNING`
 - Latest deployment:
-  - `698e140ac1cc55cd793c5232` status `RUNNING`
+  - `698e174dc1cc55cd793c531f` status `RUNNING`
   - Runtime evidence: startup script executed migrations, created storage symlink, warmed config/route/view/event caches, started queue worker + scheduler, and reached php-fpm ready state.
+  - HTTPS verification:
+    - `http://anonaddy-698e0f00.zeabur.app` -> `302` to `https://anonaddy-698e0f00.zeabur.app/`
+    - `https://anonaddy-698e0f00.zeabur.app` -> `302` to `https://anonaddy-698e0f00.zeabur.app/login`
+    - `https://anonaddy-698e0f00.zeabur.app/login` -> `200`
 - Previous failures:
   - `698e12c3c1cc55cd793c51d7`, `698e1402c1cc55cd793c5230`
   - Root cause: Composer post-autoload script touched Redis during image build, but runtime Redis host is not resolvable in build context.
@@ -21,6 +25,7 @@ Deploy this repo on Zeabur with no loss of core product behavior (alias manageme
 - Custom `Dockerfile` is in place and used by Zeabur MCP deploy.
 - Build-time Composer now forces a safe build context (`CACHE_DRIVER=file`) while keeping runtime Redis for production.
 - Runtime startup script (`zeabur/start.sh`) creates/chowns runtime directories, runs migrations, warms caches, starts queue + scheduler, then execs Zeabur-compatible `_startup`.
+- Reverse proxy headers are now trusted in `bootstrap/app.php`, fixing scheme/redirect correctness behind Zeabur ingress.
 
 ## Theory Set (No-Feature-Loss Paths)
 
@@ -81,3 +86,6 @@ Why this is practical:
 - Keep runtime-only service host vars (`MYSQL_HOST`, `REDIS_HOST`) in Zeabur variables.
 - Avoid build-time dependence on runtime network hosts.
 - Keep APP/DB/Redis values minimal and explicit; avoid drift between build and runtime assumptions.
+
+## Additional Fundamental Notes
+- See `ZEABUR_NO_FEATURE_LOSS_FOUNDATIONS.md` for a layer-based theory model, official Zeabur source links, and a strict acceptance matrix.
