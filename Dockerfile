@@ -90,7 +90,7 @@ COPY --link --chown=www-data:www-data --chmod=755 . /var/www
 # install dependencies (Composer scripts need an APP_KEY; provide a dummy build-time key only)
 USER www-data
 RUN set -eux \
-		&& if [ -f composer.json ]; then APP_KEY=base64:$(php -r "echo base64_encode(random_bytes(32));") composer install --optimize-autoloader --classmap-authoritative --no-dev; fi \
+		&& if [ -f composer.json ]; then APP_KEY=base64:$(php -r "echo base64_encode(random_bytes(32));") CACHE_DRIVER=file composer install --optimize-autoloader --classmap-authoritative --no-dev; fi \
 		&& if [ -f package.json ]; then npm install; fi
 
 ARG BUILD_COMMAND="npm run build"
@@ -148,4 +148,3 @@ ENV START_COMMAND=${START_COMMAND}
 CMD eval ${START_COMMAND}
 
 EXPOSE 8080
-
