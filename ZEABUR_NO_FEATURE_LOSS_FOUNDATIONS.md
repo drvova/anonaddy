@@ -109,3 +109,5 @@ Layer 3: App Behavior
 3. Restart service.
 4. Run post-restart checks from Acceptance Matrix.
 5. If any check fails, rollback by reverting last config/code change and redeploy previous known-good commit.
+
+- Persistence probe trigger commit: `1458e1f` (2026-02-12)
