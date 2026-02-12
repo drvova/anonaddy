@@ -16,6 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->throttleApi('api', true);
         $middleware->authenticateSessions();
         $middleware->statefulApi();
+        // Required behind Zeabur ingress so Laravel generates HTTPS URLs correctly.
         $middleware->trustProxies(
             at: '*',
             headers: Request::HEADER_X_FORWARDED_FOR
