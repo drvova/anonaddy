@@ -8,6 +8,8 @@
     "license": "AGPL-3.0-or-later",
     "require": {
         "php": "^8.2",
+        "ext-mailparse": "*",
+        "ext-redis": "*",
         "asbiin/laravel-webauthn": "5.0.1",
         "bacon/bacon-qr-code": "^3.0",
         "chillerlan/php-qrcode": "^5.0",

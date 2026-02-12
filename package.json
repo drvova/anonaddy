@@ -2,6 +2,7 @@
     "private": true,
     "scripts": {
         "dev": "vite --host",
+        "build": "vite build",
         "production": "vite build",
         "format": "prettier --write 'resources/**/*.{css,js,vue}'",
         "prepare": "husky",
