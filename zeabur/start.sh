@@ -9,7 +9,15 @@ if [[ -z "${APP_KEY:-}" ]]; then
 fi
 
 echo "[zeabur] Ensuring writable storage permissions..."
-chown -R www-data:www-data /var/www/storage
+mkdir -p \
+  /var/www/bootstrap/cache \
+  /var/www/storage/app \
+  /var/www/storage/framework/cache/data \
+  /var/www/storage/framework/sessions \
+  /var/www/storage/framework/views \
+  /var/www/storage/framework/testing \
+  /var/www/storage/logs
+chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 echo "[zeabur] Running migrations..."
 php artisan migrate --force
@@ -24,6 +32,9 @@ php artisan config:cache
 php artisan route:cache
 php artisan view:cache
 php artisan event:cache
+
+echo "[zeabur] Ensuring runtime cache permissions..."
+chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
 
 echo "[zeabur] Starting queue worker..."
 (
