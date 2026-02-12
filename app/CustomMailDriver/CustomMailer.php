@@ -151,9 +151,16 @@ class CustomMailer extends Mailer
             } catch (Exception $e) {
                 $symfonySentMessage = false;
                 $userId = $data['userId'] ?? '';
+                $user = User::find($userId);
+
+                // For non-user-context sends (for example generic framework mailables / probes),
+                // we should fail loudly so transport errors are visible and retryable.
+                if (! $user) {
+                    throw $e;
+                }
 
                 // Store the undelivered message if enabled by user. Do not store email verification notifications.
-                if ($user = User::find($userId)) {
+                if ($user) {
                     $failedDeliveryId = Uuid::uuid4();
 
                     // Example $e->getMessage();
