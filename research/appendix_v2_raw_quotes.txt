@@ -1,0 +1,38 @@
+[Q11] Source: https://smtp.dev/docs/api/
+"All API requests require authentication using an API key."
+
+[Q12] Source: https://smtp.dev/docs/api/
+"X-API-KEY: smtplabs_your_api_key_here"
+
+[Q13] Source: https://smtp.dev/docs/api/
+"General Quota: 2048 queries per second (QPS) per IP address"
+
+[Q14] Source: https://smtp.dev/docs/api/
+"When rate limited, the API will return a 429 Too Many Requests"
+
+[Q15] Source: https://smtp.dev/docs/getting-started/
+"Features: IMAP, SMTP, POP3, API"
+
+[Q16] Source: https://laravel.com/docs/11.x/mail
+"Laravel provides a clean, simple email API"
+
+[Q17] Source: https://laravel.com/docs/11.x/queues
+"queue workers are long-lived processes"
+
+[Q18] Source: https://zeabur.com/docs/en-US/deploy/variables
+"Zeabur will automatically inject these environment variables"
+
+[Q19] Source: https://zeabur.com/docs/en-US/data-management/volumes
+"once Volumes are enabled, the service cannot support zero-downtime restarts"
+
+[Q20] Source: https://refactoring.guru/design-patterns/adapter
+"allows objects with incompatible interfaces to collaborate"
+
+[Q21] Source: https://refactoring.guru/design-patterns/strategy
+"define a family of algorithms"
+
+[Q22] Source: https://refactoring.guru/design-patterns/factory-method
+"provides an interface for creating objects"
+
+[Q23] Source: https://refactoring.guru/design-patterns/facade
+"provides a simplified interface to a ... complex set of classes"

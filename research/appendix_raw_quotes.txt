@@ -1,0 +1,29 @@
+[Q1] Source: SMTP.dev docs search result snippet (https://smtp.dev/docs/getting-started/introduction)
+"SMTP.dev is an email testing platform designed for developers"
+
+[Q2] Source: SMTP.dev docs search result snippet (https://smtp.dev/docs/getting-started/introduction)
+"Create your first temporary recipient at @smtp.dev"
+
+[Q3] Source: SMTP.dev docs search result snippet (https://smtp.dev/docs/getting-started/introduction)
+"Send test emails to verify your integration works correctly"
+
+[Q4] Source: Live SMTP dialogue from Zeabur runtime (2026-02-12)
+"220 zonemta-1 ESMTP Welcome to feeder! [zone-mta/3.10.0]"
+
+[Q5] Source: Live SMTP dialogue from Zeabur runtime (2026-02-12)
+"250-AUTH LOGIN PLAIN"
+
+[Q6] Source: Live SMTP dialogue from Zeabur runtime (2026-02-12)
+"535 Authentication failed"
+
+[Q7] Source: Live SMTP dialogue from Zeabur runtime (2026-02-12)
+"530 Error: authentication Required"
+
+[Q8] Source: Live Zeabur service variable snapshot (2026-02-12)
+"MAIL_MAILER=log"
+
+[Q9] Source: `config/mail.php`
+"'default' => env('MAIL_MAILER', 'smtp'),"
+
+[Q10] Source: `app/CustomMailDriver/CustomMailer.php`
+"$symfonySentMessage = false;"
