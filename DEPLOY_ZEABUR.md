@@ -2,12 +2,12 @@
 
 This repo is a Laravel app that needs:
 
-- HTTP (nginx + php-fpm)
+- HTTP (caddy + php-fpm)
 - Redis-backed queue worker
 - Laravel scheduler
 - Durable `storage/` for certain features (notably Failed Deliveries `.eml` files)
 
-Zeabur supports PHP (nginx + php-fpm) and recommends separate services for workers, but **this repo stores Failed Deliveries on the local filesystem**, and Zeabur Volumes are per-service. To avoid feature loss, we run **web + queue + scheduler in a single Zeabur service** and mount a Volume to `storage/`.
+This repo uses a custom `Dockerfile` that runs **caddy + php-fpm** and recommends a single service for web + workers. We keep that single-service model because **this repo stores Failed Deliveries on the local filesystem**, and Zeabur Volumes are per-service.
 
 ## Why Single Service Is Required (No Feature Loss)
 
@@ -24,24 +24,26 @@ If you want to split services cleanly, you must refactor Failed Deliveries stora
 
 These are the key platform facts used by this deployment approach:
 
-- Zeabur PHP runtime is nginx + php-fpm and listens on a platform-provided port.
-- `_startup` is Zeabur's default startup command for PHP; if you override the start command you must still run `_startup` at the end.
+- This repo deploys with its own `Dockerfile`, not Zeabur's stock PHP image.
+- The container serves HTTP with Caddy on `:8080`, with PHP handled by `php-fpm` on `127.0.0.1:9000`.
+- `_startup` is provided by this repo and is the final foreground process entrypoint (`exec caddy run ...`).
 - For Git-based services, Zeabur provides `PORT` and special variables like `${ZEABUR_WEB_URL}` / `${ZEABUR_WEB_DOMAIN}`.
 - Zeabur can mount Volumes for persistence, but enabling Volumes disables zero-downtime restarts.
-- Zeabur will install extra PHP extensions if `composer.json` includes `ext-*` requirements.
+- PHP extensions are installed during the Docker image build.
 
 Primary references:
 
 ```text
-https://zeabur.com/docs/en-US/guides/php
+https://zeabur.com/docs/en-US/guides/docker
 https://zeabur.com/docs/en-US/deploy/variables
 https://zeabur.com/docs/en-US/data-management/volumes
-https://raw.githubusercontent.com/zeabur/zbpack/main/internal/php/Dockerfile
 ```
 
 ## Repo Changes Added For Zeabur
 
-- `zbpack.json`: sets build/start commands for Zeabur PHP
+- `Dockerfile`: installs and pins Caddy, configures `_startup` to run Caddy + php-fpm
+- `Caddyfile`: app server configuration for Laravel on port `8080`
+- `zbpack.json`: sets build/start commands
 - `zeabur/start.sh`: runs migrations, builds caches at runtime, starts queue + scheduler, then execs `_startup`
 - `composer.json`: adds required extensions for Zeabur image build (`ext-mailparse`, `ext-redis`)
 - `package.json`: adds `build` script so Zeabur can build assets consistently
@@ -52,7 +54,7 @@ In Zeabur, deploy **one Git service** for this repo:
 
 - Service name: `anonaddy`
 - Source: `drvova/anonaddy` (this repo)
-- Runtime: Zeabur PHP
+- Runtime: Dockerfile from this repo
 
 Also add managed services:
 
@@ -133,6 +135,22 @@ Recommended:
 
 This avoids baking stale env values into cached config during image build.
 
+## Preview Validation Only (No Production Cutover In This Phase)
+
+This phase is intentionally scoped to Zeabur preview/staging validation only.
+
+Run these checks against the Zeabur preview URL:
+
+```bash
+# Optional: install browser binaries if playwright-cli is already installed
+playwright-cli install --skills
+
+# Smoke checks (HTTP + browser assertions)
+bash zeabur/preview-smoke.sh "https://<your-zeabur-preview-url>"
+```
+
+If these checks fail, do not promote this image to production.
+
 ## Mail Stack Reality (For Full Email Forwarding)
 
 AnonAddy is not just a web app. Full functionality requires an actual MTA/mail stack:
@@ -146,4 +164,3 @@ AnonAddy is not just a web app. Full functionality requires an actual MTA/mail s
 Zeabur is excellent for the web app + workers + DB + Redis, but mail delivery/inbound SMTP is often better on a VPS with a static IP.
 
 If your goal is "full AnonAddy email forwarding", plan for a separate mail host (Postfix/Rspamd) that points at the same MySQL database and uses the provided `postfix/AccessPolicy.php`.
-

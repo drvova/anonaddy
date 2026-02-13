@@ -74,7 +74,7 @@ Layer 3: App Behavior
 ## No-Feature-Loss Guardrails
 1. Do not reintroduce build-time calls to runtime network services.
 2. Keep proxy trust configured for correct HTTPS URL generation.
-3. Preserve startup sequence: migrate -> storage link -> cache warm -> queue/scheduler -> php-fpm/nginx.
+3. Preserve startup sequence: migrate -> storage link -> cache warm -> queue/scheduler -> php-fpm/caddy.
 4. Keep Redis queue/session/cache contract consistent with runtime env values.
 5. Apply volume mount carefully:
 - Backup current `/var/www/storage` before first mount.

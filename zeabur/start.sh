@@ -54,5 +54,5 @@ echo "[zeabur] Starting scheduler..."
   done
 ) &
 
-echo "[zeabur] Starting PHP server (nginx + php-fpm)..."
+echo "[zeabur] Starting PHP server (caddy + php-fpm)..."
 exec _startup

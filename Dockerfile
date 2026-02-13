@@ -17,61 +17,24 @@ RUN chmod +x /usr/local/bin/install-php-extensions && sync
 
 # apt dependencies and node.js
 ARG APT_EXTRA_DEPENDENCIES=
+ARG CADDY_VERSION=2.10.2
+ARG CADDY_DEB_SHA256=1ecdbfe369c3fa052fc1918db5f6896aed6c9777dc1bae95c873f751bf6a7a71
 RUN set -eux \
 		&& apt update \
-		&& apt install -y cron curl gettext git grep libicu-dev nginx pkg-config unzip ${APT_EXTRA_DEPENDENCIES} \
+		&& apt install -y cron curl gettext git grep libicu-dev pkg-config unzip ${APT_EXTRA_DEPENDENCIES} \
 		&& rm -rf /var/www/html \
 		&& curl -fsSL https://deb.nodesource.com/setup_22.x -o nodesource_setup.sh \
 		&& bash nodesource_setup.sh \
 		&& apt install -y nodejs \
+		&& curl -fsSLo /tmp/caddy.deb "https://github.com/caddyserver/caddy/releases/download/v${CADDY_VERSION}/caddy_${CADDY_VERSION}_linux_amd64.deb" \
+		&& echo "${CADDY_DEB_SHA256}  /tmp/caddy.deb" | sha256sum -c - \
+		&& apt install -y /tmp/caddy.deb \
+		&& rm -f /tmp/caddy.deb \
 		&& rm -rf /var/lib/apt/lists/*
 
 # composer and php extensions
 ARG PHP_EXTENSIONS="mailparse redis"
 RUN install-php-extensions @composer apcu bcmath gd intl mysqli opcache pcntl pdo_mysql sysvsem zip ${PHP_EXTENSIONS}
-
-# nginx configuration
-RUN cat <<'EOF' > /etc/nginx/sites-enabled/default
-server {
-    listen 8080;
-    root /var/www;
-
-    add_header X-Frame-Options "SAMEORIGIN";
-    add_header X-Content-Type-Options "nosniff";
-
-    index index.php index.html;
-    charset utf-8;
-
-    location = /favicon.ico { access_log off; log_not_found off; }
-    location = /robots.txt  { access_log off; log_not_found off; }
-
-    error_page 404 /index.php;
-
-    location ~ \.php$ {
-        try_files $uri =404;
-        fastcgi_split_path_info ^(.+\.php)(/.*)$;
-        fastcgi_pass 127.0.0.1:9000;
-        fastcgi_index index.php;
-        include fastcgi_params;
-        fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
-        fastcgi_param DOCUMENT_ROOT $realpath_root;
-        fastcgi_param PATH_INFO $fastcgi_path_info;
-        fastcgi_hide_header X-Powered-By;
-    }
-
-    location / {
-        try_files $uri $uri/ /index.php$is_args$args;
-        gzip_static on;
-    }
-
-    location ~ /\.(?!well-known).* {
-        deny all;
-    }
-
-    error_log /dev/stderr;
-    access_log /dev/stderr;
-}
-EOF
 
 # Provide Zeabur-compatible "_startup" entrypoint used by zeabur/start.sh.
 RUN cat <<'EOF' > /usr/local/bin/_startup
@@ -79,7 +42,7 @@ RUN cat <<'EOF' > /usr/local/bin/_startup
 set -euo pipefail
 
 php-fpm -D
-exec nginx -g 'daemon off;'
+exec caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
 EOF
 RUN chmod +x /usr/local/bin/_startup
 
@@ -139,9 +102,8 @@ EOF
 
 USER root
 
-# if there is "public" directory in /var/www,
-# we change the root directory to /var/www/public
-RUN if [ -d /var/www/public ]; then sed -i 's|root /var/www;|root /var/www/public;|' /etc/nginx/sites-enabled/default; fi
+RUN install -d /etc/caddy \
+	&& install -m 0644 /var/www/Caddyfile /etc/caddy/Caddyfile
 
 ARG START_COMMAND="bash zeabur/start.sh"
 ENV START_COMMAND=${START_COMMAND}
