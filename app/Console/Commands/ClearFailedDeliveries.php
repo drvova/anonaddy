@@ -13,7 +13,7 @@ class ClearFailedDeliveries extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:clear-failed-deliveries';
+    protected $signature = 'vovamail:clear-failed-deliveries';
 
     /**
      * The console command description.

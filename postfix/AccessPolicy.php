@@ -25,9 +25,9 @@ try {
             'ACTION_REJECT',
             'ACTION_DEFER',
             'ACTION_DEFER_NEW',
-            'ANONADDY_ALL_DOMAINS',
-            'ANONADDY_SECRET',
-            'ANONADDY_ADMIN_USERNAME',
+            'VOVAMAIL_ALL_DOMAINS',
+            'VOVAMAIL_SECRET',
+            'VOVAMAIL_ADMIN_USERNAME',
         ])
         ->make();
 
@@ -82,9 +82,9 @@ try {
 
     $args = getArgs();
 
-    $allDomains = explode(',', $_ENV['ANONADDY_ALL_DOMAINS'] ?? '');
+    $allDomains = explode(',', $_ENV['VOVAMAIL_ALL_DOMAINS'] ?? '');
 
-    $adminUsername = $_ENV['ANONADDY_ADMIN_USERNAME'] ?? null;
+    $adminUsername = $_ENV['VOVAMAIL_ADMIN_USERNAME'] ?? null;
 
     $aliasEmail = strtolower($args['recipient']);
 
@@ -296,7 +296,7 @@ function getIdFromVerp($verpLocalPart, $verpEmail)
         return;
     }
 
-    $expectedSignature = substr(hash_hmac('sha3-224', $id, $_ENV['ANONADDY_SECRET'] ?? ''), 0, 8);
+    $expectedSignature = substr(hash_hmac('sha3-224', $id, $_ENV['VOVAMAIL_SECRET'] ?? ''), 0, 8);
 
     if ($signature !== $expectedSignature) {
         logData('VERP invalid signature: '.$verpEmail);

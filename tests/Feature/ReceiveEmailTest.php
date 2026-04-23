@@ -38,22 +38,22 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(1, $this->user->aliases()->count());
@@ -75,22 +75,22 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_caps.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['EBAY@JOHNDOE.ANONADDY.COM'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['EBAY@JOHNDOE.VOVAMAIL.COM'],
                 '--local_part' => ['EBAY'],
                 '--extension' => [''],
-                '--domain' => ['JOHNDOE.ANONADDY.COM'],
+                '--domain' => ['JOHNDOE.VOVAMAIL.COM'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(1, $this->user->aliases()->count());
@@ -108,22 +108,22 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_attachment.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['attachment@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['attachment@johndoe.vovamail.xyz'],
                 '--local_part' => ['attachment'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'attachment@johndoe.'.config('anonaddy.domain'),
+            'email' => 'attachment@johndoe.'.config('vovamail.domain'),
             'local_part' => 'attachment',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(1, $this->user->aliases()->count());
@@ -141,34 +141,34 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_multiple_recipients.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com', 'amazon@johndoe.anonaddy.com', 'paypal@johndoe.anonaddy.me'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz', 'amazon@johndoe.vovamail.xyz', 'paypal@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay', 'amazon', 'paypal'],
                 '--extension' => ['', '', ''],
-                '--domain' => ['johndoe.anonaddy.com', 'johndoe.anonaddy.com', 'johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz', 'johndoe.vovamail.xyz', 'johndoe.vovamail.xyz'],
                 '--size' => '1217',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertDatabaseHas('aliases', [
-            'email' => 'amazon@johndoe.'.config('anonaddy.domain'),
+            'email' => 'amazon@johndoe.'.config('vovamail.domain'),
             'local_part' => 'amazon',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertDatabaseHas('aliases', [
-            'email' => 'paypal@johndoe.'.config('anonaddy.domain'),
+            'email' => 'paypal@johndoe.'.config('vovamail.domain'),
             'local_part' => 'paypal',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(3, $this->user->aliases()->count());
@@ -186,22 +186,22 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_extension.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay+a@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay+a@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => ['2.3'],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '789',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
@@ -221,28 +221,28 @@ class ReceiveEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $defaultRecipient = $this->user->defaultRecipient;
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '559',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
@@ -263,36 +263,36 @@ class ReceiveEmailTest extends TestCase
         $uuid = '86064c92-da41-443e-a2bf-5a7b0247842f';
 
         config([
-            'anonaddy.admin_username' => 'random',
+            'vovamail.admin_username' => 'random',
         ]);
 
         Alias::factory()->create([
             'id' => $uuid,
             'user_id' => $this->user->id,
-            'email' => $uuid.'@anonaddy.me',
+            'email' => $uuid.'@vovamail.xyz',
             'local_part' => $uuid,
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
         ]);
 
         $defaultRecipient = $this->user->defaultRecipient;
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_uuid.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => [$uuid.'@anonaddy.me'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => [$uuid.'@vovamail.xyz'],
                 '--local_part' => [$uuid],
                 '--extension' => [''],
-                '--domain' => ['anonaddy.me'],
+                '--domain' => ['vovamail.xyz'],
                 '--size' => '892',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
             'local_part' => $uuid,
-            'domain' => 'anonaddy.me',
-            'email' => $uuid.'@anonaddy.me',
+            'domain' => 'vovamail.xyz',
+            'email' => $uuid.'@vovamail.xyz',
             'emails_blocked' => 0,
         ]);
 
@@ -313,35 +313,35 @@ class ReceiveEmailTest extends TestCase
         $localPart = 'circus.waltz449';
 
         config([
-            'anonaddy.admin_username' => 'random',
+            'vovamail.admin_username' => 'random',
         ]);
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => $localPart.'@anonaddy.me',
+            'email' => $localPart.'@vovamail.xyz',
             'local_part' => $localPart,
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
         ]);
 
         $defaultRecipient = $this->user->defaultRecipient;
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_random_words.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => [$localPart.'@anonaddy.me'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => [$localPart.'@vovamail.xyz'],
                 '--local_part' => [$localPart],
                 '--extension' => [''],
-                '--domain' => ['anonaddy.me'],
+                '--domain' => ['vovamail.xyz'],
                 '--size' => '892',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
             'local_part' => $localPart,
-            'domain' => 'anonaddy.me',
-            'email' => $localPart.'@anonaddy.me',
+            'domain' => 'vovamail.xyz',
+            'email' => $localPart.'@vovamail.xyz',
             'emails_blocked' => 0,
         ]);
 
@@ -361,9 +361,9 @@ class ReceiveEmailTest extends TestCase
 
         $alias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $recipient = Recipient::factory()->create([
@@ -387,20 +387,20 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '444',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
@@ -431,21 +431,21 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_extension.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => ['2.3'],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '444',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
             'extension' => '2.3',
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
@@ -477,24 +477,24 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_with_extension.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => ['2.3'],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '444',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
-        $alias = $this->user->aliases()->where('email', 'ebay@johndoe.'.config('anonaddy.domain'))->first();
+        $alias = $this->user->aliases()->where('email', 'ebay@johndoe.'.config('vovamail.domain'))->first();
 
         $this->assertCount(1, $alias->recipients);
 
@@ -515,20 +515,20 @@ class ReceiveEmailTest extends TestCase
         $this->assertNull($this->user->defaultRecipient->email_verified_at);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseMissing('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
 
@@ -545,32 +545,32 @@ class ReceiveEmailTest extends TestCase
         Alias::factory()->create([
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         Recipient::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'will@anonaddy.com',
+            'email' => 'will@vovamail.xyz',
         ]);
 
         $this->assertDatabaseHas('aliases', [
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'active' => true,
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_unsubscribe.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['8f36380f-df4e-4875-bb12-9c4448573712@unsubscribe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['8f36380f-df4e-4875-bb12-9c4448573712@unsubscribe.vovamail.xyz'],
                 '--local_part' => ['8f36380f-df4e-4875-bb12-9c4448573712'],
                 '--extension' => [''],
-                '--domain' => ['unsubscribe.anonaddy.com'],
+                '--domain' => ['unsubscribe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -578,9 +578,9 @@ class ReceiveEmailTest extends TestCase
         $this->assertDatabaseHas('aliases', [
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'active' => false,
         ]);
 
@@ -597,27 +597,27 @@ class ReceiveEmailTest extends TestCase
         Alias::factory()->create([
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $this->assertDatabaseHas('aliases', [
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'active' => true,
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_unsubscribe.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['8f36380f-df4e-4875-bb12-9c4448573712@unsubscribe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['8f36380f-df4e-4875-bb12-9c4448573712@unsubscribe.vovamail.xyz'],
                 '--local_part' => ['8f36380f-df4e-4875-bb12-9c4448573712'],
                 '--extension' => [''],
-                '--domain' => ['unsubscribe.anonaddy.com'],
+                '--domain' => ['unsubscribe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -625,9 +625,9 @@ class ReceiveEmailTest extends TestCase
         $this->assertDatabaseHas('aliases', [
             'id' => '8f36380f-df4e-4875-bb12-9c4448573712',
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'active' => true,
         ]);
 
@@ -641,25 +641,25 @@ class ReceiveEmailTest extends TestCase
 
         Mail::assertNothingSent();
 
-        config(['anonaddy.admin_username' => 'johndoe']);
+        config(['vovamail.admin_username' => 'johndoe']);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_admin.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@anonaddy.me'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['anonaddy.me'],
+                '--domain' => ['vovamail.xyz'],
                 '--size' => '1346',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@anonaddy.me',
+            'email' => 'ebay@vovamail.xyz',
             'local_part' => 'ebay',
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'emails_blocked' => 0,
         ]);
 
@@ -684,10 +684,10 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_custom_domain.eml'),
-                '--sender' => 'will@anonaddy.com',
+                '--sender' => 'will@vovamail.xyz',
                 '--recipient' => ['ebay@example.com'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
@@ -727,10 +727,10 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_custom_domain.eml'),
-                '--sender' => 'will@anonaddy.com',
+                '--sender' => 'will@vovamail.xyz',
                 '--recipient' => ['ebay@example.com'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
@@ -768,14 +768,14 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_username.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@janedoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@janedoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['janedoe.anonaddy.com'],
+                '--domain' => ['janedoe.vovamail.xyz'],
                 '--size' => '638',
             ]
         )->assertExitCode(0);
@@ -783,9 +783,9 @@ class ReceiveEmailTest extends TestCase
         $this->assertDatabaseHas('aliases', [
             'aliasable_id' => $username->id,
             'aliasable_type' => 'App\Models\Username',
-            'email' => 'ebay@janedoe.anonaddy.com',
+            'email' => 'ebay@janedoe.vovamail.xyz',
             'local_part' => 'ebay',
-            'domain' => 'janedoe.anonaddy.com',
+            'domain' => 'janedoe.vovamail.xyz',
             'emails_blocked' => 0,
         ]);
 
@@ -806,22 +806,22 @@ class ReceiveEmailTest extends TestCase
         $this->user->update(['bandwidth' => 100943820]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(1, $this->user->aliases()->count());
@@ -844,22 +844,22 @@ class ReceiveEmailTest extends TestCase
         $this->user->update(['bandwidth' => 9485760]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'emails_forwarded' => 1,
             'emails_blocked' => 0,
         ]);
@@ -883,22 +883,22 @@ class ReceiveEmailTest extends TestCase
         Mail::assertNothingSent();
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_other_domain.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.me'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.me'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.anonaddy.me',
+            'email' => 'ebay@johndoe.vovamail.xyz',
             'local_part' => 'ebay',
-            'domain' => 'johndoe.anonaddy.me',
+            'domain' => 'johndoe.vovamail.xyz',
             'emails_blocked' => 0,
         ]);
         $this->assertEquals(1, $this->user->aliases()->count());
@@ -927,10 +927,10 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_custom_domain.eml'),
-                '--sender' => 'will@anonaddy.com',
+                '--sender' => 'will@vovamail.xyz',
                 '--recipient' => ['ebay@example.com'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
@@ -973,14 +973,14 @@ class ReceiveEmailTest extends TestCase
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_username.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@janedoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@janedoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['janedoe.anonaddy.com'],
+                '--domain' => ['janedoe.vovamail.xyz'],
                 '--size' => '559',
             ]
         )->assertExitCode(0);
@@ -988,9 +988,9 @@ class ReceiveEmailTest extends TestCase
         $this->assertDatabaseHas('aliases', [
             'aliasable_id' => $username->id,
             'aliasable_type' => 'App\Models\Username',
-            'email' => 'ebay@janedoe.anonaddy.com',
+            'email' => 'ebay@janedoe.vovamail.xyz',
             'local_part' => 'ebay',
-            'domain' => 'janedoe.anonaddy.com',
+            'domain' => 'janedoe.vovamail.xyz',
             'emails_blocked' => 0,
         ]);
 
@@ -1013,14 +1013,14 @@ class ReceiveEmailTest extends TestCase
         $this->assertTrue($this->user->use_reply_to);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email.eml'),
-                '--sender' => 'will@anonaddy.com',
-                '--recipient' => ['ebay@johndoe.anonaddy.com'],
+                '--sender' => 'will@vovamail.xyz',
+                '--recipient' => ['ebay@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [''],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1346',
             ]
         )->assertExitCode(0);
@@ -1030,7 +1030,7 @@ class ReceiveEmailTest extends TestCase
         Mail::assertQueued(ForwardEmail::class, function ($mail) {
             $mail->build();
 
-            return $mail->hasTo($this->user->email) && $mail->hasFrom('ebay@johndoe.anonaddy.com') && $mail->hasReplyTo('ebay+will=anonaddy.com@johndoe.anonaddy.com');
+            return $mail->hasTo($this->user->email) && $mail->hasFrom('ebay@johndoe.vovamail.xyz') && $mail->hasReplyTo('ebay+will=vovamail.xyz@johndoe.vovamail.xyz');
         });
     }
 }

@@ -74,7 +74,7 @@ class AliasesImportedNotification extends Notification implements ShouldBeEncryp
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'AIF:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'AIF:vovamail');
             });
     }
 

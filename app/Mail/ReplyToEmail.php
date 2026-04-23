@@ -146,7 +146,7 @@ class ReplyToEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
         if ($this->alias->isCustomDomain()) {
             if (! $this->alias->aliasable->isVerifiedForSending()) {
                 $this->fromEmail = config('mail.from.address');
-                $this->verpDomain = config('anonaddy.domain');
+                $this->verpDomain = config('vovamail.domain');
             }
         }
 
@@ -156,7 +156,7 @@ class ReplyToEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
             ->withSymfonyMessage(function (Email $message) {
 
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'R:'.$this->alias->id.':anonaddy');
+                    ->addTextHeader('Feedback-ID', 'R:'.$this->alias->id.':vovamail');
 
                 // Message-ID is replaced on replies as it can leak parts of the real email
                 $message->getHeaders()->remove('Message-ID');
@@ -328,7 +328,7 @@ class ReplyToEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
 
     private function removeRealEmailAndTextBanner($text)
     {
-        // Replace <alias+hello=example.com@johndoe.anonaddy.com> with <hello@example.com>
+        // Replace <alias+hello=example.com@johndoe.vovamail.xyz> with <hello@example.com>
         $destination = $this->email->to[0]['address'];
 
         // Reply may be HTML but email client added HTML banner plain text version
@@ -340,7 +340,7 @@ class ReplyToEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
 
     private function removeRealEmailAndHtmlBanner($html)
     {
-        // Replace <alias+hello=example.com@johndoe.anonaddy.com> with <hello@example.com>
+        // Replace <alias+hello=example.com@johndoe.vovamail.xyz> with <hello@example.com>
         $destination = $this->email->to[0]['address'];
 
         // Reply may be HTML but have a plain text banner

@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
+use Inertia\Testing\AssertableInertia as Assert;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -92,6 +93,23 @@ class RegistrationTest extends TestCase
             ->assertSessionHas('verified');
 
         $this->assertNotNull($user->refresh()->email_verified_at);
+    }
+
+    #[Test]
+    public function unverified_user_can_view_the_verify_email_page()
+    {
+        $user = User::factory()->create()->fresh();
+        $user->forceFill([
+            'email_verified_at' => null,
+        ])->save();
+
+        $response = $this->actingAs($user)->get('/email/verify');
+
+        $response->assertSuccessful();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->component('Auth/Verify', false)
+            ->where('user.email', $user->email)
+        );
     }
 
     #[Test]

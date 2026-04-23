@@ -35,7 +35,7 @@ class ShowUsernameController extends Controller
             'initialRows' => $usernames,
             'recipientOptions' => user()->verifiedRecipients()->select(['id', 'email'])->get(),
             'search' => $validated['search'] ?? null,
-            'usernameCount' => (int) config('anonaddy.additional_username_limit'),
+            'usernameCount' => (int) config('vovamail.additional_username_limit'),
         ]);
     }
 

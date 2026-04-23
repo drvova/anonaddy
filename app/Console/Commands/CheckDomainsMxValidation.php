@@ -13,7 +13,7 @@ class CheckDomainsMxValidation extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:check-domains-mx-validation';
+    protected $signature = 'vovamail:check-domains-mx-validation';
 
     /**
      * The console command description.

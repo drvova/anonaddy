@@ -23,10 +23,10 @@ class ProxyAuthenticationTest extends TestCase
     {
         parent::setUp();
 
-        Config::set('anonaddy.use_proxy_authentication', true);
-        Config::set('anonaddy.proxy_authentication_external_user_id_header', 'X-User');
-        Config::set('anonaddy.proxy_authentication_username_header', 'X-Name');
-        Config::set('anonaddy.proxy_authentication_email_header', 'X-Email');
+        Config::set('vovamail.use_proxy_authentication', true);
+        Config::set('vovamail.proxy_authentication_external_user_id_header', 'X-User');
+        Config::set('vovamail.proxy_authentication_username_header', 'X-Name');
+        Config::set('vovamail.proxy_authentication_email_header', 'X-Email');
 
         $this->userJohnDoe = $this->createUser('johndoe', null, ['password' => Hash::make('mypassword')]);
         $this->userJaneDoe = $this->createUser('janedoe', null);

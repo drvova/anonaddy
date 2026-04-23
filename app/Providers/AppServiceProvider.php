@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\CustomMailDriver\Transports\CloudflareTransport;
 use App\Http\Responses\LoginViewResponse;
 use App\Http\Responses\RegisterSuccessResponse;
 use App\Http\Responses\RegisterViewResponse;
@@ -9,8 +10,10 @@ use App\Models\PersonalAccessToken;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Client\Factory;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rules\Password;
 use Laravel\Sanctum\Sanctum;
@@ -33,6 +36,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        Mail::extend('cloudflare', function (array $config) {
+            return new CloudflareTransport(
+                app(Factory::class),
+                $config['api_token'] ?? '',
+                $config['account_id'] ?? '',
+                $config['base_url'] ?? 'https://api.cloudflare.com/client/v4',
+                (int) ($config['timeout'] ?? 30)
+            );
+        });
+
         Model::preventAccessingMissingAttributes();
         Model::preventSilentlyDiscardingAttributes();
         Model::preventLazyLoading();

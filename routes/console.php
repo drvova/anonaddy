@@ -13,13 +13,14 @@ use Illuminate\Support\Facades\Schedule;
 |
 */
 
-Schedule::command('anonaddy:reset-bandwidth')->monthlyOn(1, '00:00');
-Schedule::command('anonaddy:check-domains-sending-verification')->daily();
-Schedule::command('anonaddy:check-domains-mx-validation')->daily();
-Schedule::command('anonaddy:clear-failed-deliveries')->daily();
-Schedule::command('anonaddy:clear-outbound-messages')->everySixHours();
-Schedule::command('anonaddy:email-users-with-token-expiring-soon')->daily();
-Schedule::command('anonaddy:parse-postfix-mail-log')->everyFiveMinutes();
+Schedule::command('vovamail:reset-bandwidth')->monthlyOn(1, '00:00');
+Schedule::command('vovamail:check-domains-sending-verification')->daily();
+Schedule::command('vovamail:check-domains-mx-validation')->daily();
+Schedule::command('vovamail:clear-failed-deliveries')->daily();
+Schedule::command('vovamail:clear-outbound-messages')->everySixHours();
+Schedule::command('vovamail:email-users-with-token-expiring-soon')->daily();
+Schedule::command('vovamail:sync-cloudflare-email-statuses')->everyFiveMinutes()->withoutOverlapping();
+Schedule::command('vovamail:parse-postfix-mail-log')->everyFiveMinutes();
 Schedule::command('auth:clear-resets')->daily();
 Schedule::command('sanctum:prune-expired --hours=168')->daily();
 Schedule::command('cache:prune-stale-tags')->hourly();

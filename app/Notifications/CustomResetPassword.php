@@ -94,7 +94,7 @@ class CustomResetPassword extends Notification implements ShouldBeEncrypted, Sho
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'RP:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'RP:vovamail');
             });
     }
 

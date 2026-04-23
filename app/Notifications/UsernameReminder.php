@@ -43,7 +43,7 @@ class UsernameReminder extends Notification implements ShouldBeEncrypted, Should
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'UR:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'UR:vovamail');
             });
     }
 

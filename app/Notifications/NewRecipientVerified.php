@@ -55,7 +55,7 @@ class NewRecipientVerified extends Notification implements ShouldBeEncrypted, Sh
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'NRV:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'NRV:vovamail');
             });
     }
 

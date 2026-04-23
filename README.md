@@ -1,12 +1,12 @@
 # Anonymous Email Forwarding
 
-This is the source code for self-hosting addy.io.
+This is the source code for self-hosting vovamail.xyz.
 
 ## FAQ
 
-- [Why is it called addy.io?](#why-is-it-called-addyio)
+- [Why is it called vovamail.xyz?](#why-is-it-called-vovamailxyz)
 - [Why did you make this site?](#why-did-you-make-this-site)
-- [Why should I use addy.io?](#why-should-i-use-addyio)
+- [Why should I use vovamail.xyz?](#why-should-i-use-vovamailxyz)
 - [Do you store emails?](#do-you-store-emails)
 - [What is a shared domain alias?](#what-is-a-shared-domain-alias)
 - [What is a standard alias?](#what-is-a-standard-alias)
@@ -23,7 +23,7 @@ This is the source code for self-hosting addy.io.
 - [Are forwarded emails signed when encryption is enabled?](#are-forwarded-emails-signed-when-encryption-is-enabled)
 - [Can I reply/send from aliases using encryption?](#can-i-replysend-from-aliases-using-encryption)
 - [Is my public GPG/OpenPGP key removed when I reply/send from an alias?](#is-my-public-gpgopenpgp-key-removed-when-i-replysend-from-an-alias)
-- [Can I mark emails forwarded to me by addy.io as spam?](#can-i-mark-emails-forwarded-to-me-by-addyio-as-spam)
+- [Can I mark emails forwarded to me by vovamail.xyz as spam?](#can-i-mark-emails-forwarded-to-me-by-vovamailxyz-as-spam)
 - [Can I use aliases to create multiple accounts on other websites and services?](#can-i-use-aliases-to-create-multiple-accounts-on-other-websites-and-services)
 - [Can I have multiple Free accounts?](#can-i-have-multiple-free-accounts)
 - [What if I don't want anyone to link ownership of my aliases together?](#what-if-i-dont-want-anyone-to-link-ownership-of-my-aliases-together)
@@ -36,7 +36,7 @@ This is the source code for self-hosting addy.io.
 - [I'm trying to reply/send from an alias but the email keeps coming back to me, what's wrong?](#im-trying-to-replysend-from-an-alias-but-the-email-keeps-coming-back-to-me-whats-wrong)
 - [I'm trying to reply/send from an alias but it is rejected, what's wrong?](#im-trying-to-replysend-from-an-alias-but-it-is-rejected-whats-wrong)
 - [I've been forwarded an email with a red warning banner saying it may have been spoofed, what does it mean?](#ive-been-forwarded-an-email-with-a-red-warning-banner-saying-it-may-have-been-spoofed-what-does-it-mean)
-- [Does addy.io strip out the banner information when I reply to an email?](#does-addyio-strip-out-the-banner-information-when-i-reply-to-an-email)
+- [Does vovamail.xyz strip out the banner information when I reply to an email?](#does-vovamailxyz-strip-out-the-banner-information-when-i-reply-to-an-email)
 - [How do I send email from an alias?](#how-do-i-send-email-from-an-alias)
 - [Will people see my real email if I reply to a forwarded one?](#will-people-see-my-real-email-if-i-reply-to-a-forwarded-one)
 - [Can emails have attachments?](#can-emails-have-attachments)
@@ -55,17 +55,15 @@ This is the source code for self-hosting addy.io.
 - [I'm not receiving any emails, what's wrong?](#im-not-receiving-any-emails-whats-wrong)
 - [I'm having trouble logging in, what's wrong?](#im-having-trouble-logging-in-whats-wrong)
 - [How do I know this site won't disappear next month?](#how-do-i-know-this-site-wont-disappear-next-month)
-- [What happens to addy.io if you die?](#what-happens-to-addyio-if-you-die)
+- [What happens to vovamail.xyz if you die?](#what-happens-to-vovamailxyz-if-you-die)
 - [Is the application tested?](#is-the-appliction-tested)
 - [How do I host this myself?](#how-do-i-host-this-myself)
-- [Who's behind addy.io?](#whos-behind-addyio)
+- [Who's behind vovamail.xyz?](#whos-behind-vovamailxyz)
 - [I couldn't find an answer to my question, how can I contact you?](#i-couldnt-find-an-answer-to-my-question-how-can-i-contact-you)
 
-## Why is it called addy.io?
+## Why is it called vovamail.xyz?
 
-Addy is short for "Address". The word "Addy" is internet slang for an email address, e.g.
-
-> "My addy is being spammed. I should've kept it private."
+The name matches the service domain and brand: `vovamail.xyz`.
 
 ## Why did you make this site?
 
@@ -82,7 +80,7 @@ I made the code open-source to show everyone what was going on behind the scenes
 
 I use this service myself for the vast majority of sites I'm signed up to.
 
-## Why should I use addy.io?
+## Why should I use vovamail.xyz?
 
 There are a number of reasons you should consider using this service:
 
@@ -99,11 +97,11 @@ Emails are only ever stored in the event of a failed delivery, and only if you h
 
 ## What is a shared domain alias?
 
-A shared domain alias is any alias that has a domain name that is also shared with other users. For example anyone can generate an alias with the @anonaddy.me domain. Aliases with shared domain names must be pre-generated and cannot be created on-the-fly like standard aliases.
+A shared domain alias is any alias that has a domain name that is also shared with other users. For example anyone can generate an alias with the @vovamail.xyz domain. Aliases with shared domain names must be pre-generated and cannot be created on-the-fly like standard aliases.
 
 ## What is a standard alias?
 
-A standard alias is any alias that can be created on-the-fly. Automatic on-the-fly alias creation is only available for domains that are unique to you. For example, your unique username subdomain, any additional usernames or any custom domains. So if you signed up with the username "johndoe", any alias you create using @johndoe.anonaddy.com would be a standard alias (even if you've generated a Random Character/Random Word one).
+A standard alias is any alias that can be created on-the-fly. Automatic on-the-fly alias creation is only available for domains that are unique to you. For example, your unique username subdomain, any additional usernames or any custom domains. So if you signed up with the username "johndoe", any alias you create using @johndoe.vovamail.xyz would be a standard alias (even if you've generated a Random Character/Random Word one).
 
 ## Can I use my own domain?
 
@@ -111,24 +109,24 @@ Yes you can use your own domain name so you can also have *@example.com as your 
 
 ## Can I add a domain and also use it as a recipient?
 
-No, you cannot use the same domain as a custom domain and also for a recipient on addy.io.
+No, you cannot use the same domain as a custom domain and also for a recipient on vovamail.xyz.
 
 e.g if you add "example.com" as a custom domain, you cannot then add "xyz@example.com" as a recipient. This is because a domain cannot direct email to multiple locations simultaneously using MX records. So your email would arrive for "example.com" and then attempt to be forwarded to "xyz@example.com" which would create a loop.
 
-You can instead use a subdomain for your custom domain, e.g. "mail.example.com" instead of "example.com", this would allow you to create *@mail.example.com for your aliases. More details can be found [here](https://addy.io/help/adding-a-custom-domain/).
+You can instead use a subdomain for your custom domain, e.g. "mail.example.com" instead of "example.com", this would allow you to create *@mail.example.com for your aliases. More details can be found [here](https://vovamail.xyz/help/adding-a-custom-domain/).
 
 ## Can I add a domain if I'm already using it for email somewhere else?
 
-If you have a custom domain say **example.com** and you are already using it for email somewhere else e.g. ProtonMail or Namecheap then you cannot also use it simultaneously with addy.io.
+If you have a custom domain say **example.com** and you are already using it for email somewhere else e.g. ProtonMail or Namecheap then you cannot also use it simultaneously with vovamail.xyz.
 
 This is because emails cannot be handled by multiple different mail servers at the same time, even if they have the same priority MX records. It can only be delivered to one mail server at a time which will typically be the MX record with the smallest number since this has the highest priority.
 
 You can either:
 
-- Migrate your domain to addy.io by removing the current provider's MX records and adding addy.io's.
-- Or, if you would like to keep using your domain with your current email provider then I would recommend instead adding a subdomain of it to addy.io such as **mail.example.com**.
+- Migrate your domain to vovamail.xyz by removing the current provider's MX records and adding vovamail.xyz's.
+- Or, if you would like to keep using your domain with your current email provider then I would recommend instead adding a subdomain of it to vovamail.xyz such as **mail.example.com**.
 
-Using a subdomain will not interfere with your current email setup and you'll be able to create aliases ***@mail.example.com** through addy.io.
+Using a subdomain will not interfere with your current email setup and you'll be able to create aliases ***@mail.example.com** through vovamail.xyz.
 
 ## Why should I use this instead of a similar service?
 
@@ -141,30 +139,30 @@ Here are a few reasons I can think of:
 * Open-source application code
 * No limitation on the number of aliases that can be created
 * Generous monthly bandwidth
-* Multiple domains to choose for aliases (currently anonaddy.com, anonaddy.me and more for paid plan users)
+* Multiple domains to choose for aliases (currently vovamail.xyz and more for paid plan users)
 * Ability to generate random character and random word aliases at shared domains
 * Ability to add additional usernames to compartmentalise aliases
 * New features added regularly
 
 ## Is there a browser extension?
 
-Yes there is an [open-source](https://github.com/anonaddy/browser-extension) browser extension available to download for [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/addy_io/) and [Chrome](https://chrome.google.com/webstore/detail/addyio-anonymous-email-fo/iadbdpnoknmbdeolbapdackdcogdmjpe) (also available on other chromium based browsers such as Brave and Vivaldi). You can use the extension to generate new aliases remotely.
+Yes there is an [open-source](https://github.com/vovamail/browser-extension) browser extension available to download for [Firefox](https://addons.mozilla.org/en-GB/firefox/addon/addy_io/) and [Chrome](https://chrome.google.com/webstore/detail/addyio-anonymous-email-fo/iadbdpnoknmbdeolbapdackdcogdmjpe) (also available on other chromium based browsers such as Brave and Vivaldi). You can use the extension to generate new aliases remotely.
 
 ## Is there an Android app?
 
-Yes, there's the official [open-source](https://github.com/anonaddy/addy-android) Android app created by [Stjin](https://x.com/Stjinchan) that is available to download from the [Play Store](https://play.google.com/store/apps/details?id=host.stjin.anonaddy) and [F-Droid](https://f-droid.org/packages/host.stjin.anonaddy).
+Yes, there's the official [open-source](https://github.com/vovamail/addy-android) Android app created by [Stjin](https://x.com/Stjinchan) that is available to download from the [Play Store](https://play.google.com/store/apps/details?id=host.stjin.vovamail) and [F-Droid](https://f-droid.org/packages/host.stjin.vovamail).
 
 ## Is there an iOS app?
 
-Yes, there's the official [open-source](https://github.com/anonaddy/addy-ios) iOS app created by [Stjin](https://x.com/Stjinchan) that is available to download from the [App Store](https://apps.apple.com/app/addy-io/id6563138633).
+Yes, there's the official [open-source](https://github.com/vovamail/addy-ios) iOS app created by [Stjin](https://x.com/Stjinchan) that is available to download from the [App Store](https://apps.apple.com/app/addy-io/id6563138633).
 
 ## Is there a Raycast extension?
 
-Yes, [http.james'](https://httpjames.space/) [open-source](https://github.com/raycast/extensions/tree/cceffa51046266f25819f800316561b783c52663/extensions/anonaddy/) extension is available on the [Raycast Store](https://www.raycast.com/http.james/anonaddy).
+Yes, [http.james'](https://httpjames.space/) [open-source](https://github.com/raycast/extensions/tree/cceffa51046266f25819f800316561b783c52663/extensions/vovamail/) extension is available on the [Raycast Store](https://www.raycast.com/http.james/vovamail).
 
 ## How do I add my own GPG/OpenPGP key for encryption?
 
-On the recipients page you simply need to click "Add public key" and paste in your **public** key data. Now all emails forwarded to you will be encrypted with your key. You can even hide and encrypt the subject as addy.io supports protected headers.
+On the recipients page you simply need to click "Add public key" and paste in your **public** key data. Now all emails forwarded to you will be encrypted with your key. You can even hide and encrypt the subject as vovamail.xyz supports protected headers.
 
 ## Are attachments encrypted too?
 
@@ -172,33 +170,33 @@ Yes attachments are part of the email body and are also encrypted if you have it
 
 ## Are forwarded emails signed when encryption is enabled?
 
-Yes when you have encryption enabled all forwarded emails are signed using our no-reply@addy.io private key.
+Yes when you have encryption enabled all forwarded emails are signed using our no-reply@vovamail.xyz private key.
 
 You can add this key to your own keyring so that you can verify emails have come from us.
 
-The fingerprint of the no-reply@addy.io key is "26A987650243B28802524E2F809FD0D502E2F695" you can find the key on [https://keys.openpgp.org](https://keys.openpgp.org/search?q=26A987650243B28802524E2F809FD0D502E2F695).
+The fingerprint of the no-reply@vovamail.xyz key is "26A987650243B28802524E2F809FD0D502E2F695" you can find the key on [https://keys.openpgp.org](https://keys.openpgp.org/search?q=26A987650243B28802524E2F809FD0D502E2F695).
 
 ## Can I reply/send from aliases using encryption?
 
 1. If the person you are sending your message to **already uses GPG/OpenPGP encryption** then you can simply encrypt your reply/send from your alias using their public key.
 
-2. If the person you are sending your message to **does not use GPG/OpenPGP encryption** then you can instead encrypt your reply/send with the `no-reply@addy.io` [public key](https://keys.openpgp.org/search?q=26A987650243B28802524E2F809FD0D502E2F695) (<span class="break-words">"26A987650243B28802524E2F809FD0D502E2F695"</span>). Your reply/send will then be **automatically decrypted** on the addy.io server before being sent on to the correct destination in clear text. This is useful if you wish to hide your replies/sends from your email provider such as Gmail.
+2. If the person you are sending your message to **does not use GPG/OpenPGP encryption** then you can instead encrypt your reply/send with the `no-reply@vovamail.xyz` [public key](https://keys.openpgp.org/search?q=26A987650243B28802524E2F809FD0D502E2F695) (<span class="break-words">"26A987650243B28802524E2F809FD0D502E2F695"</span>). Your reply/send will then be **automatically decrypted** on the vovamail.xyz server before being sent on to the correct destination in clear text. This is useful if you wish to hide your replies/sends from your email provider such as Gmail.
 
 ## Is my public GPG/OpenPGP key removed when I reply/send from an alias?
 
 Yes, any attached GPG/OpenPGP public keys or GPG/OpenPGP signatures are automatically removed when replying or sending from an alias. This is to prevent you accidentally revealing your real email address which is usually shown as an identity in your public key.
 
-## Can I mark emails forwarded to me by addy.io as spam?
+## Can I mark emails forwarded to me by vovamail.xyz as spam?
 
-No, you must not mark messages forwarded to you by addy.io as spam as this can damage the reputation of the mail servers and is against the [terms and conditions](https://addy.io/terms/).
+No, you must not mark messages forwarded to you by vovamail.xyz as spam as this can damage the reputation of the mail servers and is against the [terms and conditions](https://vovamail.xyz/terms/).
 
 If an alias is receiving spam messages then please deactivate it or delete it.
 
-addy.io is signed up to multiple feedback loops (FBLs) that trigger a notification when any messages are marked as spam. Repeatedly marking messages as spam will result in your account being disabled.
+vovamail.xyz is signed up to multiple feedback loops (FBLs) that trigger a notification when any messages are marked as spam. Repeatedly marking messages as spam will result in your account being disabled.
 
 ## Can I use aliases to create multiple accounts on other websites and services?
 
-No, you must not use addy.io to create large numbers of accounts on other websites/services as this is against the [terms and conditions](https://addy.io/terms/).
+No, you must not use vovamail.xyz to create large numbers of accounts on other websites/services as this is against the [terms and conditions](https://vovamail.xyz/terms/).
 
 ## Can I have multiple Free accounts?
 
@@ -206,7 +204,7 @@ Having multiple Free accounts is not considered an acceptable use of our service
 
 ## What if I don't want anyone to link ownership of my aliases together?
 
-If you're concerned that your aliases are all linked by your username e.g. @johndoe.anonaddy.com, then you have a couple of options:
+If you're concerned that your aliases are all linked by your username e.g. @johndoe.vovamail.xyz, then you have a couple of options:
 
 1. You can generate random character or random word aliases instead, these are all under a shared domain and cannot be linked to a user.
 2. You can add additional usernames and separate your aliases under each of them. e.g. you could have one username for personal stuff, another for work, another for hobbies etc.
@@ -217,7 +215,7 @@ The server is located in Amsterdam, Netherlands with [Greenhost.net](https://gre
 
 ## What if I don't trust you?
 
-It's good to keep your guard up when online so you should never trust anyone 100%. I'll try my best to be as honest and transparent as I can but if you still aren't convinced you can always just fire up your own server and self-host this application. You'll need to know about server administration and PHP. You can find more information here [https://github.com/anonaddy/anonaddy#self-hosting](https://github.com/anonaddy/anonaddy#self-hosting).
+It's good to keep your guard up when online so you should never trust anyone 100%. I'll try my best to be as honest and transparent as I can but if you still aren't convinced you can always just fire up your own server and self-host this application. You'll need to know about server administration and PHP. You can find more information here [https://github.com/vovamail/vovamail#self-hosting](https://github.com/vovamail/vovamail#self-hosting).
 
 ## What is the maximum number of recipients I can add to an alias?
 
@@ -228,7 +226,7 @@ The limit is currently set to 10 which should suffice in the vast majority of si
 When you delete your account the following happens:
 
 * All of your recipients are deleted from the database
-* All of your aliases that use a shared domain e.g. @anonaddy.me are soft deleted from the database (this is to prevent any chance of another user generating the same alias in the future) any identifying information e.g the alias description is removed
+* All of your aliases that use a shared domain e.g. @vovamail.xyz are soft deleted from the database (this is to prevent any chance of another user generating the same alias in the future) any identifying information e.g the alias description is removed
 * All of your other aliases are deleted from the database
 * All of your custom domains are deleted from the database
 * Your user details are deleted from the database
@@ -243,19 +241,19 @@ Yes this will work with any provider, although I can't guarantee it won't land i
 
 Each forwarded email has a From: header set. This header will look something like this:
 
-From: <<span class="break-words"><alias+hello=example.com@johndoe.anonaddy.com></span>>
+From: <<span class="break-words"><alias+hello=example.com@johndoe.vovamail.xyz></span>>
 
-Where hello@example.com is the address of the person who sent you the email and alias@johndoe.anonaddy.com is the alias that forwarded you the email.
+Where hello@example.com is the address of the person who sent you the email and alias@johndoe.vovamail.xyz is the alias that forwarded you the email.
 
 All you need to do is click reply in your email client or web interface and it will automatically fill the To: field with the correct address.
 
 To check if a reply has worked properly check in your dashboard if the reply count has been incremented for that alias.
 
-For further details please see this help article - [Replying to email using an alias](https://addy.io/help/replying-to-email-using-an-alias/).
+For further details please see this help article - [Replying to email using an alias](https://vovamail.xyz/help/replying-to-email-using-an-alias/).
 
 ## I'm trying to reply/send from an alias but the email keeps coming back to me, what's wrong?
 
-If you are trying to reply or send from an alias but the email keeps coming back to yourself then it is most likely because you are not sending the message from an email address that **is not listed as a verified recipient** on your addy.io account.
+If you are trying to reply or send from an alias but the email keeps coming back to yourself then it is most likely because you are not sending the message from an email address that **is not listed as a verified recipient** on your vovamail.xyz account.
 
 If you try to reply or send from an alias using an unverified email address then the message will simply be forwarded to you as it would be if it was sent by any other sender.
 
@@ -267,11 +265,11 @@ If you see the rejection message `550 5.1.1 Recipient address rejected: Address 
 
 If you receive an email notification with the subject "Attempted reply/send from alias has failed" then it is usually because you have a verified recipient that is using your own domain which does not have a DMARC policy.
 
-> Note: This is referring to **your verified recipient address** on your addy.io account **and not** any of your custom domains or the email address that you are replying / sending to
+> Note: This is referring to **your verified recipient address** on your vovamail.xyz account **and not** any of your custom domains or the email address that you are replying / sending to
 
-When replying or sending from an alias, **additional checks** are carried out to ensure it is not a spoofed email. Your addy.io recipient's email domain must pass DMARC checks in order to protect against spoofed emails and to make sure that the reply/send from attempt definitely came from your recipient.
+When replying or sending from an alias, **additional checks** are carried out to ensure it is not a spoofed email. Your vovamail.xyz recipient's email domain must pass DMARC checks in order to protect against spoofed emails and to make sure that the reply/send from attempt definitely came from your recipient.
 
-For example if the verified recipient on your addy.io account is `hello@example.com` and you get this email notification then it is because the domain "example.com" does not have a DMARC policy in place.
+For example if the verified recipient on your vovamail.xyz account is `hello@example.com` and you get this email notification then it is because the domain "example.com" does not have a DMARC policy in place.
 
 To resolve this you simply need to add a DMARC record, for example:
 
@@ -284,17 +282,17 @@ You should also have SPF and DKIM records in place.
 
 To learn more about DMARC please see this site - [https://dmarc.org/](https://dmarc.org/).
 
-If your addy.io recipient is with a popular mail service provider for example: Gmail, Outlook, Tutanota, Mailbox.org, Protonmail etc. then they will already have a DMARC policy in place so you do not need to take any action.
+If your vovamail.xyz recipient is with a popular mail service provider for example: Gmail, Outlook, Tutanota, Mailbox.org, Protonmail etc. then they will already have a DMARC policy in place so you do not need to take any action.
 
 ## I've been forwarded an email with a red warning banner saying it may have been spoofed, what does it mean?
 
-If an incoming email looks like spam (for example, because it has failed its [DMARC](https://dmarc.org/overview/) check) then a red warning banner is added by addy.io before forwarding the message on to you. This warning banner is added in order to help protect you from any potential phishing attempts, for example someone pretending to be your bank.
+If an incoming email looks like spam (for example, because it has failed its [DMARC](https://dmarc.org/overview/) check) then a red warning banner is added by vovamail.xyz before forwarding the message on to you. This warning banner is added in order to help protect you from any potential phishing attempts, for example someone pretending to be your bank.
 
 Most of the time this is nothing to worry about and is just because the sender has not correctly configured their DNS records.
 
-To see why this banner was added you can view the headers of the received email and look for the header called 'X-AnonAddy-Authentication-Results'. This header shows the original email's authentication results and will show you why the email failed its DMARC checks.
+To see why this banner was added you can view the headers of the received email and look for the header called 'X-VovaMail-Authentication-Results'. This header shows the original email's authentication results and will show you why the email failed its DMARC checks.
 
-## Does addy.io strip out the banner information when I reply to an email?
+## Does vovamail.xyz strip out the banner information when I reply to an email?
 
 Yes, the email banner "This email was sent to..." will be automatically removed when you reply to any messages. You can test this by replying to yourself from one of your aliases.
 
@@ -304,11 +302,11 @@ Make sure not to alter or edit the email banner as this may cause issues when tr
 
 This works in the same way as replying to an email.
 
-Let's say that you have the alias **first@johndoe.anonaddy.com** and you want to send an email to **hello@example.com**.
+Let's say that you have the alias **first@johndoe.vovamail.xyz** and you want to send an email to **hello@example.com**.
 
 All you need to do is enter the following in the To: field.
 
-<<span class="break-words"><first+hello=example.com@johndoe.anonaddy.com></span>>
+<<span class="break-words"><first+hello=example.com@johndoe.vovamail.xyz></span>>
 
 > **Note**: you must send the email from a verified recipient on your account.
 
@@ -320,15 +318,15 @@ This works exactly the same for shared domain aliases, additional usernames and 
 
 You can even use the send from feature to create an alias on the fly that does not yet exist. This only works for standard aliases or those at custom domains that behave as a catch-all.
 
-You must generate aliases that use shared domains (e.g. circus.waltz449@anonaddy.me) beforehand in order to be able to send from them.
+You must generate aliases that use shared domains (e.g. circus.waltz449@vovamail.xyz) beforehand in order to be able to send from them.
 
 If you need to send an email to an address with an extension e.g. **hello+whatever@example.com** then it's exactly the same method:
 
-<<span class="break-words"><first+hello+whatever=example.com@johndoe.anonaddy.com></span>>
+<<span class="break-words"><first+hello+whatever=example.com@johndoe.vovamail.xyz></span>>
 
 Just enter the extension too!
 
-For further details please see this help article - [Sending email from an alias](https://addy.io/help/sending-email-from-an-alias/).
+For further details please see this help article - [Sending email from an alias](https://vovamail.xyz/help/sending-email-from-an-alias/).
 
 ## Will people see my real email if I reply to a forwarded one?
 
@@ -353,7 +351,7 @@ A few days before your billing cycle ends you will receive an email letting you 
 * If you have any more than **1 recipient** they will be **deleted**
 * Paid account settings will be reverted to default values
 * Any aliases using paid plan only domains will be **deactivated**
-* If you have any more than 10 aliases using a shared domain e.g. anonaddy.me they will be **deactivated**
+* If you have any more than 10 aliases using a shared domain e.g. vovamail.xyz they will be **deactivated**
 * If your account username has catch-all disabled then it will be enabled
 
 You will not be able to activate any of the above again until you resubscribe.
@@ -364,7 +362,7 @@ When you subscribe you can choose which email to provide to Stripe, feel free to
 
 ## Do you offer student discount?
 
-Currently, addy.io does not offer any student discounts.
+Currently, vovamail.xyz does not offer any student discounts.
 
 ## How do you prevent spammers?
 
@@ -411,7 +409,7 @@ Yes, you can login with any of your usernames. You can add 5 additional username
 
 ## I'm not receiving any emails, what's wrong?
 
-Please make sure to add no-reply@addy.io and any aliases you use to your address book and also to check your spam folder. Make sure to mark emails from addy.io as safe if they turn up in spam.
+Please make sure to add no-reply@vovamail.xyz and any aliases you use to your address book and also to check your spam folder. Make sure to mark emails from vovamail.xyz as safe if they turn up in spam.
 
 If an alias has been deleted and you try to send email to it, the emails will be rejected with an error message - "550 5.1.1 Recipient address rejected: Address does not exist".
 
@@ -427,7 +425,7 @@ For some reason Apple seems to think these emails are spam/phishing and returns 
 
 If you are having issues with emails being rejected as "possibly spammy" by Google, iCloud or Microsoft then please try the following steps if you can:
 
-1. **Replace the email subject** by going to your settings in addy.io
+1. **Replace the email subject** by going to your settings in vovamail.xyz
 2. Try adding a GPG key and **enabling encryption**. This will prevent the email's content being scanned and reduce the chance of it being rejected.
 3. Enable the option to hide and encrypt the email subject
 4. Try disabling the banner information on forwarded emails
@@ -451,11 +449,11 @@ Please make sure you are using your account username (e.g. johndoe) and not your
 
 2. Forgotten password
 
-If you've forgotten your password you can reset it by entering your username here - https://app.addy.io/password/reset
+If you've forgotten your password you can reset it by entering your username here - https://vovamail.xyz/password/reset
 
 3. Forgotten username
 
-If you've forgotten your username you can request a reminder by entering your email address here - https://app.addy.io/username/reminder
+If you've forgotten your username you can request a reminder by entering your email address here - https://vovamail.xyz/username/reminder
 
 4. Lost 2FA device
 
@@ -469,11 +467,11 @@ If you have a YubiKey and are using Windows and have an issue with your personal
 
 I am very passionate about this project. I use it myself every day and will be keeping it running indefinitely. The service also provides me with an income.
 
-## What happens to addy.io if you die?
+## What happens to vovamail.xyz if you die?
 
-I do have someone in place who can keep the service running in the event of me not being here. They are able to continue paying for the servers that host addy.io and the domains that it uses. All addy.io domains also always have over 5 years until they expire.
+I do have someone in place who can keep the service running in the event of me not being here. They are able to continue paying for the servers that host vovamail.xyz and the domains that it uses. All vovamail.xyz domains also always have over 5 years until they expire.
 
-They would make a Twitter announcement informing all users that they would be keeping the service running. You would then be able to decide whether you'd like to continue using addy.io or start to update your email addresses.
+They would make a Twitter announcement informing all users that they would be keeping the service running. You would then be able to decide whether you'd like to continue using vovamail.xyz or start to update your email addresses.
 
 ## Is the application tested?
 
@@ -481,17 +479,17 @@ Yes it has over 200 automated PHPUnit tests written.
 
 ## How do I host this myself?
 
-You will need to set up your own server with Postfix so that you can pipe the received mail to the application. You can find more information here [https://github.com/anonaddy/anonaddy#self-hosting](https://github.com/anonaddy/anonaddy#self-hosting).
+You will need to set up your own server with Postfix so that you can pipe the received mail to the application. You can find more information here [https://github.com/vovamail/vovamail#self-hosting](https://github.com/vovamail/vovamail#self-hosting).
 
-For those who prefer using Docker there is an image you can use here - [github.com/anonaddy/docker](https://github.com/anonaddy/docker).
+For those who prefer using Docker there is an image you can use here - [github.com/vovamail/docker](https://github.com/vovamail/docker).
 
-## Who's behind addy.io?
+## Who's behind vovamail.xyz?
 
 My name is Will Browning, I'm a web developer from the UK and an advocate for online privacy and open-source software. You can find me on [Twitter](https://twitter.com/willbrowningme) although I don't tweet that much!
 
 ## I couldn't find an answer to my question, how can I contact you?
 
-For any other questions just send an email to - contact (at) help.addy.io ([GPG Key](https://addy.io/contact-public-key.asc))
+For any other questions just send an email to - contact (at) vovamail.xyz ([GPG Key](https://vovamail.xyz/contact-public-key.asc))
 
 ## Self Hosting
 
@@ -501,7 +499,7 @@ For any other questions just send an email to - contact (at) help.addy.io ([GPG 
 * PHP (8.2+) and the [php-mailparse](https://pecl.php.net/package/mailparse) extension, the [php-gnupg](https://pecl.php.net/package/gnupg) extension if you plan to encrypt forwarded emails, the [php-imagick](https://pecl.php.net/package/imagick) extension for generating 2FA QR codes
 * Port 25 unblocked and open
 * Redis (7.x+) for throttling and queues
-* FQDN as hostname e.g. mail.anonaddy.me
+* FQDN as hostname e.g. mail.vovamail.xyz
 * MariaDB / MySQL
 * Nginx
 * Rspamd
@@ -515,7 +513,7 @@ For full details please see the [self-hosting instructions file](SELF-HOSTING.md
 
 Thanks to [Vlad Timofeev](https://github.com/vlad-timofeev), [Patrick Dobler](https://github.com/patrickdobler), [Luca Steeb](https://github.com/steebchen), [narolinus](https://github.com/narolinus), [Lukas](https://github.com/lunibo) and [Mioi Hanaoka](https://github.com/mioi) for supporting me by sponsoring the project on GitHub!
 
-Also an extra special thanks to [CrazyMax](https://github.com/crazy-max) for sponsoring me and also creating and maintaining the awesome [addy.io Docker image](https://github.com/anonaddy/docker)!
+Also an extra special thanks to [CrazyMax](https://github.com/crazy-max) for sponsoring me and also creating and maintaining the awesome [vovamail.xyz Docker image](https://github.com/vovamail/docker)!
 
 ## Thanks
 

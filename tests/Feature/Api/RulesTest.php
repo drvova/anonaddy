@@ -83,7 +83,7 @@ class RulesTest extends TestCase
                     'type' => 'alias',
                     'match' => 'is exactly',
                     'values' => [
-                        'ebay@johndoe.anonaddy.com',
+                        'ebay@johndoe.vovamail.xyz',
                     ],
                 ],
             ],
@@ -235,7 +235,7 @@ class RulesTest extends TestCase
                     'type' => 'alias',
                     'match' => 'is exactly',
                     'values' => [
-                        'ebay@johndoe.anonaddy.com',
+                        'ebay@johndoe.vovamail.xyz',
                     ],
                 ],
             ],
@@ -255,14 +255,14 @@ class RulesTest extends TestCase
 
         $alias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $parser = $this->getParser(base_path('tests/emails/email.eml'));
 
-        $sender = 'will@anonaddy.com';
+        $sender = 'will@vovamail.xyz';
 
         $size = 1500;
 
@@ -311,7 +311,7 @@ class RulesTest extends TestCase
                     'type' => 'alias',
                     'match' => 'is exactly',
                     'values' => [
-                        'ebay@johndoe.anonaddy.com',
+                        'ebay@johndoe.vovamail.xyz',
                     ],
                 ],
             ],
@@ -329,14 +329,14 @@ class RulesTest extends TestCase
 
         $alias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $parser = $this->getParser(base_path('tests/emails/email.eml'));
 
-        $sender = 'will@anonaddy.com';
+        $sender = 'will@vovamail.xyz';
 
         $size = 1500;
 
@@ -370,7 +370,7 @@ class RulesTest extends TestCase
                     'type' => 'alias',
                     'match' => 'is not',
                     'values' => [
-                        'woot@johndoe.anonaddy.com',
+                        'woot@johndoe.vovamail.xyz',
                     ],
                 ],
             ],
@@ -401,14 +401,14 @@ class RulesTest extends TestCase
                     'type' => 'sender',
                     'match' => 'ends with',
                     'values' => [
-                        'anonaddy.com',
+                        'vovamail.xyz',
                     ],
                 ],
                 [
                     'type' => 'alias',
                     'match' => 'is',
                     'values' => [
-                        'ebay@johndoe.anonaddy.com',
+                        'ebay@johndoe.vovamail.xyz',
                     ],
                 ],
             ],
@@ -426,14 +426,14 @@ class RulesTest extends TestCase
 
         $alias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $parser = $this->getParser(base_path('tests/emails/email.eml'));
 
-        $sender = 'will@anonaddy.com';
+        $sender = 'will@vovamail.xyz';
 
         $size = 1000;
 

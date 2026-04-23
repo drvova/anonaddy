@@ -54,7 +54,7 @@ class AliasDeactivatedByUnsubscribeNotification extends Notification implements 
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'ADUN:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'ADUN:vovamail');
             });
     }
 

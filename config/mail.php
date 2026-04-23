@@ -34,6 +34,19 @@ return [
     */
 
     'mailers' => [
+        'cloudflare' => [
+            'transport' => 'cloudflare',
+            'api_token' => env('CLOUDFLARE_EMAIL_API_TOKEN'),
+            'account_id' => env('CLOUDFLARE_EMAIL_ACCOUNT_ID'),
+            'zone_id' => env('CLOUDFLARE_EMAIL_ZONE_ID'),
+            'base_url' => env('CLOUDFLARE_EMAIL_BASE_URL', 'https://api.cloudflare.com/client/v4'),
+            'graphql_url' => env('CLOUDFLARE_EMAIL_GRAPHQL_URL', 'https://api.cloudflare.com/client/v4/graphql'),
+            'timeout' => env('CLOUDFLARE_EMAIL_TIMEOUT', 30),
+            'sync_window_minutes' => env('CLOUDFLARE_EMAIL_SYNC_WINDOW_MINUTES', 15),
+            'sync_limit' => env('CLOUDFLARE_EMAIL_SYNC_LIMIT', 500),
+            'webhook_secret' => env('CLOUDFLARE_EMAIL_WEBHOOK_SECRET'),
+        ],
+
         'smtp' => [
             'transport' => 'smtp',
             'host' => env('MAIL_HOST', 'smtp.mailgun.org'),

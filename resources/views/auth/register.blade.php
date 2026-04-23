@@ -1,115 +1,85 @@
 @extends('layouts.auth')
 
+@section('title', 'Create account')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form class="" method="POST" action="{{ route('register') }}">
-                    @csrf
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
+            </div>
 
-                    <div class="px-6 py-8 md:p-10">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Create your account</h1>
+                        <p class="auth-subtitle">Set up your username, point aliases at your real inbox, and start separating every service from your personal address.</p>
+                    </div>
 
-                        <h1 class="text-center font-bold text-3xl">
-                            Self-Hosted Instance Registration
-                        </h1>
+                    <form method="POST" action="{{ route('register') }}">
+                        @csrf
 
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
-
-                        <div class="mt-8 flex flex-wrap mb-6">
-                            <label for="username" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('Username') }}
-                            </label>
-
-                            <div class="table w-full">
-                                <input id="username" type="text" class="table-cell relative appearance-none bg-grey-100 rounded-l w-full p-3 text-grey-700 focus:ring{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required autofocus>
-                                <div class="py-3 px-2 table-cell align-middle bg-grey-200 rounded-r text-grey-600">
-                                    .{{ config('anonaddy.domain') }}
-                                </div>
+                        <div class="auth-input-group">
+                            <label for="username" class="auth-label">Username</label>
+                            <div class="flex overflow-hidden rounded-lg border border-grey-700 bg-grey-900{{ $errors->has('username') ? ' border-red-500' : '' }}">
+                                <input id="username" type="text" class="min-w-0 flex-1 border-0 bg-transparent px-3 py-3 text-white outline-none placeholder:text-grey-500 focus:ring-0" name="username" value="{{ old('username') }}" placeholder="johndoe" required autofocus>
+                                <span class="inline-flex items-center border-l border-grey-700 px-3 text-sm text-grey-500 whitespace-nowrap">.{{ config('vovamail.domain') }}</span>
                             </div>
-
-                            <p class="text-xs mt-1 text-grey-600">This will be your unique subdomain for your aliases<br> e.g. alias@<b>johndoe</b>.{{ config('anonaddy.domain') }}</p>
-
+                            <p class="auth-help">Your aliases can use this namespace, like alias@<b>johndoe</b>.{{ config('vovamail.domain') }}.</p>
 
                             @if ($errors->has('username'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('username') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('username') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-6">
-                            <label for="email" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                Your Real Email Address
-                            </label>
-
-                            <input id="email" type="email" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('email') ? ' border-red-500' : '' }}" name="email" value="{{ old('email') }}" placeholder="johndoe@example.com" required>
-
-                            <p class="text-xs mt-1 text-grey-600">This is your recipient where emails will be forwarded</p>
+                        <div class="auth-input-group">
+                            <label for="email" class="auth-label">Your real email address</label>
+                            <input id="email" type="email" class="auth-input{{ $errors->has('email') ? ' border-red-500' : '' }}" name="email" value="{{ old('email') }}" placeholder="johndoe@example.com" required>
+                            <p class="auth-help">Forwarded mail lands here. This inbox stays private from the services you sign up for.</p>
 
                             @if ($errors->has('email'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('email') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('email') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-6">
-                            <label for="email-confirm" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                Confirm Email Address
-                            </label>
-
-                            <input id="email-confirm" type="email" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring" name="email_confirmation" value="{{ old('email_confirmation') }}" placeholder="johndoe@example.com" required>
+                        <div class="auth-input-group">
+                            <label for="email-confirm" class="auth-label">Confirm email address</label>
+                            <input id="email-confirm" type="email" class="auth-input" name="email_confirmation" value="{{ old('email_confirmation') }}" placeholder="johndoe@example.com" required>
                         </div>
 
-                        <div class="flex flex-wrap mb-6">
-                            <label for="password" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('Password') }}
-                            </label>
-
-                            <input id="password" type="password" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('password') ? ' border-red-500' : '' }}" name="password" placeholder="********" required>
+                        <div class="auth-input-group">
+                            <label for="password" class="auth-label">Password</label>
+                            <input id="password" type="password" class="auth-input{{ $errors->has('password') ? ' border-red-500' : '' }}" name="password" placeholder="********" required>
 
                             @if ($errors->has('password'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('password') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('password') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-4 items-center">
-                            <label for="captcha" class="block w-full text-grey-700 text-sm font-medium leading-6">
-                                Human Verification (click image to refresh)
-                            </label>
-
-                            <div class="flex grow flex-wrap">
-                            <img src="{{captcha_src('mini')}}" onclick="this.src='/captcha/mini?'+Math.random()" class="cursor-pointer shrink-0 h-12 w-16 mr-2 mt-2" title="Click to refresh image" alt="captcha">
-
-                                <input id="captcha" type="text" class="grow mt-2 appearance-none bg-grey-100 rounded p-3 text-grey-700 focus:ring{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
+                        <div class="mb-6">
+                            <label for="captcha" class="auth-label">Human verification</label>
+                            <div class="flex gap-2">
+                                <img src="{{ captcha_src('mini') }}" onclick="this.src='/captcha/mini?'+Math.random()" class="h-12 w-16 shrink-0 cursor-pointer rounded border border-grey-700" title="Click to refresh image" alt="captcha">
+                                <input id="captcha" type="text" class="auth-input flex-1{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
                             </div>
+                            <p class="auth-help">Click the image if you need a fresh challenge.</p>
 
                             @if ($errors->has('captcha'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('captcha') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('captcha') }}</p>
                             @endif
                         </div>
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center">
-                        <button type="submit" class="bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {{ __('Register') }}
+                        <button type="submit" class="auth-button">
+                            Create account
                         </button>
-                    </div>
-                </form>
-            </div>
-            @if (Route::has('register'))
-                <p class="w-full text-xs text-center text-indigo-100 mt-6">
-                    Already have an account?
-                    <a class="text-white hover:text-indigo-50 no-underline" href="{{ route('login') }}">
-                        Login
-                    </a>
+                    </form>
+                </div>
+
+                <p class="auth-footer text-center lg:text-left">
+                    Already have an account? <a class="auth-link" href="{{ route('login') }}">Sign in</a>
                 </p>
-            @endif
+            </div>
         </div>
     </div>
 @endsection

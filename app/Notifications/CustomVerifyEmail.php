@@ -33,7 +33,7 @@ class CustomVerifyEmail extends VerifyEmail implements ShouldBeEncrypted, Should
             return call_user_func(static::$toMailCallback, $notifiable, $verificationUrl);
         }
 
-        $feedbackId = $notifiable instanceof User ? 'VU:anonaddy' : 'VR:anonaddy';
+        $feedbackId = $notifiable instanceof User ? 'VU:vovamail' : 'VR:vovamail';
         $recipientId = $notifiable instanceof User ? $notifiable->default_recipient_id : $notifiable->id;
         $userId = $notifiable instanceof User ? $notifiable->id : $notifiable->user_id;
 

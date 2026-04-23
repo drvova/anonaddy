@@ -21,7 +21,7 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:create-user {username} {email}';
+    protected $signature = 'vovamail:create-user {username} {email}';
 
     /**
      * The console command description.

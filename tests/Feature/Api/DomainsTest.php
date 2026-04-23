@@ -107,7 +107,7 @@ class DomainsTest extends TestCase
     public function new_domain_must_not_be_local()
     {
         $response = $this->json('POST', '/api/v1/domains', [
-            'domain' => config('anonaddy.domain'),
+            'domain' => config('vovamail.domain'),
         ]);
 
         $response
@@ -119,7 +119,7 @@ class DomainsTest extends TestCase
     public function new_domain_must_not_be_local_subdomain()
     {
         $response = $this->json('POST', '/api/v1/domains', [
-            'domain' => 'subdomain.'.config('anonaddy.domain'),
+            'domain' => 'subdomain.'.config('vovamail.domain'),
         ]);
 
         $response

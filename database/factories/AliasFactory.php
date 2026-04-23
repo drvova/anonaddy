@@ -25,9 +25,9 @@ class AliasFactory extends Factory
 
         return [
             'user_id' => $this->faker->uuid,
-            'email' => $localPart.'@'.$this->faker->word.'.'.config('anonaddy.domain'),
+            'email' => $localPart.'@'.$this->faker->word.'.'.config('vovamail.domain'),
             'local_part' => $localPart,
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
             'active' => true,
             'description' => $this->faker->sentence,
         ];

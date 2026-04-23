@@ -55,7 +55,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Auth::routes(['verify' => true, 'register' => config('anonaddy.enable_registration')]);
+Auth::routes(['verify' => true, 'register' => config('vovamail.enable_registration')]);
 
 // API login route needs CSRF middleware so that it can pass it to api/auth/mfa
 Route::controller(ApiAuthenticationController::class)->prefix('api/auth')->group(function () {
@@ -112,8 +112,16 @@ Route::group([
     });
 });
 
+Route::get('/', function () {
+    if (auth()->check()) {
+        return redirect()->route('dashboard.index');
+    }
+
+    return view('landing');
+})->name('landing');
+
 Route::middleware(['auth', 'verified', '2fa'])->group(function () {
-    Route::get('/', [ShowDashboardController::class, 'index'])->name('dashboard.index');
+    Route::get('/dashboard', [ShowDashboardController::class, 'index'])->name('dashboard.index');
 
     Route::controller(ShowAliasController::class)->group(function () {
         Route::get('/aliases', 'index')->name('aliases.index');

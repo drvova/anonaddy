@@ -15,7 +15,7 @@ class EmailUsersWithTokenExpiringSoon extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:email-users-with-token-expiring-soon';
+    protected $signature = 'vovamail:email-users-with-token-expiring-soon';
 
     /**
      * The console command description.

@@ -19,7 +19,7 @@ class NotBlacklisted implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        if (in_array(strtolower($value), config('anonaddy.blacklist'))) {
+        if (in_array(strtolower($value), config('vovamail.blacklist'))) {
             $fail('The :attribute has already been taken.');
         }
     }

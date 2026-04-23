@@ -2,7 +2,7 @@
 
 # New Recipient Verified
 
-A new recipient with the email **{{ $newRecipient }}** has just been added and verified on your addy.io account.
+A new recipient with the email **{{ $newRecipient }}** has just been added and verified on your vovamail.xyz account.
 
 If this recipient was **not added by you**, please visit the settings page, click the button to log out of all other browser sessions and then update your account's password.
 

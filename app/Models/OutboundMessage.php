@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -19,6 +20,12 @@ class OutboundMessage extends Model
         'alias_id',
         'recipient_id',
         'email_type',
+        'provider',
+        'provider_email_id',
+        'provider_message_id',
+        'provider_status',
+        'provider_last_event',
+        'provider_payload',
         'encrypted',
         'bounced',
     ];
@@ -28,6 +35,7 @@ class OutboundMessage extends Model
         'user_id' => 'string',
         'alias_id' => 'string',
         'recipient_id' => 'string',
+        'provider_payload' => 'array',
         'encrypted' => 'boolean',
         'bounced' => 'boolean',
         'created_at' => 'datetime',
@@ -61,5 +69,18 @@ class OutboundMessage extends Model
     public function markAsBounced()
     {
         $this->update(['bounced' => true]);
+    }
+
+    public function scopeForProviderIdentifiers(Builder $query, ?string $providerEmailId, ?string $providerMessageId): Builder
+    {
+        return $query->where(function (Builder $providerQuery) use ($providerEmailId, $providerMessageId) {
+            if (filled($providerEmailId)) {
+                $providerQuery->orWhere('provider_email_id', $providerEmailId);
+            }
+
+            if (filled($providerMessageId)) {
+                $providerQuery->orWhere('provider_message_id', $providerMessageId);
+            }
+        });
     }
 }

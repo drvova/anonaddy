@@ -1,81 +1,67 @@
 @extends('layouts.auth')
 
+@section('title', 'Recover your username')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex justify-center text-white mb-6 text-5xl font-bold">
-                <img class="w-48" alt="addy.io Logo" src="/svg/logo.svg">
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
             </div>
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form method="POST" action="{{ route('username.email') }}">
-                    @csrf
 
-                    <div class="px-6 py-8 md:p-10">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Recover your username</h1>
+                        <p class="auth-subtitle">We&apos;ll send your sign-in username to the inbox already attached to your VovaMail account.</p>
+                    </div>
 
-                        <h1 class="text-center font-bold text-3xl">
-                            {{ __('Username Reminder') }}
-                        </h1>
-
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
+                    <form method="POST" action="{{ route('username.email') }}">
+                        @csrf
 
                         @if (session('status'))
-                            <div class="text-sm border-t-8 rounded text-green-700 border-green-600 bg-green-100 px-3 py-4 mt-4" role="alert">
+                            <div class="auth-alert auth-alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
                         @endif
 
-                        <div class="mt-8 flex flex-wrap mb-6">
-                            <label for="email" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('Email') }}
-                            </label>
-
-                            <input id="email" type="text" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('email') ? ' border-red-500' : '' }}" name="email" value="{{ old('email') }}" placeholder="johndoe@example.com" required>
+                        <div class="auth-input-group">
+                            <label for="email" class="auth-label">Email address</label>
+                            <input id="email" type="text" class="auth-input{{ $errors->has('email') ? ' border-red-500' : '' }}" name="email" value="{{ old('email') }}" placeholder="johndoe@example.com" required>
 
                             @if ($errors->has('email'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('email') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('email') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-4 items-center">
-                            <label for="captcha" class="block w-full text-grey-700 text-sm">
-                                Human Verification (click image to refresh)
-                            </label>
-
-                            <div class="flex grow flex-wrap">
-                                <img src="{{captcha_src('mini')}}" onclick="this.src='/captcha/mini?'+Math.random()" class="cursor-pointer shrink-0 h-12 w-16 mr-2 mt-2" title="Click to refresh image" alt="captcha">
-
-                                <input id="captcha" type="text" class="grow mt-2 appearance-none bg-grey-100 rounded p-3 text-grey-700 focus:ring{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
+                        <div class="mb-6">
+                            <label for="captcha" class="auth-label">Human verification</label>
+                            <div class="flex gap-2">
+                                <img src="{{ captcha_src('mini') }}" onclick="this.src='/captcha/mini?'+Math.random()" class="h-12 w-16 shrink-0 cursor-pointer rounded border border-grey-700" title="Click to refresh image" alt="captcha">
+                                <input id="captcha" type="text" class="auth-input flex-1{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
                             </div>
+                            <p class="auth-help">Click the image if you need a fresh challenge.</p>
 
                             @if ($errors->has('captcha'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('captcha') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('captcha') }}</p>
                             @endif
                         </div>
 
                         @if (Route::has('password.request'))
-                            <a class="whitespace-nowrap no-underline text-sm font-medium text-indigo-600 hover:text-indigo-500" tabindex="-1" href="{{ route('password.request') }}">
-                                {{ __('Forgot Password?') }}
-                            </a>
+                            <a class="auth-link" href="{{ route('password.request') }}">Forgot password?</a>
                         @endif
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center justify-center">
-                        <button type="submit" class="bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {{ __('Send Username Reminder') }}
+                        <button type="submit" class="auth-button mt-4">
+                            Send reminder
                         </button>
-                    </div>
-                </form>
-            </div>
-                <p class="w-full text-xs text-center mt-6">
-                    <a class="text-white hover:text-indigo-50 no-underline" href="{{ route('login') }}">
-                        Back to login
-                    </a>
+                    </form>
+                </div>
+
+                <p class="auth-footer text-center lg:text-left">
+                    <a class="auth-link" href="{{ route('login') }}">Back to sign in</a>
                 </p>
+            </div>
         </div>
     </div>
 @endsection

@@ -1,57 +1,66 @@
 import { defineConfig, loadEnv } from 'vite'
 import laravel from 'laravel-vite-plugin'
-import vue from '@vitejs/plugin-vue'
+import solid from 'vite-plugin-solid'
 import fs from 'fs'
 import { resolve } from 'path'
 
-export default defineConfig(({ command, mode }) => {
-  const env = loadEnv(mode, process.cwd(), 'APP_URL')
-  const host = env.APP_URL.replace(/https?:\/\//, '')
+const resolveHost = appUrl => {
+  if (!appUrl) {
+    return '127.0.0.1'
+  }
+
+  try {
+    return new URL(appUrl).hostname
+  } catch {
+    return appUrl.replace(/https?:\/\//, '').replace(/\/.*$/, '').split(':')[0]
+  }
+}
+
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '')
+  const host = resolveHost(env.APP_URL ?? process.env.APP_URL)
+  const homesteadKeyPath = `/home/vagrant/${host}.key`
+  const homesteadCertPath = `/home/vagrant/${host}.crt`
+  const useHomesteadHttps =
+    process.env.NODE_ENV !== 'production' &&
+    fs.existsSync(homesteadKeyPath) &&
+    fs.existsSync(homesteadCertPath)
+
   return {
     server: {
       host: host,
       hmr: {
         host: host,
       },
-      https: {
-        key:
-          process.env.NODE_ENV === 'production'
-            ? null
-            : fs.readFileSync(`/home/vagrant/${host}.key`), // copy from /etc/ssl/certs in homestead so vagrant user has permissions
-        cert:
-          process.env.NODE_ENV === 'production'
-            ? null
-            : fs.readFileSync(`/home/vagrant/${host}.crt`),
-      },
+      ...(useHomesteadHttps
+        ? {
+            https: {
+              key: fs.readFileSync(homesteadKeyPath),
+              cert: fs.readFileSync(homesteadCertPath),
+            },
+          }
+        : {}),
       watch: {
         usePolling: true,
         ignored: ['**/vendor/**', '**/postfix/**', '**/storage/**'],
       },
     },
     plugins: [
+      solid(),
       laravel({
         input: [
           'resources/css/app.css',
-          'resources/js/app.js',
+          'resources/js/app.tsx',
           'resources/js/webauthn/authenticate.js',
           'resources/js/webauthn/register.js',
         ],
-      }),
-      vue({
-        template: {
-          transformAssetUrls: {
-            base: null,
-            includeAbsolute: false,
-          },
-        },
       }),
     ],
     base: '',
     resolve: {
       alias: {
-          'ziggy-js': resolve('vendor/tightenco/ziggy'),
+        'ziggy-js': resolve('vendor/tightenco/ziggy'),
       },
     },
   }
 })
-

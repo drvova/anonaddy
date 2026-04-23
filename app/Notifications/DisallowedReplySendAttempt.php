@@ -70,7 +70,7 @@ class DisallowedReplySendAttempt extends Notification implements ShouldBeEncrypt
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'DRSA:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'DRSA:vovamail');
             });
     }
 

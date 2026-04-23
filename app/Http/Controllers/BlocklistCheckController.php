@@ -86,7 +86,7 @@ class BlocklistCheckController extends Controller
 
         [, $domain] = $parts;
 
-        $allDomains = config('anonaddy.all_domains', []);
+        $allDomains = config('vovamail.all_domains', []);
 
         foreach ($allDomains as $parentDomain) {
             if (str_ends_with($domain, '.'.$parentDomain)) {

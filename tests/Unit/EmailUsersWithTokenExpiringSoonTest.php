@@ -28,15 +28,15 @@ class EmailUsersWithTokenExpiringSoonTest extends TestCase
     public function it_can_send_a_mail_concerning_a_token_expiring_soon()
     {
         $this->setNow(2019, 1, 28);
-        $this->artisan('anonaddy:email-users-with-token-expiring-soon');
+        $this->artisan('vovamail:email-users-with-token-expiring-soon');
         Mail::assertNotQueued(TokenExpiringSoon::class);
 
         $this->setNow(2019, 1, 29);
-        $this->artisan('anonaddy:email-users-with-token-expiring-soon');
+        $this->artisan('vovamail:email-users-with-token-expiring-soon');
         Mail::assertNotQueued(TokenExpiringSoon::class);
 
         $this->setNow(2019, 1, 24);
-        $this->artisan('anonaddy:email-users-with-token-expiring-soon');
+        $this->artisan('vovamail:email-users-with-token-expiring-soon');
         Mail::assertQueued(TokenExpiringSoon::class, 1);
         Mail::assertQueued(TokenExpiringSoon::class, function (TokenExpiringSoon $mail) {
             return $mail->hasTo($this->user->email);

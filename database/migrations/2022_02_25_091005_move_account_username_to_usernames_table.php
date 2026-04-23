@@ -39,7 +39,7 @@ class MoveAccountUsernameToUsernamesTable extends Migration
                 $user->update(['default_username_id' => $username->id]);
 
                 // Update all aliases using that username
-                $allDomains = config('anonaddy.all_domains')[0] ? config('anonaddy.all_domains') : [config('anonaddy.domain')];
+                $allDomains = config('vovamail.all_domains')[0] ? config('vovamail.all_domains') : [config('vovamail.domain')];
 
                 $usernameSubdomains = collect($allDomains)->map(function ($domain) use ($user) {
                     return $user->getAttributes()['username'].'.'.$domain;

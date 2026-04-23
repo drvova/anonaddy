@@ -29,7 +29,7 @@ class RuleFactory extends Factory
                     'type' => 'sender',
                     'match' => 'is exactly',
                     'values' => [
-                        'will@anonaddy.com',
+                        'will@vovamail.xyz',
                     ],
                 ],
             ],

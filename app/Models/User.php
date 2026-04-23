@@ -184,7 +184,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     protected function defaultAliasDomain(): Attribute
     {
-        $defaultDomain = $this->canCreateSharedDomainAliases() ? config('anonaddy.domain') : $this->username.'.'.config('anonaddy.domain');
+        $defaultDomain = $this->canCreateSharedDomainAliases() ? config('vovamail.domain') : $this->username.'.'.config('vovamail.domain');
 
         return Attribute::make(
             get: fn (?string $value) => $value ?? $defaultDomain,
@@ -374,7 +374,7 @@ class User extends Authenticatable implements MustVerifyEmail
      */
     public function sharedDomainAliases()
     {
-        return $this->aliases()->whereIn('domain', config('anonaddy.all_domains'));
+        return $this->aliases()->whereIn('domain', config('vovamail.all_domains'));
     }
 
     /**
@@ -477,7 +477,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function getBandwidthLimit()
     {
-        return config('anonaddy.bandwidth_limit');
+        return config('vovamail.bandwidth_limit');
     }
 
     public function getBandwidthLimitMb()
@@ -502,7 +502,7 @@ class User extends Authenticatable implements MustVerifyEmail
         }
 
         return Redis::throttle("user:{$this->id}:limit:new-alias")
-            ->allow(config('anonaddy.new_alias_hourly_limit'))
+            ->allow(config('vovamail.new_alias_hourly_limit'))
             ->every(3600)
             ->then(
                 function () {
@@ -521,7 +521,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasReachedUsernameLimit()
     {
-        return $this->usernames()->count() >= config('anonaddy.additional_username_limit');
+        return $this->usernames()->count() >= config('vovamail.additional_username_limit');
     }
 
     public function isVerifiedRecipient($email)
@@ -615,7 +615,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function generateRandomWordLocalPart()
     {
         $sep = $this->aliasSeparatorForGeneration();
-        $words = collect(config('anonaddy.wordlist'))->random(2)->map(fn ($w) => strtolower($w));
+        $words = collect(config('vovamail.wordlist'))->random(2)->map(fn ($w) => strtolower($w));
 
         return $words->implode($sep).mt_rand(0, 999);
     }
@@ -623,10 +623,10 @@ class User extends Authenticatable implements MustVerifyEmail
     public function generateRandomNameLocalPart(string $gender): string
     {
         $firstNames = $gender === 'male'
-            ? config('anonaddy.male_first_names')
-            : config('anonaddy.female_first_names');
+            ? config('vovamail.male_first_names')
+            : config('vovamail.female_first_names');
         $first = collect($firstNames)->random();
-        $surname = collect(config('anonaddy.surnames'))->random();
+        $surname = collect(config('vovamail.surnames'))->random();
         $digits = str_pad((string) mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
         $sep = $this->aliasSeparatorForGeneration();
 
@@ -635,8 +635,8 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function generateRandomNounLocalPart(): string
     {
-        $adjective = collect(config('anonaddy.adjectives'))->random();
-        $noun = collect(config('anonaddy.nouns'))->random();
+        $adjective = collect(config('vovamail.adjectives'))->random();
+        $noun = collect(config('vovamail.nouns'))->random();
         $digits = str_pad((string) mt_rand(0, 999), 3, '0', STR_PAD_LEFT);
         $sep = $this->aliasSeparatorForGeneration();
 
@@ -661,7 +661,7 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         $customDomains = $this->verifiedDomains()->pluck('domain')->toArray();
 
-        $allDomains = config('anonaddy.all_domains')[0] ? config('anonaddy.all_domains') : [config('anonaddy.domain')];
+        $allDomains = config('vovamail.all_domains')[0] ? config('vovamail.all_domains') : [config('vovamail.domain')];
 
         return collect()
             ->when($this->canCreateUsernameSubdomainAliases(), function (Collection $collection) use ($allDomains) {
@@ -686,7 +686,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sharedDomainOptions()
     {
         if ($this->canCreateSharedDomainAliases()) {
-            return config('anonaddy.all_domains');
+            return config('vovamail.all_domains');
         }
 
         return [];
@@ -694,17 +694,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isAdminUser()
     {
-        return $this->username === config('anonaddy.admin_username');
+        return $this->username === config('vovamail.admin_username');
     }
 
     public function canCreateSharedDomainAliases()
     {
-        return config('anonaddy.non_admin_shared_domains') || $this->isAdminUser();
+        return config('vovamail.non_admin_shared_domains') || $this->isAdminUser();
     }
 
     public function canCreateUsernameSubdomainAliases()
     {
-        return config('anonaddy.non_admin_username_subdomains') || $this->isAdminUser();
+        return config('vovamail.non_admin_username_subdomains') || $this->isAdminUser();
     }
 
     /**

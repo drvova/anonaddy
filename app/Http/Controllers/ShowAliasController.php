@@ -184,10 +184,10 @@ class ShowAliasController extends Controller
             })
             ->when($request->input('shared_domain'), function ($query, $value) {
                 if ($value === 'true') {
-                    return $query->whereIn('domain', config('anonaddy.all_domains'));
+                    return $query->whereIn('domain', config('vovamail.all_domains'));
                 }
 
-                return $query->whereNotIn('domain', config('anonaddy.all_domains'));
+                return $query->whereNotIn('domain', config('vovamail.all_domains'));
             })
             ->when($pinnedFilter, function ($query, $value) {
                 return $query->where('pinned', $value === 'true');
@@ -225,8 +225,8 @@ class ShowAliasController extends Controller
         return Inertia::render('Aliases/Index', [
             'initialRows' => fn () => $aliases,
             'recipientOptions' => fn () => user()->verifiedRecipients()->select(['id', 'email'])->get(),
-            'domain' => fn () => user()->canCreateSharedDomainAliases() ? config('anonaddy.domain') : null,
-            'subdomain' => fn () => user()->canCreateUsernameSubdomainAliases() ? user()->username.'.'.config('anonaddy.domain') : null,
+            'domain' => fn () => user()->canCreateSharedDomainAliases() ? config('vovamail.domain') : null,
+            'subdomain' => fn () => user()->canCreateUsernameSubdomainAliases() ? user()->username.'.'.config('vovamail.domain') : null,
             'domainOptions' => fn () => user()->domainOptions(),
             'defaultAliasDomain' => fn () => user()->default_alias_domain,
             'defaultAliasFormat' => fn () => user()->default_alias_format,

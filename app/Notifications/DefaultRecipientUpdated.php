@@ -56,7 +56,7 @@ class DefaultRecipientUpdated extends Notification implements ShouldBeEncrypted,
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'DRU:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'DRU:vovamail');
             });
     }
 

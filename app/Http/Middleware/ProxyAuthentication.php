@@ -31,10 +31,10 @@ class ProxyAuthentication
      */
     public function __construct()
     {
-        $this->isProxyAuthenticationEnabled = config('anonaddy.use_proxy_authentication');
-        $this->externalUserIdHeaderName = config('anonaddy.proxy_authentication_external_user_id_header');
-        $this->usernameHeaderName = config('anonaddy.proxy_authentication_username_header');
-        $this->emailHeaderName = config('anonaddy.proxy_authentication_email_header');
+        $this->isProxyAuthenticationEnabled = config('vovamail.use_proxy_authentication');
+        $this->externalUserIdHeaderName = config('vovamail.proxy_authentication_external_user_id_header');
+        $this->usernameHeaderName = config('vovamail.proxy_authentication_username_header');
+        $this->emailHeaderName = config('vovamail.proxy_authentication_email_header');
     }
 
     /**

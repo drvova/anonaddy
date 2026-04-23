@@ -13,7 +13,7 @@ class CheckDomainsSendingVerification extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:check-domains-sending-verification';
+    protected $signature = 'vovamail:check-domains-sending-verification';
 
     /**
      * The console command description.

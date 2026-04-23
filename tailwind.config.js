@@ -1,14 +1,15 @@
 import defaultTheme from 'tailwindcss/defaultTheme'
 import forms from '@tailwindcss/forms'
-const svgToDataUri = require('mini-svg-data-uri')
+import kobalte from '@kobalte/tailwindcss'
 
 export default {
   content: [
     'app/**/*.php',
     'resources/**/*.html',
-    'resources/**/*.js',
+    'resources/**/*.ts',
+    'resources/**/*.tsx',
     'resources/**/*.php',
-    'resources/**/*.vue',
+    'node_modules/@kobalte/core/dist/**/*.{js,ts,jsx,tsx}',
   ],
   safelist: ['bg-green-400', 'bg-red-400', 'bg-grey-400'],
   theme: {
@@ -17,6 +18,48 @@ export default {
       white: '#FFF',
       black: '#000',
       transparent: 'transparent',
+      primary: {
+        50: '#edfcf1',
+        100: '#d3f8dc',
+        200: '#aaf0be',
+        300: '#8dffc9',
+        400: '#66ffb0',
+        500: '#66ffb0',
+        600: '#1fb44c',
+        700: '#15903e',
+        800: '#147236',
+        900: '#125d2f',
+        950: '#053518',
+        DEFAULT: '#66ffb0',
+      },
+      secondary: {
+        50: '#eff6ff',
+        100: '#dbeafe',
+        200: '#bfdbfe',
+        300: '#93c5fd',
+        400: '#60a5fa',
+        500: '#0d6efd',
+        600: '#0b5ed7',
+        700: '#094db3',
+        800: '#074191',
+        900: '#053672',
+        950: '#032249',
+        DEFAULT: '#0d6efd',
+      },
+      accent: {
+        50: '#f0f0fe',
+        100: '#e0e1fc',
+        200: '#c4c5fa',
+        300: '#9a9cf5',
+        400: '#7479ea',
+        500: '#5c5ee0',
+        600: '#4b3fc9',
+        700: '#3e34a5',
+        800: '#352d83',
+        900: '#2e296b',
+        950: '#1a1750',
+        DEFAULT: '#7479ea',
+      },
       indigo: {
         50: '#E0E8F9',
         100: '#BED0F7',
@@ -44,16 +87,16 @@ export default {
       },
       grey: {
         50: '#F5F7FA',
-        100: '#E4E7EB',
+        100: '#efefef',
         200: '#CBD2D9',
         300: '#9AA5B1',
         400: '#7B8794',
         500: '#616E7C',
         600: '#52606D',
-        700: '#3E4C59',
-        800: '#323F4B',
+        700: '#323F4B',
+        800: '#313338',
         900: '#1F2933',
-        950: '#111827',
+        950: '#191919',
       },
       pink: {
         50: '#FFE3EC',
@@ -121,21 +164,12 @@ export default {
       padding: '1.5rem',
     },
     extend: {
-      backgroundImage: theme => ({
-        'multiselect-caret': `url("${svgToDataUri(
-          `<svg viewBox="0 0 320 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M31.3 192h257.3c17.8 0 26.7 21.5 14.1 34.1L174.1 354.8c-7.8 7.8-20.5 7.8-28.3 0L17.2 226.1C4.6 213.5 13.5 192 31.3 192z"></path></svg>`
-        )}")`,
-        'multiselect-spinner': `url("${svgToDataUri(
-          `<svg viewBox="0 0 512 512" fill="${theme(
-            'colors.green.500'
-          )}" xmlns="http://www.w3.org/2000/svg"><path d="M456.433 371.72l-27.79-16.045c-7.192-4.152-10.052-13.136-6.487-20.636 25.82-54.328 23.566-118.602-6.768-171.03-30.265-52.529-84.802-86.621-144.76-91.424C262.35 71.922 256 64.953 256 56.649V24.56c0-9.31 7.916-16.609 17.204-15.96 81.795 5.717 156.412 51.902 197.611 123.408 41.301 71.385 43.99 159.096 8.042 232.792-4.082 8.369-14.361 11.575-22.424 6.92z"></path></svg>`
-        )}")`,
-        'multiselect-remove': `url("${svgToDataUri(
-          `<svg viewBox="0 0 320 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M207.6 256l107.72-107.72c6.23-6.23 6.23-16.34 0-22.58l-25.03-25.03c-6.23-6.23-16.34-6.23-22.58 0L160 208.4 52.28 100.68c-6.23-6.23-16.34-6.23-22.58 0L4.68 125.7c-6.23 6.23-6.23 16.34 0 22.58L112.4 256 4.68 363.72c-6.23 6.23-6.23 16.34 0 22.58l25.03 25.03c6.23 6.23 16.34 6.23 22.58 0L160 303.6l107.72 107.72c6.23 6.23 16.34 6.23 22.58 0l25.03-25.03c6.23-6.23 6.23-16.34 0-22.58L207.6 256z"></path></svg>`
-        )}")`,
-      }),
+      fontFamily: {
+        sans: ['Uncut Sans', 'Inter', ...defaultTheme.fontFamily.sans],
+        mono: ['DM Mono', ...defaultTheme.fontFamily.mono],
+      },
     },
   },
-  plugins: [forms],
+  plugins: [forms, kobalte],
   darkMode: 'selector',
 }

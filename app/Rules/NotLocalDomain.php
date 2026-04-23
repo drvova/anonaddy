@@ -20,7 +20,7 @@ class NotLocalDomain implements ValidationRule
      */
     public function validate(string $attribute, mixed $value, Closure $fail): void
     {
-        $count = collect(config('anonaddy.all_domains'))
+        $count = collect(config('vovamail.all_domains'))
             ->filter(function ($domain) use ($value) {
                 return Str::endsWith(strtolower($value), '.'.$domain) || strtolower($value) === $domain;
             })

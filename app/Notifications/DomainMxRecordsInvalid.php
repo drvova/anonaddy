@@ -48,7 +48,7 @@ class DomainMxRecordsInvalid extends Notification implements ShouldBeEncrypted, 
         $fingerprint = $recipient->should_encrypt ? $recipient->fingerprint : null;
 
         return (new MailMessage)
-            ->subject("Your domain's MX records no longer point to addy.io")
+            ->subject("Your domain's MX records no longer point to vovamail.xyz")
             ->markdown('mail.domain_mx_records_invalid', [
                 'domain' => $this->domain,
                 'userId' => $notifiable->id,
@@ -58,7 +58,7 @@ class DomainMxRecordsInvalid extends Notification implements ShouldBeEncrypted, 
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'DMI:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'DMI:vovamail');
             });
     }
 

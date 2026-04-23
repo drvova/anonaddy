@@ -13,7 +13,7 @@ class RemoveUsernameExternalId extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:remove-username-externalid {username}';
+    protected $signature = 'vovamail:remove-username-externalid {username}';
 
     /**
      * The console command description.

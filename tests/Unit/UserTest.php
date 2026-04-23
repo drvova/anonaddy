@@ -202,10 +202,10 @@ class UserTest extends TestCase
         $domainOptions = $this->user->domainOptions();
 
         $expected = collect([
-            'anonaddy.me',
-            'anonaddy.com',
-            $username.'.anonaddy.me',
-            $username.'.anonaddy.com',
+            'vovamail.xyz',
+            'vovamail.xyz',
+            $username.'.vovamail.xyz',
+            $username.'.vovamail.xyz',
         ]);
 
         $this->assertCount($expected->count(), $domainOptions);
@@ -218,16 +218,16 @@ class UserTest extends TestCase
     #[Test]
     public function user_can_match_verified_recipient_with_extension()
     {
-        $this->user->defaultRecipient->email = 'hello+anonaddy@example.com';
+        $this->user->defaultRecipient->email = 'hello+vovamail@example.com';
         $this->user->defaultRecipient->save();
         $this->assertTrue($this->user->isVerifiedRecipient('hello@example.com'));
 
-        $this->user->defaultRecipient->email = 'hello+anonaddy+another@example.net';
+        $this->user->defaultRecipient->email = 'hello+vovamail+another@example.net';
         $this->user->defaultRecipient->save();
         $this->assertTrue($this->user->isVerifiedRecipient('hello@example.net'));
 
-        $this->user->defaultRecipient->email = 'hello+anonaddy@example.net';
+        $this->user->defaultRecipient->email = 'hello+vovamail@example.net';
         $this->user->defaultRecipient->save();
-        $this->assertTrue($this->user->isVerifiedRecipient('hello+anonaddy@example.net'));
+        $this->assertTrue($this->user->isVerifiedRecipient('hello+vovamail@example.net'));
     }
 }

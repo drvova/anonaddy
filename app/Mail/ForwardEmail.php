@@ -265,7 +265,7 @@ class ForwardEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
                 }
 
                 $this->fromEmail = config('mail.from.address');
-                $this->verpDomain = config('anonaddy.domain');
+                $this->verpDomain = config('vovamail.domain');
             }
         }
 
@@ -286,7 +286,7 @@ class ForwardEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
             ->withSymfonyMessage(function (Email $message) {
 
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'F:'.$this->alias->id.':anonaddy');
+                    ->addTextHeader('Feedback-ID', 'F:'.$this->alias->id.':vovamail');
 
                 $message->getHeaders()->remove('Message-ID');
 
@@ -362,23 +362,23 @@ class ForwardEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
 
                 if ($this->authenticationResults) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Authentication-Results', $this->authenticationResults);
+                        ->addTextHeader('X-VovaMail-Authentication-Results', $this->authenticationResults);
                 }
 
                 $message->getHeaders()
-                    ->addTextHeader('X-AnonAddy-Original-Sender', $this->sender);
+                    ->addTextHeader('X-VovaMail-Original-Sender', $this->sender);
 
                 $message->getHeaders()
-                    ->addTextHeader('X-AnonAddy-Original-Envelope-From', $this->originalEnvelopeFrom);
+                    ->addTextHeader('X-VovaMail-Original-Envelope-From', $this->originalEnvelopeFrom);
 
                 if ($this->originalFromHeader) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Original-From-Header', base64_decode($this->originalFromHeader));
+                        ->addTextHeader('X-VovaMail-Original-From-Header', base64_decode($this->originalFromHeader));
                 }
 
                 if ($this->originalReplyToHeader) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Original-Reply-To-Header', base64_decode($this->originalReplyToHeader));
+                        ->addTextHeader('X-VovaMail-Original-Reply-To-Header', base64_decode($this->originalReplyToHeader));
                 }
 
                 if ($this->originalSenderHeader) {
@@ -415,22 +415,22 @@ class ForwardEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
 
                 if ($this->originalCc) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Original-Cc', $this->originalCc);
+                        ->addTextHeader('X-VovaMail-Original-Cc', $this->originalCc);
                 }
 
                 if ($this->originalTo) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Original-To', $this->originalTo);
+                        ->addTextHeader('X-VovaMail-Original-To', $this->originalTo);
                 }
 
                 if ($this->isSpam) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Spam', 'Yes');
+                        ->addTextHeader('X-VovaMail-Spam', 'Yes');
                 }
 
                 if ($this->resend) {
                     $message->getHeaders()
-                        ->addTextHeader('X-AnonAddy-Resend', 'Yes');
+                        ->addTextHeader('X-VovaMail-Resend', 'Yes');
                 }
             });
 

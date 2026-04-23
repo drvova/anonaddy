@@ -165,7 +165,7 @@ class AliasBulkController extends Controller
         // Shared Domain aliases, remove all data and change user_id
         $forgottenSharedDomainCount = user()->aliases()->withTrashed()
             ->whereIn('id', $aliasIds)
-            ->whereIn('domain', config('anonaddy.all_domains'))
+            ->whereIn('domain', config('vovamail.all_domains'))
             ->update([
                 'user_id' => '00000000-0000-0000-0000-000000000000',
                 'extension' => null,
@@ -186,7 +186,7 @@ class AliasBulkController extends Controller
             // Standard aliases
             user()->aliases()->withTrashed()
                 ->whereIn('id', $aliasIds)
-                ->whereNotIn('domain', config('anonaddy.all_domains'))
+                ->whereNotIn('domain', config('vovamail.all_domains'))
                 ->forceDelete();
         }
 

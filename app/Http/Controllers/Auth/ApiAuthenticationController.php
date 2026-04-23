@@ -47,7 +47,7 @@ class ApiAuthenticationController extends Controller
         if ($user->two_factor_enabled) {
             return response()->json([
                 'message' => "OTP required, please make a request to /api/auth/mfa with the 'mfa_key', 'otp' and 'device_name' including a 'X-CSRF-TOKEN' header.",
-                'mfa_key' => Crypt::encryptString($user->id.'|'.config('anonaddy.secret').'|'.Carbon::now()->addMinutes(5)->getTimestamp()),
+                'mfa_key' => Crypt::encryptString($user->id.'|'.config('vovamail.secret').'|'.Carbon::now()->addMinutes(5)->getTimestamp()),
                 'csrf_token' => csrf_token(),
             ], 422);
         } elseif (Webauthn::enabled($user)) {
@@ -91,7 +91,7 @@ class ApiAuthenticationController extends Controller
 
         $user = User::find($parts[0]);
 
-        if (! $user || $parts[1] !== config('anonaddy.secret')) {
+        if (! $user || $parts[1] !== config('vovamail.secret')) {
 
             return response()->json([
                 'message' => 'Invalid mfa_key.',

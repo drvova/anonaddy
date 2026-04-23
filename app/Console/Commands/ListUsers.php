@@ -14,7 +14,7 @@ class ListUsers extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:list-users
+    protected $signature = 'vovamail:list-users
                             {--username= : The Username of the user}
                             {--json : Output as JSON}
                             {--sort= : The column to sort by}';

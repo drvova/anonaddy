@@ -19,7 +19,7 @@ class ParsePostfixMailLog extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:parse-postfix-mail-log';
+    protected $signature = 'vovamail:parse-postfix-mail-log';
 
     /**
      * The console command description.
@@ -35,7 +35,7 @@ class ParsePostfixMailLog extends Command
      */
     public function handle()
     {
-        $logPath = config('anonaddy.postfix_log_path', '/var/log/mail.log');
+        $logPath = config('vovamail.postfix_log_path', '/var/log/mail.log');
 
         if (! file_exists($logPath) || ! is_readable($logPath)) {
             $this->error("Cannot read log file: {$logPath}");
@@ -68,7 +68,7 @@ class ParsePostfixMailLog extends Command
 
         fseek($handle, $lastPosition);
 
-        $allDomains = config('anonaddy.all_domains', []);
+        $allDomains = config('vovamail.all_domains', []);
 
         $count = 0;
         $storeErrors = 0;

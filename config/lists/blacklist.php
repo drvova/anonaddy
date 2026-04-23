@@ -72,7 +72,7 @@ return [
     'alpha',
     'amp',
     'analytics',
-    'anonaddy',
+    'vovamail',
     'api',
     'app',
     'apps',

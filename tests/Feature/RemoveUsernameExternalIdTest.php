@@ -32,7 +32,7 @@ class RemoveUsernameExternalIdTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this
-            ->artisan('anonaddy:remove-username-externalid')
+            ->artisan('vovamail:remove-username-externalid')
             ->assertExitCode(1);
     }
 
@@ -40,7 +40,7 @@ class RemoveUsernameExternalIdTest extends TestCase
     public function handle_validation_should_fail_when_provided_username_not_exists()
     {
         $this
-            ->artisan('anonaddy:remove-username-externalid test_username')
+            ->artisan('vovamail:remove-username-externalid test_username')
             ->assertExitCode(1);
     }
 
@@ -48,7 +48,7 @@ class RemoveUsernameExternalIdTest extends TestCase
     public function handle_should_remove_external_id_of_provided_username_when_invoked()
     {
         $this
-            ->artisan('anonaddy:remove-username-externalid janedoe')
+            ->artisan('vovamail:remove-username-externalid janedoe')
             ->assertExitCode(0);
 
         $username = Username::where('username', 'janedoe')->first();

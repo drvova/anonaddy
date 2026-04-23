@@ -19,7 +19,7 @@ class SendFromEmailTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = $this->createUser('johndoe', 'will@anonaddy.com');
+        $this->user = $this->createUser('johndoe', 'will@vovamail.xyz');
     }
 
     #[Test]
@@ -31,22 +31,22 @@ class SendFromEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $extension = 'contact=ebay.com';
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_send_from_alias.eml'),
                 '--sender' => $this->user->email,
-                '--recipient' => ['ebay+'.$extension.'@johndoe.anonaddy.com'],
+                '--recipient' => ['ebay+'.$extension.'@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [$extension],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -67,26 +67,26 @@ class SendFromEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $extension1 = 'contact=ebay.com';
         $extension2 = 'support=ebay.com';
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_multiple_send_from.eml'),
                 '--sender' => $this->user->email,
                 '--recipient' => [
-                    'ebay+'.$extension1.'@johndoe.anonaddy.com',
-                    'ebay+'.$extension2.'@johndoe.anonaddy.com',
+                    'ebay+'.$extension1.'@johndoe.vovamail.xyz',
+                    'ebay+'.$extension2.'@johndoe.vovamail.xyz',
                 ],
                 '--local_part' => ['ebay', 'ebay'],
                 '--extension' => [$extension1, $extension2],
-                '--domain' => ['johndoe.anonaddy.com', 'johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz', 'johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -112,26 +112,26 @@ class SendFromEmailTest extends TestCase
         $extension = 'contact=ebay.com';
 
         $this->assertDatabaseMissing('aliases', [
-            'email' => 'ebay@johndoe.anonaddy.com',
+            'email' => 'ebay@johndoe.vovamail.xyz',
         ]);
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_send_from_alias.eml'),
                 '--sender' => $this->user->email,
-                '--recipient' => ['ebay+'.$extension.'@johndoe.anonaddy.com'],
+                '--recipient' => ['ebay+'.$extension.'@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [$extension],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
 
         $this->assertDatabaseHas('aliases', [
-            'email' => 'ebay@johndoe.anonaddy.com',
+            'email' => 'ebay@johndoe.vovamail.xyz',
             'local_part' => 'ebay',
-            'domain' => 'johndoe.anonaddy.com',
+            'domain' => 'johndoe.vovamail.xyz',
             'emails_forwarded' => 0,
             'emails_blocked' => 0,
             'emails_replied' => 0,

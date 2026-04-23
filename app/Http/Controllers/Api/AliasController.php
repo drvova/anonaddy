@@ -155,7 +155,7 @@ class AliasController extends Controller
         }
 
         // Check if domain is for username or custom domain
-        $parentDomain = collect(config('anonaddy.all_domains'))
+        $parentDomain = collect(config('vovamail.all_domains'))
             ->filter(function ($name) use ($request) {
                 return Str::endsWith($request->domain, $name);
             })
@@ -163,7 +163,7 @@ class AliasController extends Controller
 
         $aliasable = null;
 
-        // This is an addy.io domain.
+        // This is an vovamail.xyz domain.
         if ($parentDomain) {
             $subdomain = substr($request->domain, 0, strrpos($request->domain, '.'.$parentDomain));
 

@@ -246,7 +246,7 @@ class Alias extends Model
 
     public function hasSharedDomain()
     {
-        return in_array($this->domain, config('anonaddy.all_domains'));
+        return in_array($this->domain, config('vovamail.all_domains'));
     }
 
     public function getFromName()
@@ -272,7 +272,7 @@ class Alias extends Model
 
     public function parentDomain()
     {
-        return collect(config('anonaddy.all_domains'))
+        return collect(config('vovamail.all_domains'))
             ->filter(function ($name) {
                 return Str::endsWith($this->domain, $name);
             })

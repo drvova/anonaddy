@@ -1,66 +1,58 @@
 @extends('layouts.auth')
 
+@section('title', 'Choose a new password')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form class="" method="POST" action="{{ route('password.update') }}">
-                    @csrf
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
+            </div>
 
-                    <input type="hidden" name="token" value="{{ $token }}">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Choose a new password</h1>
+                        <p class="auth-subtitle">Set a new password for your account and get back to managing aliases without exposing your real inbox.</p>
+                    </div>
 
-                    <div class="px-6 py-8 md:p-10">
+                    <form method="POST" action="{{ route('password.update') }}">
+                        @csrf
+                        <input type="hidden" name="token" value="{{ $token }}">
 
-                        <h1 class="text-center font-bold text-3xl">
-                            {{ __('Reset Password') }}
-                        </h1>
-
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
-
-                        <div class="mt-8 flex flex-wrap mb-6">
-                            <label for="username" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('Username') }}
-                            </label>
-
-                            <input id="username" type="text" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required autofocus>
+                        <div class="auth-input-group">
+                            <label for="username" class="auth-label">Username</label>
+                            <input id="username" type="text" class="auth-input{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required autofocus>
 
                             @if ($errors->has('username'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('username') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('username') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-6">
-                            <label for="password" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('New Password') }}
-                            </label>
-
-                            <input id="password" type="password" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('password') ? ' border-red-500' : '' }}" name="password" placeholder="********" required>
+                        <div class="auth-input-group">
+                            <label for="password" class="auth-label">New password</label>
+                            <input id="password" type="password" class="auth-input{{ $errors->has('password') ? ' border-red-500' : '' }}" name="password" placeholder="********" required>
 
                             @if ($errors->has('password'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('password') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('password') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap">
-                            <label for="password-confim" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                {{ __('Confirm New Password') }}
-                            </label>
-
-                            <input id="password-confirm" type="password" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring" name="password_confirmation" placeholder="********" required>
+                        <div class="mb-6">
+                            <label for="password-confirm" class="auth-label">Confirm new password</label>
+                            <input id="password-confirm" type="password" class="auth-input" name="password_confirmation" placeholder="********" required>
                         </div>
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center">
-                        <button type="submit" class="bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {{ __('Reset Password') }}
+                        <button type="submit" class="auth-button">
+                            Reset password
                         </button>
-                    </div>
-                </form>
+                    </form>
+                </div>
+
+                <p class="auth-footer text-center lg:text-left">
+                    <a class="auth-link" href="{{ route('login') }}">Back to sign in</a>
+                </p>
             </div>
         </div>
     </div>

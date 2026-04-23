@@ -33,7 +33,7 @@ class GpgKeyExpired extends Notification implements ShouldBeEncrypted, ShouldQue
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('Your GPG key has expired on addy.io')
+            ->subject('Your GPG key has expired on vovamail.xyz')
             ->markdown('mail.gpg_key_expired', [
                 'recipient' => $notifiable,
                 'userId' => $notifiable->user_id,
@@ -42,7 +42,7 @@ class GpgKeyExpired extends Notification implements ShouldBeEncrypted, ShouldQue
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'GKE:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'GKE:vovamail');
             });
     }
 

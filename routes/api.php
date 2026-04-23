@@ -16,6 +16,7 @@ use App\Http\Controllers\Api\BlocklistController;
 use App\Http\Controllers\Api\CatchAllDomainController;
 use App\Http\Controllers\Api\CatchAllUsernameController;
 use App\Http\Controllers\Api\ChartDataController;
+use App\Http\Controllers\Api\CloudflareInboundController;
 use App\Http\Controllers\Api\DomainController;
 use App\Http\Controllers\Api\DomainDefaultRecipientController;
 use App\Http\Controllers\Api\DomainOptionController;
@@ -55,6 +56,9 @@ use Illuminate\Support\Facades\Route;
 Route::get('blocklist-check', [BlocklistCheckController::class, 'check'])
     ->middleware('blocklist.api')
     ->name('blocklist.check');
+
+Route::post('cloudflare/inbound', [CloudflareInboundController::class, 'handle'])
+    ->name('cloudflare.inbound');
 
 // API auth routes for mobile apps and browser extension
 Route::controller(ApiAuthenticationController::class)->prefix('auth')->group(function () {

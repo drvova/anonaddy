@@ -59,7 +59,7 @@ class FailedDeliveryNotification extends Notification implements ShouldBeEncrypt
     public function toMail($notifiable)
     {
         return (new MailMessage)
-            ->subject('New failed delivery on addy.io')
+            ->subject('New failed delivery on vovamail.xyz')
             ->markdown('mail.failed_delivery_notification', [
                 'aliasEmail' => $this->aliasEmail,
                 'recipientEmail' => $this->recipientEmail ?? $notifiable->email,
@@ -74,7 +74,7 @@ class FailedDeliveryNotification extends Notification implements ShouldBeEncrypt
             ])
             ->withSymfonyMessage(function ($message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'FDN:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'FDN:vovamail');
             });
     }
 

@@ -25,11 +25,11 @@ abstract class TestCase extends BaseTestCase
         $this->withoutVite();
 
         config([
-            'anonaddy.limit' => 1000,
-            'anonaddy.additional_username_limit' => 3,
-            'anonaddy.domain' => 'anonaddy.com',
-            'anonaddy.all_domains' => ['anonaddy.com', 'anonaddy.me'],
-            'anonaddy.dkim_signing_key' => file_get_contents(base_path('tests/keys/TestDkimSigningKey')),
+            'vovamail.limit' => 1000,
+            'vovamail.additional_username_limit' => 3,
+            'vovamail.domain' => 'vovamail.xyz',
+            'vovamail.all_domains' => ['vovamail.xyz', 'vovamail.xyz'],
+            'vovamail.dkim_signing_key' => file_get_contents(base_path('tests/keys/TestDkimSigningKey')),
         ]);
 
         // $this->withoutExceptionHandling();

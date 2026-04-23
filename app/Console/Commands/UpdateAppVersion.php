@@ -12,7 +12,7 @@ class UpdateAppVersion extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:update-app-version';
+    protected $signature = 'vovamail:update-app-version';
 
     /**
      * The console command description.
@@ -39,7 +39,7 @@ class UpdateAppVersion extends Command
     public function handle()
     {
         $version = GitVersionHelper::cacheFreshVersion();
-        $this->info("addy.io version: {$version}");
+        $this->info("vovamail.xyz version: {$version}");
 
         return 0;
     }

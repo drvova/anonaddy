@@ -114,7 +114,7 @@ class RecipientsTest extends TestCase
 
         Notification::assertNothingSent();
 
-        config(['anonaddy.auto_verify_new_recipients' => true]);
+        config(['vovamail.auto_verify_new_recipients' => true]);
 
         $response = $this->json('POST', '/api/v1/recipients', [
             'email' => 'johndoe@example.com',
@@ -184,7 +184,7 @@ class RecipientsTest extends TestCase
     public function user_can_not_create_recipient_with_local_domain()
     {
         $response = $this->json('POST', '/api/v1/recipients', [
-            'email' => 'johndoe@anonaddy.com',
+            'email' => 'johndoe@vovamail.xyz',
         ]);
 
         $response
@@ -260,7 +260,7 @@ class RecipientsTest extends TestCase
         ]);
 
         $response = $this->json('PATCH', '/api/v1/recipient-keys/'.$recipient->id, [
-            'key_data' => file_get_contents(base_path('tests/keys/AnonAddyPublicKey.asc')),
+            'key_data' => file_get_contents(base_path('tests/keys/VovaMailPublicKey.asc')),
         ]);
 
         $response->assertStatus(200);
@@ -291,7 +291,7 @@ class RecipientsTest extends TestCase
         ]);
 
         $response = $this->json('PATCH', '/api/v1/recipient-keys/'.$recipient->id, [
-            'key_data' => file_get_contents(base_path('tests/keys/InvalidAnonAddyPublicKey.asc')),
+            'key_data' => file_get_contents(base_path('tests/keys/InvalidVovaMailPublicKey.asc')),
         ]);
 
         $response
@@ -302,7 +302,7 @@ class RecipientsTest extends TestCase
     public function user_can_remove_gpg_key_from_recipient()
     {
         $gnupg = new \gnupg;
-        $gnupg->import(file_get_contents(base_path('tests/keys/AnonAddyPublicKey.asc')));
+        $gnupg->import(file_get_contents(base_path('tests/keys/VovaMailPublicKey.asc')));
 
         $recipient = Recipient::factory()->create([
             'user_id' => $this->user->id,

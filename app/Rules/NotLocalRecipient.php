@@ -28,7 +28,7 @@ class NotLocalRecipient implements ValidationRule
             $fail('The recipient cannot use a domain that is already used by a custom domain.');
         }
 
-        $count = collect(config('anonaddy.all_domains'))
+        $count = collect(config('vovamail.all_domains'))
             ->filter(function ($domain) use ($emailDomain) {
                 return $domain === $emailDomain || Str::endsWith($emailDomain, '.'.$domain);
             })

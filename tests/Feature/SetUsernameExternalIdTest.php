@@ -33,7 +33,7 @@ class SetUsernameExternalIdTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this
-            ->artisan('anonaddy:set-username-externalid')
+            ->artisan('vovamail:set-username-externalid')
             ->assertExitCode(1);
     }
 
@@ -42,7 +42,7 @@ class SetUsernameExternalIdTest extends TestCase
     {
         $this->expectException(RuntimeException::class);
         $this
-            ->artisan('anonaddy:set-username-externalid test_username')
+            ->artisan('vovamail:set-username-externalid test_username')
             ->assertExitCode(1);
     }
 
@@ -50,7 +50,7 @@ class SetUsernameExternalIdTest extends TestCase
     public function handle_validation_should_fail_when_provided_username_not_exists()
     {
         $this
-            ->artisan('anonaddy:set-username-externalid test_username test_external_id')
+            ->artisan('vovamail:set-username-externalid test_username test_external_id')
             ->assertExitCode(1);
     }
 
@@ -58,7 +58,7 @@ class SetUsernameExternalIdTest extends TestCase
     public function handle_validation_should_fail_when_provided_external_id_already_in_use()
     {
         $this
-            ->artisan('anonaddy:set-username-externalid johndoe janedoe_ext_id')
+            ->artisan('vovamail:set-username-externalid johndoe janedoe_ext_id')
             ->assertExitCode(1);
     }
 
@@ -66,7 +66,7 @@ class SetUsernameExternalIdTest extends TestCase
     public function handle_should_set_external_id_of_provided_username_when_invoked()
     {
         $this
-            ->artisan('anonaddy:set-username-externalid johndoe johndoe_ext_id')
+            ->artisan('vovamail:set-username-externalid johndoe johndoe_ext_id')
             ->assertExitCode(0);
 
         $username = Username::where('username', 'johndoe')->first();
@@ -78,7 +78,7 @@ class SetUsernameExternalIdTest extends TestCase
     public function handle_should_set_can_login_of_provided_username_when_invoked()
     {
         $this
-            ->artisan('anonaddy:set-username-externalid johndoe johndoe_ext_id')
+            ->artisan('vovamail:set-username-externalid johndoe johndoe_ext_id')
             ->assertExitCode(0);
 
         $username = Username::where('username', 'johndoe')->first();
@@ -92,7 +92,7 @@ class SetUsernameExternalIdTest extends TestCase
         $this->userJohnDoe->usernames()->create(['username' => 'test', 'can_login' => false]);
 
         $this
-            ->artisan('anonaddy:set-username-externalid test johndoe_ext_id')
+            ->artisan('vovamail:set-username-externalid test johndoe_ext_id')
             ->assertExitCode(0);
 
         $user = User::where('id', $this->userJohnDoe->id)->first();

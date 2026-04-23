@@ -1,4 +1,4 @@
-If you believe you've found a security issue in the addy.io product or service, I encourage you to
+If you believe you've found a security issue in the vovamail.xyz product or service, I encourage you to
 notify me. I welcome working with you to resolve the issue promptly. Thanks in advance!
 
 # Disclosure Policy
@@ -15,23 +15,23 @@ notify me. I welcome working with you to resolve the issue promptly. Thanks in a
 
 # Reporting a Vulnerability
 
-To report a vulnerability please send an email to contact (at) help.addy.io, you can use the PGP key above if you wish to encrypt it.
+To report a vulnerability please send an email to contact (at) vovamail.xyz, you can use the PGP key above if you wish to encrypt it.
 
 # In-scope
 
-- Security issues in any current release of addy.io. This includes the web application, browser extension,
-  and landing page. Source code is available at https://github.com/anonaddy.
+- Security issues in any current release of vovamail.xyz. This includes the web application, browser extension,
+  and landing page. Source code is available at https://github.com/vovamail.
 
 # Exclusions
 
 The following bug classes are out-of scope:
 
-- Bugs that are already reported on any of addy.io's issue trackers (https://github.com/anonaddy),
+- Bugs that are already reported on any of vovamail.xyz's issue trackers (https://github.com/vovamail),
   or that I already know of.
 - Attacks requiring physical access to a user's device.
 - Self-XSS
-- Issues related to software or protocols not under addy.io's control
-- Vulnerabilities in outdated versions of addy.io
+- Issues related to software or protocols not under vovamail.xyz's control
+- Vulnerabilities in outdated versions of vovamail.xyz
 - Missing security best practices that do not directly lead to a vulnerability
 - Issues that do not have any impact on the general public
 
@@ -39,7 +39,7 @@ While researching, I'd like to ask you to refrain from:
 
 - Denial of service
 - Spamming
-- Social engineering (including phishing) of addy.io emails
-- Any physical attempts against addy.io property or data centers
+- Social engineering (including phishing) of vovamail.xyz emails
+- Any physical attempts against vovamail.xyz property or data centers
 
-Thank you for helping keep addy.io and its users safe!
+Thank you for helping keep vovamail.xyz and its users safe!

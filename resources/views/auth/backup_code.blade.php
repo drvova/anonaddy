@@ -1,51 +1,49 @@
 @extends('layouts.auth')
 
+@section('title', 'Use a backup code')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form method="POST" action="{{ route('login.backup_code.login') }}">
-                    @csrf
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
+            </div>
 
-                    <div class="px-6 py-8 md:p-10">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Use a backup code</h1>
+                        <p class="auth-subtitle">Use one of your saved recovery codes to finish signing in when you can&apos;t reach your authenticator app.</p>
+                    </div>
 
-                        <h1 class="text-center font-bold text-3xl">
-                            Login Using 2FA Backup Code
-                        </h1>
+                    <div class="auth-alert auth-alert-warning" role="alert">
+                        After you use a backup code, two-factor authentication will be disabled on your account. Re-enable it after signing in if you want to keep using 2FA.
+                    </div>
 
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
+                    <form method="POST" action="{{ route('login.backup_code.login') }}">
+                        @csrf
 
-                        <div class="text-sm border-t-8 rounded text-yellow-800 border-yellow-600 bg-yellow-100 px-3 py-4 mt-4" role="alert">
-                            After logging in using your backup code, two factor authentication will be disabled on your account. If you would like to use 2FA, you should re-enable it after logging in.
-                        </div>
-
-                        <div class="mt-8 flex flex-wrap">
-                            <label for="backup_code" class="block text-grey-700 text-sm font-medium leading-6 mb-2">
-                                Backup Code
-                            </label>
-
-                            <input id="backup_code" type="text" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('backup_code') ? ' border border-red-500' : '' }}" name="backup_code" placeholder="****************************************" required autofocus>
+                        <div class="mb-6">
+                            <label for="backup_code" class="auth-label">Backup code</label>
+                            <input id="backup_code" type="text" class="auth-input{{ $errors->has('backup_code') ? ' border-red-500' : '' }}" name="backup_code" placeholder="Enter your backup code" required autofocus>
 
                             @if ($errors->has('backup_code'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('backup_code') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('backup_code') }}</p>
                             @endif
                         </div>
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center justify-center">
-                        <button type="submit" class="bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {{ __('Authenticate') }}
+                        <button type="submit" class="auth-button">
+                            Authenticate
                         </button>
-                    </div>
+                    </form>
+                </div>
+
+                <form action="{{ route('logout') }}" method="POST" class="auth-footer text-center lg:text-left">
+                    {{ csrf_field() }}
+                    <button type="submit" class="auth-muted-link cursor-pointer bg-transparent">Log out</button>
                 </form>
             </div>
-                <form action="{{ route('logout') }}" method="POST" class="w-full text-xs text-center mt-6">
-                    {{ csrf_field() }}
-                    <input type="submit" class="bg-transparent cursor-pointer text-white hover:text-indigo-50 no-underline" value="{{ __('Logout') }}">
-                </form>
         </div>
     </div>
 @endsection

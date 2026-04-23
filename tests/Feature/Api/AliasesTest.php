@@ -218,7 +218,7 @@ class AliasesTest extends TestCase
         ]);
 
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'description' => 'the description',
             'recipient_ids' => [
                 $recipient->id,
@@ -235,7 +235,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_uuid_alias()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'format' => 'uuid',
             'description' => 'the description',
             'local_part' => 'not-required-for-shared-alias',
@@ -251,7 +251,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_alias_with_local_part()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => $this->user->username.'.anonaddy.com',
+            'domain' => $this->user->username.'.vovamail.xyz',
             'format' => 'custom',
             'description' => 'the description',
             'local_part' => 'valid-local-part',
@@ -260,14 +260,14 @@ class AliasesTest extends TestCase
         $response->assertStatus(201);
         $this->assertCount(1, $this->user->aliases);
         $this->assertEquals('valid-local-part', $response->getData()->data->local_part);
-        $this->assertEquals('valid-local-part@'.$this->user->username.'.anonaddy.com', $this->user->aliases[0]->email);
+        $this->assertEquals('valid-local-part@'.$this->user->username.'.vovamail.xyz', $this->user->aliases[0]->email);
     }
 
     #[Test]
     public function user_can_generate_new_alias_with_local_part_and_extension()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => $this->user->username.'.anonaddy.com',
+            'domain' => $this->user->username.'.vovamail.xyz',
             'format' => 'custom',
             'description' => 'the description',
             'local_part' => 'valid-local-part+extension',
@@ -277,14 +277,14 @@ class AliasesTest extends TestCase
         $this->assertCount(1, $this->user->aliases);
         $this->assertEquals('valid-local-part', $response->getData()->data->local_part);
         $this->assertEquals('extension', $response->getData()->data->extension);
-        $this->assertEquals('valid-local-part@'.$this->user->username.'.anonaddy.com', $this->user->aliases[0]->email);
+        $this->assertEquals('valid-local-part@'.$this->user->username.'.vovamail.xyz', $this->user->aliases[0]->email);
     }
 
     #[Test]
     public function user_cannot_generate_new_alias_with_invalid_local_part()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => $this->user->username.'.anonaddy.com',
+            'domain' => $this->user->username.'.vovamail.xyz',
             'format' => 'custom',
             'description' => 'the description',
             'local_part' => 'invalid-local-part.',
@@ -302,12 +302,12 @@ class AliasesTest extends TestCase
             'user_id' => $this->user->id,
             'local_part' => 'exists',
             'extension' => '1',
-            'domain' => $this->user->username.'.anonaddy.com',
-            'email' => 'exists@'.$this->user->username.'.anonaddy.com',
+            'domain' => $this->user->username.'.vovamail.xyz',
+            'email' => 'exists@'.$this->user->username.'.vovamail.xyz',
         ]);
 
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => $this->user->username.'.anonaddy.com',
+            'domain' => $this->user->username.'.vovamail.xyz',
             'format' => 'custom',
             'description' => 'the description',
             'local_part' => 'exists+2',
@@ -322,7 +322,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_random_word_alias()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'description' => 'the description',
             'format' => 'random_words',
         ]);
@@ -339,7 +339,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_random_male_name_alias()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'description' => 'the description',
             'format' => 'random_male_name',
         ]);
@@ -356,7 +356,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_random_female_name_alias()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'description' => 'the description',
             'format' => 'random_female_name',
         ]);
@@ -373,7 +373,7 @@ class AliasesTest extends TestCase
     public function user_can_generate_new_random_noun_alias()
     {
         $response = $this->json('POST', '/api/v1/aliases', [
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'description' => 'the description',
             'format' => 'random_noun',
         ]);
@@ -478,9 +478,9 @@ class AliasesTest extends TestCase
     {
         $sharedDomainAlias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'local_part' => '9nmrhanm',
-            'email' => '9nmrhanm@anonaddy.me',
+            'email' => '9nmrhanm@vovamail.xyz',
             'extension' => 'ext',
             'description' => 'Alias',
             'emails_forwarded' => 10,

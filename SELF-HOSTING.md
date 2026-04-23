@@ -1,4 +1,4 @@
-# How to self-host addy.io (AnonAddy)
+# How to self-host vovamail.xyz (VovaMail)
 
 - [Assumptions](#assumptions)
 - [Setting up the server](#setting-up-the-server)
@@ -103,7 +103,7 @@ AAAA app.example.com <Your-IPv6-address>
 Make sure to replace the placeholders above with the actual IP address of your server.
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/dns-records.png" alt="DNS records" title="DNS records">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/dns-records.png" alt="DNS records" title="DNS records">
 </div>
 
 Now we need to set up the correct PTR record for reverse DNS lookups. This needs to be set as your FQDN (fully qualified domain name) which in our case is mail.example.com.
@@ -117,13 +117,13 @@ In Vultr you can update your reverse DNS by clicking on your server, then going 
 Change it to `mail.example.com`. Don't forget to update this for IPv6 if you are using it too.
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/reverse-dns-ipv4.png" alt="Reverse DNS IPv4" title="Reverse DNS IPv4">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/reverse-dns-ipv4.png" alt="Reverse DNS IPv4" title="Reverse DNS IPv4">
 </div>
 
 You can check that it is set correctly by entering your IPv4 and IPv6 addresses here [https://mxtoolbox.com/ReverseLookup.aspx](https://mxtoolbox.com/ReverseLookup.aspx).
 
 <div class="flex justify-center">
-  <img class="shadow" src="https://addy.io/assets/img/reverse-dns-ipv6.png" alt="Reverse DNS IPv6" title="Reverse DNS IPv6">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/reverse-dns-ipv6.png" alt="Reverse DNS IPv6" title="Reverse DNS IPv6">
 </div>
 
 ## Installing Postfix
@@ -137,13 +137,13 @@ sudo apt install postfix
 For configuration type select "Internet Site".
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/postfix-install.png" alt="Postfix install" title="Postfix install">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/postfix-install.png" alt="Postfix install" title="Postfix install">
 </div>
 
 For System mail name: enter "example.com" note the missing mail subdomain.
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/postfix-install-2.png" alt="Postfix install system name" title="Postfix install system name">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/postfix-install-2.png" alt="Postfix install system name" title="Postfix install system name">
 </div>
 
 Postfix should now begin installing.
@@ -225,7 +225,7 @@ myorigin = /etc/mailname
 
 mydestination = localhost.$mydomain, localhost
 
-virtual_transport = anonaddy:
+virtual_transport = vovamail:
 virtual_mailbox_domains = $mydomain, unsubscribe.$mydomain, mysql:/etc/postfix/mysql-virtual-alias-domains-and-subdomains.cf
 
 relayhost =
@@ -276,7 +276,7 @@ strict_rfc821_envelopes = yes
 ```
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/postfix-main.png" alt="Postfix main" title="Postfix main">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/postfix-main.png" alt="Postfix main" title="Postfix main">
 </div>
 
 Make sure your hostname is correct in the Postfix config file.
@@ -290,19 +290,19 @@ You'll see warnings that the mysql-... files do not exist. You should see mail.e
 Open up `/etc/postfix/master.cf` and add these lines to the bottom of the file:
 
 ```
-# Pipe to addy.io application
-anonaddy unix - n n - - pipe
-  flags=F user=johndoe argv=php /var/www/anonaddy/artisan anonaddy:receive-email --sender=${sender} --recipient=${recipient} --local_part=${user} --extension=${extension} --domain=${domain} --size=${size}
+# Pipe to vovamail.xyz application
+vovamail unix - n n - - pipe
+  flags=F user=johndoe argv=php /var/www/vovamail/artisan vovamail:receive-email --sender=${sender} --recipient=${recipient} --local_part=${user} --extension=${extension} --domain=${domain} --size=${size}
 
-# addy.io access policy
+# vovamail.xyz access policy
 policy  unix  -       n       n       -       0       spawn
-  user=johndoe argv=php /var/www/anonaddy/postfix/AccessPolicy.php
+  user=johndoe argv=php /var/www/vovamail/postfix/AccessPolicy.php
 ```
 
-Making sure to replace `johndoe` with the username of the user who will run the artisan command and also to update the /path to wherever you plan to place the web app installation. For this tutorial I'm going to use the location `/var/www/anonaddy`.
+Making sure to replace `johndoe` with the username of the user who will run the artisan command and also to update the /path to wherever you plan to place the web app installation. For this tutorial I'm going to use the location `/var/www/vovamail`.
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/postfix-master-2.png" alt="Postfix master pipe" title="Postfix master pipe">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/postfix-master-2.png" alt="Postfix master pipe" title="Postfix master pipe">
 </div>
 
 This command will pipe the email through to our application so that we can determine who the alias belongs to and who to forward the email to.
@@ -405,7 +405,7 @@ server {
     listen 443 ssl;
     listen [::]:443 ssl;
     server_name app.example.com;
-    root /var/www/anonaddy/public;
+    root /var/www/vovamail/public;
     server_tokens off;
     http2 on;
 
@@ -495,7 +495,7 @@ listen.group = johndoe
 ```
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/php-www-conf.png" alt="PHP www.conf" title="PHP www.conf">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/php-www-conf.png" alt="PHP www.conf" title="PHP www.conf">
 </div>
 
 Restart php8.2-fpm to reflect the changes.
@@ -523,7 +523,7 @@ cd ./acme.sh
 ./acme.sh --install
 ```
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/acme-install.png" alt="acme.sh install" title="acme.sh install">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/acme-install.png" alt="acme.sh install" title="acme.sh install">
 </div>
 
 You should set up automatic DNS API integration for wildcard certs if you are using them, this will allow automatic renewal of your certificates.
@@ -582,22 +582,22 @@ Next we're going to create the database and also a user with correct permissions
 ```bash
 sudo mariadb -u root -p
 ```
-Once in the MariaDB shell create a new database called anonaddy_database (or whatever you like)
+Once in the MariaDB shell create a new database called vovamail_database (or whatever you like)
 
 ```sql
-CREATE DATABASE anonaddy_database DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE vovamail_database DEFAULT CHARACTER SET utf8mb4 DEFAULT COLLATE utf8mb4_unicode_ci;
 ```
 
 Then create a new user and give them a strong password (replace below)
 
 ```sql
-CREATE USER 'anonaddy'@'localhost' IDENTIFIED BY 'STRONG-PASSWORD-HERE';
+CREATE USER 'vovamail'@'localhost' IDENTIFIED BY 'STRONG-PASSWORD-HERE';
 ```
 
 Grant the user privileges for the new database.
 
 ```sql
-GRANT ALL PRIVILEGES ON anonaddy_database.* TO 'anonaddy'@'localhost';
+GRANT ALL PRIVILEGES ON vovamail_database.* TO 'vovamail'@'localhost';
 ```
 
 Next flush privileges and exit the MariaDB shell.
@@ -610,10 +610,10 @@ exit
 Create a new file `/etc/postfix/mysql-virtual-alias-domains-and-subdomains.cf` and enter the following inside:
 
 ```sql
-user = anonaddy
+user = vovamail
 password = your-database-password
 hosts = 127.0.0.1
-dbname = anonaddy_database
+dbname = vovamail_database
 query = SELECT (SELECT 1 FROM usernames WHERE '%s' IN (CONCAT(username, '.example.com'))) AS usernames, (SELECT 1 FROM domains WHERE domain = '%s' AND domain_verified_at IS NOT NULL) AS domains LIMIT 1;
 ```
 
@@ -767,7 +767,7 @@ TXT _dmarc  "v=DMARC1; p=none; sp=none; adkim=r; aspf=r; pct=100;"
 ```
 
 <div class="flex justify-center">
-  <img class="shadow" src="https://addy.io/assets/img/dns-records-2.png" alt="DNS records DMARC" title="DNS records DMARC">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/dns-records-2.png" alt="DNS records DMARC" title="DNS records DMARC">
 </div>
 
 Now we need to create a signing table to tell Rspamd which domains we want it to sign with DKIM and also which key to use.
@@ -858,11 +858,11 @@ routines {
     }
   }
   authentication-results {
-    header = "X-AnonAddy-Authentication-Results";
+    header = "X-VovaMail-Authentication-Results";
     remove = 0;
   }
   spam-header {
-    header = "X-AnonAddy-Spam";
+    header = "X-VovaMail-Spam";
     value = "Yes";
     remove = 0;
   }
@@ -873,14 +873,14 @@ custom {
 return function(task, common_meta)
   if task:has_symbol('DMARC_POLICY_ALLOW') then
     return nil,
-    {['X-AnonAddy-Dmarc-Allow'] = 'Yes'},
-    {['X-AnonAddy-Dmarc-Allow'] = 0},
+    {['X-VovaMail-Dmarc-Allow'] = 'Yes'},
+    {['X-VovaMail-Dmarc-Allow'] = 0},
     {}
   end
 
   return nil,
   {},
-  {['X-AnonAddy-Dmarc-Allow'] = 0},
+  {['X-VovaMail-Dmarc-Allow'] = 0},
   {}
 end
 EOD;
@@ -1037,7 +1037,7 @@ ssh -L 11334:localhost:11334 johndoe@example.com
 
 Then you will be able to visit [http://localhost:11334/](http://localhost:11334/) in your web browser.
 
-You may need to change the scores for a couple of symbols to 0 since AnonAddy uses a different email in the display from and email from.
+You may need to change the scores for a couple of symbols to 0 since VovaMail uses a different email in the display from and email from.
 
 Create a new file `/etc/rspamd/local.d/groups.conf` and enter the following inside:
 
@@ -1067,12 +1067,12 @@ sudo service rspamd restart
 
 ## The web application
 
-Next let's get the actual AnonAddy application from GitHub.
+Next let's get the actual VovaMail application from GitHub.
 
 ```bash
 cd /var/www/
-git clone https://github.com/anonaddy/anonaddy.git
-cd /var/www/anonaddy
+git clone https://github.com/vovamail/vovamail.git
+cd /var/www/vovamail
 ```
 
 Make sure composer is installed (`composer -V`), if not then goto - [https://getcomposer.org/download/](https://getcomposer.org/download/) for instructions.
@@ -1098,7 +1098,7 @@ You should use Node `20.19+` (required for Vite 8).
 Next copy the .env.example file and update it with correct values (database password, app url, redis password etc.) then install the dependencies.
 
 ```bash
-cd /var/www/anonaddy
+cd /var/www/vovamail
 
 cp .env.example .env
 nano .env
@@ -1107,7 +1107,7 @@ composer install --prefer-dist --no-dev -o && npm install
 npm run production
 ```
 
-Make sure to update the database settings, redis password and the AnonAddy variables. You can use Redis for queue, sessions and cache.
+Make sure to update the database settings, redis password and the VovaMail variables. You can use Redis for queue, sessions and cache.
 
 Also add the blocklist API variables to your `.env`:
 
@@ -1119,13 +1119,13 @@ BLOCKLIST_API_SECRET=
 
 Make sure `BLOCKLIST_API_ALLOWED_IPS` includes the actual IP address(es) of your mail server(s). If you set a secret here, it must match `blocklist_secret` in `/etc/rspamd/lua.local.d/addy_blocklist.lua`.
 
-We'll set `ANONADDY_SIGNING_KEY_FINGERPRINT` shortly.
+We'll set `VOVAMAIL_SIGNING_KEY_FINGERPRINT` shortly.
 
 `APP_KEY` will be generated in the next step, this is used by Laravel for securely encrypting values.
 
 For more information on Laravel configuration please visit - [https://laravel.com/docs/10.x/configuration](https://laravel.com/docs/10.x/configuration)
 
-For the `ANONADDY_DKIM_SIGNING_KEY` you only need to fill in this variable if you plan to add any custom domains through the web application.
+For the `VOVAMAIL_DKIM_SIGNING_KEY` you only need to fill in this variable if you plan to add any custom domains through the web application.
 
 You can either use the same private DKIM signing key we generated earlier whilst setting up Rspamd.
 
@@ -1148,7 +1148,7 @@ You can test it by running `cat /var/lib/rspamd/dkim/example.com.default.key` as
 Then update your `.env` file.
 
 ```
-ANONADDY_DKIM_SIGNING_KEY=/var/lib/rspamd/dkim/example.com.default.key
+VOVAMAIL_DKIM_SIGNING_KEY=/var/lib/rspamd/dkim/example.com.default.key
 ```
 
 Then we will generate an app key, migrate the database, link the storage directory, clear the cache and restart the queue.
@@ -1171,7 +1171,7 @@ Type `crontab -e` in the terminal as your `johndoe` user.
 In the file that is opened add the following line:
 
 ```
-* * * * * php /var/www/anonaddy/artisan schedule:run >> /dev/null 2>&1
+* * * * * php /var/www/vovamail/artisan schedule:run >> /dev/null 2>&1
 ```
 
 This cronjob will run every minute which in turn runs the commands listed in `app/Console/Kernel.php` at the appropriate time.
@@ -1187,15 +1187,15 @@ sudo apt install supervisor
 Create a new configuration file:
 
 ```bash
-sudo nano /etc/supervisor/conf.d/anonaddy.conf
+sudo nano /etc/supervisor/conf.d/vovamail.conf
 ```
 
 Enter the following inside (change user, command location and the number of processes if you need to):
 
 ```
-[program:anonaddy]
+[program:vovamail]
 process_name=%(program_name)s_%(process_num)02d
-command=php /var/www/anonaddy/artisan queue:work redis --sleep=3 --tries=3
+command=php /var/www/vovamail/artisan queue:work redis --sleep=3 --tries=3
 autostart=true
 autorestart=true
 user=johndoe
@@ -1205,7 +1205,7 @@ stopwaitsecs=3600
 ```
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/supervisor.png" alt="Supervisor config" title="Supervisor config">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/supervisor.png" alt="Supervisor config" title="Supervisor config">
 </div>
 
 Then run:
@@ -1215,7 +1215,7 @@ sudo supervisorctl reread
 
 sudo supervisorctl update
 
-sudo supervisorctl start anonaddy:*
+sudo supervisorctl start vovamail:*
 ```
 
 Run `sudo service nginx start` to make sure Nginx is running.
@@ -1228,7 +1228,7 @@ Register an account and start using it straight away!
 
 You can disable user registration after you've created your account to prevent anyone else from signing up.
 
-Just update the value of `ANONADDY_ENABLE_REGISTRATION` to false in your .env file (and then run the following commands to reflect the update).
+Just update the value of `VOVAMAIL_ENABLE_REGISTRATION` to false in your .env file (and then run the following commands to reflect the update).
 
 ```bash
 php artisan config:cache
@@ -1273,7 +1273,7 @@ gpg -k
 
 The fingerprint is 40 characters long and looks like this `26A987650243B28802524E2F809FD0D502E2F695`.
 
-Then update the value of `ANONADDY_SIGNING_KEY_FINGERPRINT=` in your .env file to match the fingerprint of your key.
+Then update the value of `VOVAMAIL_SIGNING_KEY_FINGERPRINT=` in your .env file to match the fingerprint of your key.
 
 Then run `php artisan config:cache` to update.
 
@@ -1293,7 +1293,7 @@ resolver_timeout            5s;
 ```
 
 <div class="flex justify-center mb-4">
-  <img class="shadow" src="https://addy.io/assets/img/nginx-resolver.png" alt="Nginx resolver" title="Nginx resolver">
+  <img class="shadow" src="https://vovamail.xyz/assets/img/nginx-resolver.png" alt="Nginx resolver" title="Nginx resolver">
 </div>
 
 Restart nginx:
@@ -1475,7 +1475,7 @@ CAA @ 0 iodef "mailto:caapolicy@example.com"
 
 ## Updating
 
-Before updating, **please check the release notes** on [GitHub](https://github.com/anonaddy/anonaddy/releases) for any **breaking changes**.
+Before updating, **please check the release notes** on [GitHub](https://github.com/vovamail/vovamail/releases) for any **breaking changes**.
 
 To update to the latest version run the following commands:
 
@@ -1513,7 +1513,7 @@ php artisan queue:restart
 
 If you run into any problems then please check the following logs which should provide more information:
 
-- `/var/www/anonaddy/storage/logs/laravel*.log` - Web application error logs (any errors relating to issues with the web application)
+- `/var/www/vovamail/storage/logs/laravel*.log` - Web application error logs (any errors relating to issues with the web application)
 - `/var/log/mail.log` - Postfix mail logs (details of received and sent emails)
 - `/var/log/mail.err` - Postfix errors (errors relating to Postfix configuration)
 - `/var/log/php8.2-fpm.log` - PHP logs (logs relating to PHP FastCGI Process Manager)

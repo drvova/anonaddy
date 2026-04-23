@@ -33,11 +33,16 @@ class ShowDomainController extends Controller
 
         return Inertia::render('Domains/Index', [
             'initialRows' => $domains,
-            'domainName' => config('anonaddy.domain'),
-            'hostname' => config('anonaddy.hostname'),
-            'dkimSelector' => config('anonaddy.dkim_selector'),
+            'domainName' => config('vovamail.domain'),
+            'hostname' => config('vovamail.hostname'),
+            'dkimSelector' => config('vovamail.dkim_selector'),
+            'mailProvider' => config('mail.mailers.'.config('mail.default').'.transport') === 'cloudflare' ? 'cloudflare' : 'self-hosted',
+            'cloudflareDkimSelector' => 'cf-bounce',
+            'cloudflareSpfValue' => 'include:_spf.mx.cloudflare.net',
+            'cloudflareRoutingUrl' => 'https://developers.cloudflare.com/email-service/get-started/route-emails/',
+            'cloudflareSendingUrl' => 'https://developers.cloudflare.com/email-service/get-started/send-emails/',
             'recipientOptions' => user()->verifiedRecipients()->select(['id', 'email'])->get(),
-            'initialAaVerify' => sha1(config('anonaddy.secret').user()->id.user()->domains->count()),
+            'initialAaVerify' => sha1(config('vovamail.secret').user()->id.user()->domains->count()),
             'search' => $validated['search'] ?? null,
         ]);
     }

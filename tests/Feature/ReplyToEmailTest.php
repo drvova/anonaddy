@@ -20,7 +20,7 @@ class ReplyToEmailTest extends TestCase
     {
         parent::setUp();
 
-        $this->user = $this->createUser('johndoe', 'will@anonaddy.com');
+        $this->user = $this->createUser('johndoe', 'will@vovamail.xyz');
     }
 
     #[Test]
@@ -32,22 +32,22 @@ class ReplyToEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $extension = 'contact=ebay.com';
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_reply.eml'),
                 '--sender' => $this->user->email,
-                '--recipient' => ['ebay+'.$extension.'@johndoe.anonaddy.com'],
+                '--recipient' => ['ebay+'.$extension.'@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [$extension],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -68,9 +68,9 @@ class ReplyToEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $recipient = Recipient::factory()->create([
@@ -86,14 +86,14 @@ class ReplyToEmailTest extends TestCase
         $extension = 'contact=ebay.com';
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_reply.eml'),
                 '--sender' => $recipient->email,
-                '--recipient' => ['ebay+'.$extension.'@johndoe.anonaddy.com'],
+                '--recipient' => ['ebay+'.$extension.'@johndoe.vovamail.xyz'],
                 '--local_part' => ['ebay'],
                 '--extension' => [$extension],
-                '--domain' => ['johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);
@@ -114,26 +114,26 @@ class ReplyToEmailTest extends TestCase
 
         Alias::factory()->create([
             'user_id' => $this->user->id,
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'local_part' => 'ebay',
-            'domain' => 'johndoe.'.config('anonaddy.domain'),
+            'domain' => 'johndoe.'.config('vovamail.domain'),
         ]);
 
         $extension1 = 'contact=ebay.com';
         $extension2 = 'support=ebay.com';
 
         $this->artisan(
-            'anonaddy:receive-email',
+            'vovamail:receive-email',
             [
                 'file' => base_path('tests/emails/email_multiple_reply.eml'),
                 '--sender' => $this->user->email,
                 '--recipient' => [
-                    'ebay+'.$extension1.'@johndoe.anonaddy.com',
-                    'ebay+'.$extension2.'@johndoe.anonaddy.com',
+                    'ebay+'.$extension1.'@johndoe.vovamail.xyz',
+                    'ebay+'.$extension2.'@johndoe.vovamail.xyz',
                 ],
                 '--local_part' => ['ebay', 'ebay'],
                 '--extension' => [$extension1, $extension2],
-                '--domain' => ['johndoe.anonaddy.com', 'johndoe.anonaddy.com'],
+                '--domain' => ['johndoe.vovamail.xyz', 'johndoe.vovamail.xyz'],
                 '--size' => '1000',
             ]
         )->assertExitCode(0);

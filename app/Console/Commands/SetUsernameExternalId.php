@@ -13,7 +13,7 @@ class SetUsernameExternalId extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:set-username-externalid {username} {external_id}';
+    protected $signature = 'vovamail:set-username-externalid {username} {external_id}';
 
     /**
      * The console command description.

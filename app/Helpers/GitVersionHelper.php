@@ -28,7 +28,7 @@ class GitVersionHelper
         $latestVersion = Cache::remember('app-latest-version', now()->addDay(), function () {
 
             try {
-                $response = Http::get('https://api.github.com/repos/anonaddy/anonaddy/releases/latest');
+                $response = Http::get('https://api.github.com/repos/vovamail/vovamail/releases/latest');
             } catch (Exception $e) {
                 report($e);
 
@@ -84,7 +84,7 @@ class GitVersionHelper
         }
 
         if (! $output) {
-            return str(config('anonaddy.version'));
+            return str(config('vovamail.version'));
         }
 
         return Str::of($output)->after('v')->trim();

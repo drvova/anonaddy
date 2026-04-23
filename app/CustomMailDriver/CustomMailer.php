@@ -75,7 +75,7 @@ class CustomMailer extends Mailer
             $recipient = Recipient::find($data['recipientId']);
 
             try {
-                $encrypter = new OpenPGPEncrypter(config('anonaddy.signing_key_fingerprint'), $data['fingerprint'], '~/.gnupg', $recipient->protected_headers);
+                $encrypter = new OpenPGPEncrypter(config('vovamail.signing_key_fingerprint'), $data['fingerprint'], '~/.gnupg', $recipient->protected_headers);
 
                 $encryptedSymfonyMessage = $recipient->inline_encryption ? $encrypter->encryptInline($symfonyMessage) : $encrypter->encrypt($symfonyMessage);
             } catch (Exception $e) {
@@ -100,8 +100,8 @@ class CustomMailer extends Mailer
         }
 
         // DkimSigner only for forwards, replies and sends...
-        if (isset($data['needsDkimSignature']) && $data['needsDkimSignature'] && ! is_null(config('anonaddy.dkim_signing_key'))) {
-            $dkimSigner = new DkimSigner(config('anonaddy.dkim_signing_key'), $data['aliasDomain'], config('anonaddy.dkim_selector'));
+        if (isset($data['needsDkimSignature']) && $data['needsDkimSignature'] && ! is_null(config('vovamail.dkim_signing_key'))) {
+            $dkimSigner = new DkimSigner(config('vovamail.dkim_signing_key'), $data['aliasDomain'], config('vovamail.dkim_selector'));
 
             $options = (new DkimOptions)->headersToIgnore([
                 'List-Unsubscribe',
@@ -114,11 +114,11 @@ class CustomMailer extends Mailer
                 'Content-Transfer-Encoding',
                 'MIME-Version',
                 'Alias-To',
-                'X-AnonAddy-Authentication-Results',
-                'X-AnonAddy-Original-Sender',
-                'X-AnonAddy-Original-Envelope-From',
-                'X-AnonAddy-Original-From-Header',
-                'X-AnonAddy-Original-To',
+                'X-VovaMail-Authentication-Results',
+                'X-VovaMail-Original-Sender',
+                'X-VovaMail-Original-Envelope-From',
+                'X-VovaMail-Original-From-Header',
+                'X-VovaMail-Original-To',
                 'In-Reply-To',
                 'References',
                 'From',
@@ -143,7 +143,7 @@ class CustomMailer extends Mailer
             if (isset($data['emailType']) && in_array($data['emailType'], ['F', 'R', 'S'])) {
                 $symfonyMessage->returnPath($verpLocalPart.'@'.$data['verpDomain']);
             } else {
-                $symfonyMessage->returnPath($verpLocalPart.'@'.config('anonaddy.domain'));
+                $symfonyMessage->returnPath($verpLocalPart.'@'.config('vovamail.domain'));
             }
 
             try {
@@ -191,8 +191,8 @@ class CustomMailer extends Mailer
                         'alias_id' => $data['aliasId'] ?? null,
                         'is_stored' => $isStored ?? false,
                         'bounce_type' => $bounceType,
-                        'remote_mta' => config('mail.mailers.smtp.host'),
-                        'sender' => $symfonyMessage->getHeaders()->get('X-AnonAddy-Original-Sender')?->getValue(),
+                        'remote_mta' => $this->getRemoteMta(),
+                        'sender' => $symfonyMessage->getHeaders()->get('X-VovaMail-Original-Sender')?->getValue(),
                         'destination' => $symfonyMessage->getTo()[0]?->getAddress(),
                         'email_type' => $emailType,
                         'status' => $status,
@@ -235,6 +235,7 @@ class CustomMailer extends Mailer
 
             if ($symfonySentMessage) {
                 $sentMessage = new SentMessage($symfonySentMessage);
+                $providerMetadata = $this->getTransportMetadata($symfonySentMessage);
 
                 $this->dispatchSentEvent($sentMessage, $data);
 
@@ -248,6 +249,12 @@ class CustomMailer extends Mailer
                             'alias_id' => $data['aliasId'] ?? null,
                             'recipient_id' => $data['recipientId'] ?? null,
                             'email_type' => $data['emailType'],
+                            'provider' => $providerMetadata['provider'] ?? $this->getConfiguredProvider(),
+                            'provider_email_id' => $providerMetadata['id'] ?? null,
+                            'provider_message_id' => $providerMetadata['message_id'] ?? $symfonySentMessage->getMessageId() ?? null,
+                            'provider_status' => $providerMetadata['status'] ?? null,
+                            'provider_last_event' => isset($providerMetadata['status']) ? 'send' : null,
+                            'provider_payload' => $providerMetadata === [] ? null : $providerMetadata,
                             'encrypted' => $encrypted ?? false,
                         ]);
                     } catch (Exception $e) {
@@ -303,7 +310,7 @@ class CustomMailer extends Mailer
 
     protected function getVerpLocalPart($id)
     {
-        $hmac = hash_hmac('sha3-224', $id, config('anonaddy.secret'));
+        $hmac = hash_hmac('sha3-224', $id, config('vovamail.secret'));
         $hmacPayload = substr($hmac, 0, 8);
         $encodedPayload = Base32::encodeUnpadded($id);
         $encodedSignature = Base32::encodeUnpadded($hmacPayload);
@@ -333,5 +340,51 @@ class CustomMailer extends Mailer
         }
 
         return 'soft';
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function getTransportMetadata($symfonySentMessage)
+    {
+        $debug = trim((string) $symfonySentMessage->getDebug());
+
+        if (blank($debug)) {
+            return [];
+        }
+
+        foreach (preg_split('/\r\n|\r|\n/', $debug) as $line) {
+            if (Str::startsWith($line, 'cloudflare:')) {
+                $metadata = json_decode(Str::after($line, 'cloudflare:'), true);
+
+                return is_array($metadata) ? $metadata : [];
+            }
+        }
+
+        return [];
+    }
+
+    protected function getConfiguredProvider(): ?string
+    {
+        $defaultMailer = config('mail.default');
+        $transport = config("mail.mailers.{$defaultMailer}.transport");
+
+        if ($transport === 'cloudflare') {
+            return 'cloudflare';
+        }
+
+        return null;
+    }
+
+    protected function getRemoteMta(): ?string
+    {
+        $defaultMailer = config('mail.default');
+        $transport = config("mail.mailers.{$defaultMailer}.transport");
+
+        if ($transport === 'cloudflare') {
+            return parse_url(config("mail.mailers.{$defaultMailer}.base_url"), PHP_URL_HOST) ?: 'api.cloudflare.com';
+        }
+
+        return config('mail.mailers.smtp.host');
     }
 }

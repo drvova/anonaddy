@@ -85,4 +85,24 @@ class ShowDomainsTest extends TestCase
 
         $this->assertEquals('Records verified for sending.', $response->json('message'));
     }
+
+    #[Test]
+    public function domains_page_includes_cloudflare_setup_metadata_when_cloudflare_mail_is_active()
+    {
+        config([
+            'mail.default' => 'cloudflare',
+            'mail.mailers.cloudflare.transport' => 'cloudflare',
+        ]);
+
+        $response = $this->get('/domains');
+
+        $response->assertSuccessful();
+        $response->assertInertia(fn (Assert $page) => $page
+            ->where('mailProvider', 'cloudflare')
+            ->where('cloudflareDkimSelector', 'cf-bounce')
+            ->where('cloudflareSpfValue', 'include:_spf.mx.cloudflare.net')
+            ->where('cloudflareRoutingUrl', 'https://developers.cloudflare.com/email-service/get-started/route-emails/')
+            ->where('cloudflareSendingUrl', 'https://developers.cloudflare.com/email-service/get-started/send-emails/')
+        );
+    }
 }

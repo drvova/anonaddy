@@ -1,57 +1,53 @@
 @extends('layouts.auth')
 
+@section('title', 'Verify your sign in')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form method="POST" action="{{ route('login.2fa') }}">
-                    @csrf
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
+            </div>
 
-                    <div class="px-6 py-8 md:p-10">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Verify your sign in</h1>
+                        <p class="auth-subtitle">Enter the code from your authenticator app to finish signing in and open your VovaMail workspace.</p>
+                    </div>
 
-                        <h1 class="text-center font-bold text-3xl">
-                            {{ __('2nd Factor Authentication') }}
-                        </h1>
-
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
+                    <form method="POST" action="{{ route('login.2fa') }}">
+                        @csrf
 
                         @if (session('status'))
-                            <div class="text-sm border-t-8 rounded text-green-700 border-green-600 bg-green-100 px-3 py-4 mt-4" role="alert">
+                            <div class="auth-alert auth-alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
                         @endif
 
-                        <div class="mt-8 flex flex-wrap">
-                            <label for="one_time_password" class="block text-grey-700 text-sm mb-2">
-                                {{ __('One Time Token') }}:
-                            </label>
-
-                            <input id="one_time_password" type="text" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('message') ? ' border border-red-500' : '' }}" name="one_time_password" placeholder="123456" autocomplete="one-time-code" required autofocus>
+                        <div class="mb-6">
+                            <label for="one_time_password" class="auth-label">One-time password</label>
+                            <input id="one_time_password" type="text" class="auth-input text-center text-lg tracking-[0.35em]{{ $errors->has('message') ? ' border-red-500' : '' }}" name="one_time_password" placeholder="123456" autocomplete="one-time-code" required autofocus>
 
                             @if ($errors->has('message'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('message') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('message') }}</p>
                             @endif
                         </div>
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center justify-center">
-                        <button type="submit" class="flex justify-center bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
-                            </svg>{{ __('Authenticate') }}
+                        <button type="submit" class="auth-button">
+                            Verify
                         </button>
-                    </div>
-                </form>
-            </div>
-            <div class="flex justify-between mt-6">
-                <form action="{{ route('logout') }}" method="POST" class="text-xs">
-                    {{ csrf_field() }}
-                    <input type="submit" class="bg-transparent cursor-pointer text-white hover:text-indigo-50 no-underline" value="{{ __('Logout') }}">
-                </form>
-                <a class="text-xs text-white hover:text-indigo-50" href="{{ route('login.backup_code.index') }}">Use backup code</a>
+                    </form>
+                </div>
+
+                <div class="auth-footer flex items-center justify-between gap-4">
+                    <form action="{{ route('logout') }}" method="POST">
+                        {{ csrf_field() }}
+                        <button type="submit" class="auth-muted-link cursor-pointer bg-transparent">Log out</button>
+                    </form>
+                    <a class="auth-link" href="{{ route('login.backup_code.index') }}">Use backup code</a>
+                </div>
             </div>
         </div>
     </div>

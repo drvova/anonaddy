@@ -15,8 +15,8 @@ class BlocklistApiMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $secret = config('anonaddy.blocklist.secret', '');
-        $allowedIps = config('anonaddy.blocklist.allowed_ips', []);
+        $secret = config('vovamail.blocklist.secret', '');
+        $allowedIps = config('vovamail.blocklist.allowed_ips', []);
 
         if (config('app.env') === 'production' && $secret === '' && $allowedIps === []) {
             return response()->json(['error' => 'Blocklist API not configured'], 503);

@@ -44,13 +44,13 @@ class RecipientController extends Controller
     {
         $data = ['email' => strtolower($request->email)];
 
-        if (config('anonaddy.auto_verify_new_recipients')) {
+        if (config('vovamail.auto_verify_new_recipients')) {
             $data['email_verified_at'] = now();
         }
 
         $recipient = user()->recipients()->create($data);
 
-        if (! config('anonaddy.auto_verify_new_recipients')) {
+        if (! config('vovamail.auto_verify_new_recipients')) {
             $recipient->sendEmailVerificationNotification();
         }
 

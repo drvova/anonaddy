@@ -140,7 +140,7 @@ class SendFromEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
         if ($this->alias->isCustomDomain()) {
             if (! $this->alias->aliasable->isVerifiedForSending()) {
                 $this->fromEmail = config('mail.from.address');
-                $this->verpDomain = config('anonaddy.domain');
+                $this->verpDomain = config('vovamail.domain');
             }
         }
 
@@ -150,7 +150,7 @@ class SendFromEmail extends Mailable implements ShouldBeEncrypted, ShouldQueue
             ->withSymfonyMessage(function (Email $message) {
 
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'S:'.$this->alias->id.':anonaddy');
+                    ->addTextHeader('Feedback-ID', 'S:'.$this->alias->id.':vovamail');
 
                 // Message-ID is replaced on send from as it can leak parts of the real email
                 $message->getHeaders()->remove('Message-ID');

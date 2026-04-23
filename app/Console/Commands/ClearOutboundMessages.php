@@ -12,7 +12,7 @@ class ClearOutboundMessages extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:clear-outbound-messages';
+    protected $signature = 'vovamail:clear-outbound-messages';
 
     /**
      * The console command description.

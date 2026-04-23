@@ -12,7 +12,7 @@ class ResetBandwidth extends Command
      *
      * @var string
      */
-    protected $signature = 'anonaddy:reset-bandwidth';
+    protected $signature = 'vovamail:reset-bandwidth';
 
     /**
      * The console command description.

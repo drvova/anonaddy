@@ -191,7 +191,7 @@ class SettingsTest extends TestCase
     #[Test]
     public function user_can_update_default_alias_domain()
     {
-        $defaultAliasDomain = $this->user->username.'.anonaddy.me';
+        $defaultAliasDomain = $this->user->username.'.vovamail.xyz';
 
         $response = $this->post('/settings/default-alias-domain', [
             'domain' => $defaultAliasDomain,
@@ -208,7 +208,7 @@ class SettingsTest extends TestCase
     public function user_cannot_update_default_alias_domain_if_invalid()
     {
         $response = $this->post('/settings/default-alias-domain', [
-            'domain' => 'invalid.anonaddy.me',
+            'domain' => 'invalid.vovamail.xyz',
         ]);
 
         $response->assertStatus(302);
@@ -702,7 +702,7 @@ class SettingsTest extends TestCase
 
         $uuidAlias = Alias::factory()->create([
             'user_id' => $this->user->id,
-            'domain' => 'anonaddy.me',
+            'domain' => 'vovamail.xyz',
             'extension' => 'ext',
             'description' => 'Alias',
             'emails_forwarded' => 10,

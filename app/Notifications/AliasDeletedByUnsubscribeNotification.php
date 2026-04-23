@@ -52,7 +52,7 @@ class AliasDeletedByUnsubscribeNotification extends Notification implements Shou
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'ADLN:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'ADLN:vovamail');
             });
     }
 

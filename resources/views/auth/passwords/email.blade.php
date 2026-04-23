@@ -1,81 +1,67 @@
 @extends('layouts.auth')
 
+@section('title', 'Reset password')
+
 @section('content')
-    <div class="p-6 bg-indigo-900 min-h-screen flex justify-center items-center">
-        <div class="w-full max-w-md">
-            <div class="flex flex-col break-words bg-white border-2 rounded-lg shadow-lg overflow-hidden">
-                <form method="POST" action="{{ route('password.email') }}">
-                    @csrf
+    <div class="auth-shell">
+        <div class="auth-grid">
+            <div>
+                @include('auth.partials.brand')
+                @include('auth.partials.aside')
+            </div>
 
-                    <div class="px-6 py-8 md:p-10">
+            <div>
+                <div class="auth-panel">
+                    <div class="auth-panel-header">
+                        <h1 class="auth-title">Reset your password</h1>
+                        <p class="auth-subtitle">Enter your username and we&apos;ll send a reset link to the inbox already connected to your account.</p>
+                    </div>
 
-                        <h1 class="text-center font-bold text-3xl">
-                            {{ __('Reset Password') }}
-                        </h1>
-
-                        <div class="mx-auto mt-6 w-24 border-b-2 border-grey-200"></div>
+                    <form method="POST" action="{{ route('password.email') }}">
+                        @csrf
 
                         @if (session('status'))
-                            <div class="text-sm border-t-8 rounded text-green-700 border-green-600 bg-green-100 px-3 py-4 mt-4" role="alert">
+                            <div class="auth-alert auth-alert-success" role="alert">
                                 {{ session('status') }}
                             </div>
                         @endif
 
-                        <div class="mt-8 mb-6">
-                            <div class="flex items-center justify-between mb-2">
-                                <label for="username" class="block text-grey-700 text-sm font-medium leading-6">
-                                    {{ __('Username') }}
-                                </label>
-                                <div class="text-sm">
-                                    <a class="whitespace-nowrap no-underline font-medium text-indigo-600 hover:text-indigo-500" tabindex="-1" href="{{ route('username.reminder.show') }}">
-                                        {{ __('Forgot Username?') }}
-                                    </a>
-                                </div>
+                        <div class="auth-input-group">
+                            <div class="mb-2 flex items-center justify-between">
+                                <label for="username" class="auth-label mb-0">Username</label>
+                                <a class="auth-link text-xs" href="{{ route('username.reminder.show') }}">Forgot username?</a>
                             </div>
-
-                            <input id="username" type="text" class="appearance-none bg-grey-100 rounded w-full p-3 text-grey-700 focus:ring{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required>
-
-                            <p class="text-xs mt-1 text-grey-600">Note: your username is <b>not</b> your email address.</p>
+                            <input id="username" type="text" class="auth-input{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required>
+                            <p class="auth-help">Use your VovaMail username here, not your email address.</p>
 
                             @if ($errors->has('username'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('username') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('username') }}</p>
                             @endif
                         </div>
 
-                        <div class="flex flex-wrap mb-4 items-center">
-                            <label for="captcha" class="block w-full text-grey-700 text-sm">
-                                Human Verification (click image to refresh)
-                            </label>
-
-                            <div class="flex grow flex-wrap">
-                                <img src="{{captcha_src('mini')}}" onclick="this.src='/captcha/mini?'+Math.random()" class="cursor-pointer shrink-0 h-12 w-16 mr-2 mt-2" title="Click to refresh image" alt="captcha">
-
-                                <input id="captcha" type="text" class="grow mt-2 appearance-none bg-grey-100 rounded p-3 text-grey-700 focus:ring{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
+                        <div class="mb-6">
+                            <label for="captcha" class="auth-label">Human verification</label>
+                            <div class="flex gap-2">
+                                <img src="{{ captcha_src('mini') }}" onclick="this.src='/captcha/mini?'+Math.random()" class="h-12 w-16 shrink-0 cursor-pointer rounded border border-grey-700" title="Click to refresh image" alt="captcha">
+                                <input id="captcha" type="text" class="auth-input flex-1{{ $errors->has('captcha') ? ' border-red-500' : '' }}" name="captcha" placeholder="Enter the text you see" required>
                             </div>
+                            <p class="auth-help">Click the image if you need a fresh challenge.</p>
 
                             @if ($errors->has('captcha'))
-                                <p class="text-red-500 text-xs italic mt-4">
-                                    {{ $errors->first('captcha') }}
-                                </p>
+                                <p class="auth-error">{{ $errors->first('captcha') }}</p>
                             @endif
                         </div>
 
-                    </div>
-
-                    <div class="px-6 md:px-10 py-4 bg-grey-50 border-t border-grey-100 flex flex-wrap items-center justify-center">
-                        <button type="submit" class="bg-cyan-400 w-full hover:bg-cyan-300 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-                            {{ __('Send Password Reset Link') }}
+                        <button type="submit" class="auth-button">
+                            Send reset link
                         </button>
-                    </div>
-                </form>
-            </div>
-                <p class="w-full text-xs text-center mt-6">
-                    <a class="text-white hover:text-indigo-50 no-underline" href="{{ route('login') }}">
-                        Back to login
-                    </a>
+                    </form>
+                </div>
+
+                <p class="auth-footer text-center lg:text-left">
+                    <a class="auth-link" href="{{ route('login') }}">Back to sign in</a>
                 </p>
+            </div>
         </div>
     </div>
 @endsection

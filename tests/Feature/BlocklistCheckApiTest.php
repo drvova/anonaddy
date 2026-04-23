@@ -18,16 +18,16 @@ class BlocklistCheckApiTest extends TestCase
     {
         parent::setUp();
         $this->user = $this->createUser('johndoe');
-        config(['anonaddy.blocklist.allowed_ips' => ['127.0.0.1'], 'anonaddy.blocklist.secret' => '']);
+        config(['vovamail.blocklist.allowed_ips' => ['127.0.0.1'], 'vovamail.blocklist.secret' => '']);
     }
 
     #[Test]
     public function returns_401_when_secret_required_and_missing(): void
     {
-        config(['anonaddy.blocklist.secret' => 'shared-secret']);
-        config(['anonaddy.blocklist.allowed_ips' => ['127.0.0.1']]);
+        config(['vovamail.blocklist.secret' => 'shared-secret']);
+        config(['vovamail.blocklist.allowed_ips' => ['127.0.0.1']]);
 
-        $response = $this->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com');
+        $response = $this->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com');
 
         $response->assertStatus(401)->assertJson(['error' => 'Unauthorized']);
     }
@@ -35,10 +35,10 @@ class BlocklistCheckApiTest extends TestCase
     #[Test]
     public function returns_401_when_secret_required_and_wrong(): void
     {
-        config(['anonaddy.blocklist.secret' => 'shared-secret']);
-        config(['anonaddy.blocklist.allowed_ips' => ['127.0.0.1']]);
+        config(['vovamail.blocklist.secret' => 'shared-secret']);
+        config(['vovamail.blocklist.allowed_ips' => ['127.0.0.1']]);
 
-        $response = $this->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com', [
+        $response = $this->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com', [
             'X-Blocklist-Secret' => 'wrong-secret',
         ]);
 
@@ -48,10 +48,10 @@ class BlocklistCheckApiTest extends TestCase
     #[Test]
     public function returns_403_when_ip_not_allowed(): void
     {
-        config(['anonaddy.blocklist.allowed_ips' => ['10.0.0.1']]);
+        config(['vovamail.blocklist.allowed_ips' => ['10.0.0.1']]);
 
         $response = $this->withServerVariables(['REMOTE_ADDR' => '192.168.1.1'])
-            ->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com');
+            ->getJson('/api/blocklist-check?recipient=test@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com');
 
         $response->assertStatus(403)->assertJson(['error' => 'Forbidden']);
     }
@@ -76,11 +76,11 @@ class BlocklistCheckApiTest extends TestCase
     public function returns_block_false_when_not_blocked(): void
     {
         Alias::factory()->create([
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'user_id' => $this->user->id,
         ]);
 
-        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=newsletter@example.com');
+        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=newsletter@example.com');
 
         $response->assertStatus(200)->assertJson(['block' => false]);
     }
@@ -89,7 +89,7 @@ class BlocklistCheckApiTest extends TestCase
     public function returns_block_true_when_email_blocked(): void
     {
         Alias::factory()->create([
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'user_id' => $this->user->id,
         ]);
         BlockedSender::create([
@@ -98,7 +98,7 @@ class BlocklistCheckApiTest extends TestCase
             'value' => 'spam@example.com',
         ]);
 
-        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com');
+        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com');
 
         $response->assertStatus(200)->assertJson(['block' => true]);
     }
@@ -107,7 +107,7 @@ class BlocklistCheckApiTest extends TestCase
     public function returns_block_true_when_domain_blocked(): void
     {
         Alias::factory()->create([
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'user_id' => $this->user->id,
         ]);
         BlockedSender::create([
@@ -116,7 +116,7 @@ class BlocklistCheckApiTest extends TestCase
             'value' => 'spammer.com',
         ]);
 
-        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=news@spammer.com');
+        $response = $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=news@spammer.com');
 
         $response->assertStatus(200)->assertJson(['block' => true]);
     }
@@ -125,7 +125,7 @@ class BlocklistCheckApiTest extends TestCase
     public function increments_blocked_count_and_last_blocked_on_blocked_sender(): void
     {
         Alias::factory()->create([
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'user_id' => $this->user->id,
         ]);
         $blockedSender = BlockedSender::create([
@@ -137,14 +137,14 @@ class BlocklistCheckApiTest extends TestCase
         $this->assertEquals(0, $blockedSender->blocked);
         $this->assertNull($blockedSender->last_blocked);
 
-        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com')
+        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com')
             ->assertJson(['block' => true]);
 
         $blockedSender->refresh();
         $this->assertEquals(1, $blockedSender->blocked);
         $this->assertNotNull($blockedSender->last_blocked);
 
-        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=spam@example.com')
+        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=spam@example.com')
             ->assertJson(['block' => true]);
 
         $blockedSender->refresh();
@@ -155,7 +155,7 @@ class BlocklistCheckApiTest extends TestCase
     public function increments_blocked_count_on_domain_blocked_sender(): void
     {
         Alias::factory()->create([
-            'email' => 'ebay@johndoe.'.config('anonaddy.domain'),
+            'email' => 'ebay@johndoe.'.config('vovamail.domain'),
             'user_id' => $this->user->id,
         ]);
         $blockedSender = BlockedSender::create([
@@ -166,7 +166,7 @@ class BlocklistCheckApiTest extends TestCase
 
         $this->assertEquals(0, $blockedSender->blocked);
 
-        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('anonaddy.domain').'&from_email=news@spammer.com')
+        $this->getJson('/api/blocklist-check?recipient=ebay@johndoe.'.config('vovamail.domain').'&from_email=news@spammer.com')
             ->assertJson(['block' => true]);
 
         $blockedSender->refresh();
@@ -177,8 +177,8 @@ class BlocklistCheckApiTest extends TestCase
     #[Test]
     public function returns_200_with_secret_header_when_secret_required(): void
     {
-        config(['anonaddy.blocklist.secret' => 'shared-secret']);
-        config(['anonaddy.blocklist.allowed_ips' => []]);
+        config(['vovamail.blocklist.secret' => 'shared-secret']);
+        config(['vovamail.blocklist.allowed_ips' => []]);
 
         $response = $this->getJson('/api/blocklist-check?recipient=foo@bar.com&from_email=a@b.com', [
             'X-Blocklist-Secret' => 'shared-secret',

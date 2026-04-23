@@ -51,7 +51,7 @@ class DomainUnverifiedForSending extends Notification implements ShouldBeEncrypt
         $fingerprint = $recipient->should_encrypt ? $recipient->fingerprint : null;
 
         return (new MailMessage)
-            ->subject('Your domain has been unverified for sending on addy.io')
+            ->subject('Your domain has been unverified for sending on vovamail.xyz')
             ->markdown('mail.domain_unverified_for_sending', [
                 'domain' => $this->domain,
                 'reason' => $this->reason,
@@ -62,7 +62,7 @@ class DomainUnverifiedForSending extends Notification implements ShouldBeEncrypt
             ])
             ->withSymfonyMessage(function (Email $message) {
                 $message->getHeaders()
-                    ->addTextHeader('Feedback-ID', 'DUS:anonaddy');
+                    ->addTextHeader('Feedback-ID', 'DUS:vovamail');
             });
     }
 

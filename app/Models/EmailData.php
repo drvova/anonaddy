@@ -115,11 +115,11 @@ class EmailData
         }
 
         if ($originalCc = $parser->getHeader('cc')) {
-            $this->originalCc = $resend ? $parser->getHeader('X-AnonAddy-Original-Cc') : $originalCc;
+            $this->originalCc = $resend ? $parser->getHeader('X-VovaMail-Original-Cc') : $originalCc;
         }
 
         if ($originalTo = $parser->getHeader('to')) {
-            $this->originalTo = $resend ? $parser->getHeader('X-AnonAddy-Original-To') : $originalTo;
+            $this->originalTo = $resend ? $parser->getHeader('X-VovaMail-Original-To') : $originalTo;
         }
 
         $this->subject = base64_encode($parser->getHeader('subject'));
@@ -135,9 +135,9 @@ class EmailData
         $this->references = base64_encode($parser->getHeader('References'));
 
         if ($resend) {
-            $this->originalFromHeader = base64_encode($parser->getHeader('X-AnonAddy-Original-From-Header'));
-            $this->originalEnvelopeFrom = $parser->getHeader('X-AnonAddy-Original-Envelope-From');
-            $this->originalReplyToHeader = base64_encode($parser->getHeader('X-AnonAddy-Original-Reply-To-Header'));
+            $this->originalFromHeader = base64_encode($parser->getHeader('X-VovaMail-Original-From-Header'));
+            $this->originalEnvelopeFrom = $parser->getHeader('X-VovaMail-Original-Envelope-From');
+            $this->originalReplyToHeader = base64_encode($parser->getHeader('X-VovaMail-Original-Reply-To-Header'));
         } else {
             $this->originalFromHeader = base64_encode($parser->getHeader('From'));
             $this->originalEnvelopeFrom = $sender;
@@ -145,10 +145,10 @@ class EmailData
         }
 
         $this->originalSenderHeader = base64_encode($parser->getHeader('Sender'));
-        $this->authenticationResults = $parser->getHeader('X-AnonAddy-Authentication-Results');
+        $this->authenticationResults = $parser->getHeader('X-VovaMail-Authentication-Results');
         $this->receivedHeaders = $parser->getRawHeader('Received');
 
-        $this->isSpam = $parser->getHeader('X-AnonAddy-Spam') === 'Yes';
+        $this->isSpam = $parser->getHeader('X-VovaMail-Spam') === 'Yes';
         $this->failedDmarc = Str::contains($this->authenticationResults, 'dmarc=fail');
 
         $isReplyOrSend = in_array($emailType, ['R', 'S']);
@@ -157,9 +157,9 @@ class EmailData
             $this->encryptedParts = $parser->getAttachments();
 
             // Only try to decrypt Replies or Sends from aliases
-            if ($isReplyOrSend && config('anonaddy.signing_key_fingerprint')) {
+            if ($isReplyOrSend && config('vovamail.signing_key_fingerprint')) {
 
-                // Check if encrypted with addy.io public key and needs decrypting
+                // Check if encrypted with vovamail.xyz public key and needs decrypting
                 $part = collect($this->encryptedParts)->filter(function ($part) {
                     return $part->getContentType() === 'application/octet-stream';
                 })->first();
@@ -176,7 +176,7 @@ class EmailData
         if (preg_match('/^-----BEGIN PGP MESSAGE-----([A-Za-z0-9+=\/\n]+)-----END PGP MESSAGE-----$/', $parser->getMessageBody('text'))) {
             $this->isInlineEncrypted = true;
 
-            if ($isReplyOrSend && config('anonaddy.signing_key_fingerprint')) {
+            if ($isReplyOrSend && config('vovamail.signing_key_fingerprint')) {
                 $this->attemptToDecryptInline($parser->getMessageBody('text'));
             }
         }
@@ -223,7 +223,7 @@ class EmailData
             $gnupg = new \gnupg;
 
             $gnupg->cleardecryptkeys();
-            $gnupg->adddecryptkey(config('anonaddy.signing_key_fingerprint'), null);
+            $gnupg->adddecryptkey(config('vovamail.signing_key_fingerprint'), null);
 
             $encrypted = stream_get_contents($part->getStream());
 
@@ -257,7 +257,7 @@ class EmailData
             $gnupg = new \gnupg;
 
             $gnupg->cleardecryptkeys();
-            $gnupg->adddecryptkey(config('anonaddy.signing_key_fingerprint'), null);
+            $gnupg->adddecryptkey(config('vovamail.signing_key_fingerprint'), null);
 
             $decrypted = $gnupg->decrypt($text);
 
