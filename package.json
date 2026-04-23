@@ -1,5 +1,10 @@
 {
     "private": true,
+    "packageManager": "npm@11.6.0",
+    "engines": {
+        "node": ">=22.0.0 <23",
+        "npm": ">=11.6.0 <12"
+    },
     "scripts": {
         "dev": "vite --host",
         "production": "vite build",
