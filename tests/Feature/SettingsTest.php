@@ -20,7 +20,9 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
+use Maatwebsite\Excel\HeadingRowImport;
 use PHPUnit\Framework\Attributes\Test;
+use RuntimeException;
 use Tests\TestCase;
 
 class SettingsTest extends TestCase
@@ -856,6 +858,22 @@ class SettingsTest extends TestCase
         Excel::assertQueued('import-aliases-template.csv', function (AliasesImport $import) {
             return $import->getDomains()->first()->domain === 'example.com' && $import->getRecipientIds()[0] === $this->user->default_recipient_id;
         });
+    }
+
+    #[Test]
+    public function alias_import_failures_are_reported_to_the_user()
+    {
+        $this->mock(HeadingRowImport::class, function ($mock) {
+            $mock->shouldReceive('toCollection')->once()->andThrow(new RuntimeException('Unable to parse headers.'));
+        });
+
+        $response = $this->actingAs($this->user)
+            ->post('/settings/aliases/import', [
+                'aliases_import' => new UploadedFile(base_path('tests/files/import-aliases-template.csv'), 'import-aliases-template.csv', 'csv', null, true),
+            ]);
+
+        $response->assertStatus(302);
+        $response->assertSessionHasErrors(['aliases_import']);
     }
 
     #[Test]

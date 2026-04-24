@@ -53,40 +53,30 @@ class GitVersionHelper
     {
         $path = base_path();
 
-        // Get version string from git
-        $command = 'git describe --tags $(git rev-list --tags --max-count=1)';
+        $latestTagCommit = self::runGit(['git', 'rev-list', '--tags', '--max-count=1'], $path);
 
-        if (class_exists('\Symfony\Component\Process\Process')) {
-            try {
-                if (method_exists(Process::class, 'fromShellCommandline')) {
-                    $process = Process::fromShellCommandline($command, $path);
-                } else {
-                    $process = new Process([$command], $path);
-                }
-
-                $process->mustRun();
-                $output = $process->getOutput();
-            } catch (RuntimeException $e) {
-                // Do nothing
-                $output = null;
-            }
-        } else {
-            // Remember current directory
-            $dir = getcwd();
-
-            // Change to base directory
-            chdir($path);
-
-            $output = shell_exec($command);
-
-            // Change back
-            chdir($dir);
+        if (! $latestTagCommit) {
+            return str(config('vovamail.version'));
         }
+
+        $output = self::runGit(['git', 'describe', '--tags', trim($latestTagCommit)], $path);
 
         if (! $output) {
             return str(config('vovamail.version'));
         }
 
         return Str::of($output)->after('v')->trim();
+    }
+
+    protected static function runGit(array $command, string $path): ?string
+    {
+        try {
+            $process = new Process($command, $path);
+            $process->mustRun();
+
+            return $process->getOutput();
+        } catch (RuntimeException) {
+            return null;
+        }
     }
 }

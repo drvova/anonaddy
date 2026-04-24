@@ -568,7 +568,13 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function deleteKeyFromKeyring($fingerprint): void
     {
+        if (! class_exists('gnupg')) {
+            throw new \RuntimeException('GnuPG extension is not installed.');
+        }
+
         $gnupg = new \gnupg;
+        $gnupg->seterrormode(\gnupg::ERROR_EXCEPTION);
+        $key = $gnupg->keyinfo($fingerprint);
 
         $recipientsUsingFingerprint = $this
             ->recipients()

@@ -68,6 +68,25 @@ class ParsePostfixMailLogTest extends TestCase
         $this->assertDatabaseCount('failed_deliveries', 0);
     }
 
+    public function test_it_rejects_non_file_log_paths()
+    {
+        Config::set('vovamail.postfix_log_path', storage_path('app'));
+
+        $this->artisan('vovamail:parse-postfix-mail-log')->assertExitCode(1);
+    }
+
+    public function test_it_skips_rejection_lines_with_invalid_timestamps()
+    {
+        Alias::factory()->create(['user_id' => $this->user->id, 'email' => 'test@vovamail.xyz']);
+
+        $logContent = "NotADate server postfix/smtpd[12345]: NOQUEUE: reject: RCPT from unknown[1.2.3.4]: 450 4.7.1 Client host rejected; from=<s@x.com> to=<test@vovamail.xyz> proto=ESMTP helo=<1.2.3.4>\n";
+        file_put_contents($this->logPath, $logContent);
+
+        $this->artisan('vovamail:parse-postfix-mail-log')->assertExitCode(0);
+
+        $this->assertDatabaseCount('failed_deliveries', 0);
+    }
+
     public function test_it_handles_log_rotation_and_maintains_position()
     {
         $alias = Alias::factory()->create(['user_id' => $this->user->id, 'email' => 'test@vovamail.xyz']);

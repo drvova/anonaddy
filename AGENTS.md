@@ -1,3 +1,6 @@
+SELF-IMPROVEMENT LEDGER (APPEND-ONLY):
+- 2026-04-24: Seam `php artisan route:list --except-vendor` failed; root cause `RecipientKeyController` instantiated `new \gnupg` during route registration when the PHP GnuPG extension was unavailable; canonical fix deferred GnuPG construction to recipient-key actions and returns HTTP 503 when unavailable; validation seam `php artisan route:list --except-vendor` listed 173 routes successfully.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

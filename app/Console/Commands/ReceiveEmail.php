@@ -3,12 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Services\InboundEmailProcessor;
+use App\Services\StdinReader;
 use Illuminate\Console\Command;
 
 class ReceiveEmail extends Command
 {
     protected $signature = 'vovamail:receive-email
-                            {file=stream : The file of the email}
                             {--sender= : The sender of the email}
                             {--recipient=* : The recipient of the email}
                             {--local_part=* : The local part of the recipient}
@@ -18,21 +18,16 @@ class ReceiveEmail extends Command
 
     protected $description = 'Receive email from postfix pipe';
 
-    public function handle(InboundEmailProcessor $processor): int
+    public function handle(InboundEmailProcessor $processor, StdinReader $stdin): int
     {
         try {
-            $file = $this->argument('file');
+            if ($this->hasMismatchedRecipientOptions()) {
+                $this->error('4.3.0 Recipient option counts do not match.');
 
-            if ($file === 'stream') {
-                $fd = fopen('php://stdin', 'r');
-                $rawMime = '';
-                while (! feof($fd)) {
-                    $rawMime .= fread($fd, 1024);
-                }
-                fclose($fd);
-            } else {
-                $rawMime = file_get_contents($file);
+                return 1;
             }
+
+            $rawMime = $stdin->read();
 
             $recipients = collect($this->option('recipient'))->map(function ($item, $key) {
                 return [
@@ -63,5 +58,14 @@ class ReceiveEmail extends Command
 
             return 1;
         }
+    }
+
+    protected function hasMismatchedRecipientOptions(): bool
+    {
+        $recipientCount = count($this->option('recipient'));
+
+        return $recipientCount !== count($this->option('local_part'))
+            || $recipientCount !== count($this->option('extension'))
+            || $recipientCount !== count($this->option('domain'));
     }
 }

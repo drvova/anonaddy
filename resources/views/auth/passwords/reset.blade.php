@@ -23,7 +23,7 @@
 
                         <div class="auth-input-group">
                             <label for="username" class="auth-label">Username</label>
-                            <input id="username" type="text" class="auth-input{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username') }}" placeholder="johndoe" required autofocus>
+                            <input id="username" type="text" class="auth-input{{ $errors->has('username') ? ' border-red-500' : '' }}" name="username" value="{{ old('username', $username) }}" placeholder="johndoe" required autofocus>
 
                             @if ($errors->has('username'))
                                 <p class="auth-error">{{ $errors->first('username') }}</p>

@@ -252,6 +252,10 @@ class RecipientsTest extends TestCase
     #[Test]
     public function user_can_add_gpg_key_to_recipient()
     {
+        if (! class_exists('gnupg')) {
+            $this->markTestSkipped('GnuPG extension is not installed.');
+        }
+
         $gnupg = new \gnupg;
         $gnupg->deletekey('26A987650243B28802524E2F809FD0D502E2F695');
 
@@ -286,6 +290,10 @@ class RecipientsTest extends TestCase
     #[Test]
     public function gpg_key_must_be_valid()
     {
+        if (! class_exists('gnupg')) {
+            $this->markTestSkipped('GnuPG extension is not installed.');
+        }
+
         $recipient = Recipient::factory()->create([
             'user_id' => $this->user->id,
         ]);
@@ -301,6 +309,10 @@ class RecipientsTest extends TestCase
     #[Test]
     public function user_can_remove_gpg_key_from_recipient()
     {
+        if (! class_exists('gnupg')) {
+            $this->markTestSkipped('GnuPG extension is not installed.');
+        }
+
         $gnupg = new \gnupg;
         $gnupg->import(file_get_contents(base_path('tests/keys/VovaMailPublicKey.asc')));
 
@@ -315,6 +327,30 @@ class RecipientsTest extends TestCase
         $response->assertStatus(204);
         $this->assertNull($this->user->recipients()->find($recipient->id)->fingerprint);
         $this->assertFalse($this->user->recipients()->find($recipient->id)->should_encrypt);
+    }
+
+    #[Test]
+    public function gpg_key_routes_report_when_gnupg_is_unavailable()
+    {
+        if (class_exists('gnupg')) {
+            $this->markTestSkipped('GnuPG extension is installed.');
+        }
+
+        $recipient = Recipient::factory()->create([
+            'user_id' => $this->user->id,
+        ]);
+
+        $response = $this->json('PATCH', '/api/v1/recipient-keys/'.$recipient->id, [
+            'key_data' => file_get_contents(base_path('tests/keys/VovaMailPublicKey.asc')),
+        ]);
+
+        $response->assertStatus(503);
+    }
+
+    #[Test]
+    public function route_listing_does_not_require_the_gnupg_extension()
+    {
+        $this->artisan('route:list', ['--except-vendor' => true])->assertExitCode(0);
     }
 
     #[Test]

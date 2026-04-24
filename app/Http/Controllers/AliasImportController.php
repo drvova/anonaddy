@@ -19,12 +19,12 @@ class AliasImportController extends Controller
         $this->middleware('throttle:1,1'); // Limit to 1 upload per minute
     }
 
-    public function import(ImportAliasesRequest $request)
+    public function import(ImportAliasesRequest $request, HeadingRowImport $headingRows)
     {
         try {
             $import = new AliasesImport(user());
 
-            $headings = (new HeadingRowImport)->toCollection($request->file('aliases_import'))->flatten();
+            $headings = $headingRows->toCollection($request->file('aliases_import'))->flatten();
 
             // Validate the heading row
             if (($headings->diff(['alias', 'description', 'recipients'])->count() || $headings->count() !== 3) && ! App::environment('testing')) {
@@ -32,8 +32,10 @@ class AliasImportController extends Controller
             }
 
             $import->queue($request->file('aliases_import'));
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             report($e);
+
+            return back()->withErrors(['aliases_import' => 'The aliases import file could not be processed. Please check the file and try again.']);
         }
 
         return back()->with(['flash' => 'File uploaded successfully, your aliases are being imported']);

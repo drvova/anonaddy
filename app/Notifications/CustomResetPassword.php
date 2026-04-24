@@ -112,7 +112,7 @@ class CustomResetPassword extends Notification implements ShouldBeEncrypted, Sho
 
         return url(route('password.reset', [
             'token' => $this->token,
-            'email' => $notifiable->getEmailForPasswordReset(),
+            'username' => $notifiable->username,
         ], false));
     }
 

@@ -56,11 +56,11 @@ class OpenPGPEncrypter
 
     public function __construct($signingKey = null, $recipientKey = null, $gnupgHome = null, $usesProtectedHeaders = false)
     {
-        $this->initGNUPG();
         $this->signingKey = $signingKey;
         $this->recipientKey = $recipientKey;
         $this->gnupgHome = $gnupgHome;
         $this->usesProtectedHeaders = $usesProtectedHeaders;
+        $this->initGNUPG();
     }
 
     /**
@@ -219,11 +219,50 @@ class OpenPGPEncrypter
             $this->gnupgHome = getenv('HOME').'/.gnupg';
         }
 
+        $this->gnupgHome = $this->normalizeGnuPgHome($this->gnupgHome);
+        $this->validateGnuPgHome($this->gnupgHome);
+
         if (! $this->gnupg) {
             $this->gnupg = new \gnupg;
         }
 
+        if ($this->gnupgHome && method_exists($this->gnupg, 'sethomedir')) {
+            $this->gnupg->sethomedir($this->gnupgHome);
+        }
+
         $this->gnupg->seterrormode(\gnupg::ERROR_EXCEPTION);
+    }
+
+    protected function normalizeGnuPgHome(?string $path): ?string
+    {
+        if (! $path || ! Str::startsWith($path, '~/')) {
+            return $path;
+        }
+
+        $home = $_SERVER['HOME'] ?? getenv('HOME') ?: null;
+
+        if (! $home) {
+            return $path;
+        }
+
+        return $home.substr($path, 1);
+    }
+
+    protected function validateGnuPgHome(?string $path): void
+    {
+        if (! $path) {
+            return;
+        }
+
+        if (! is_dir($path) || ! is_readable($path) || ! is_writable($path)) {
+            throw new RuntimeException("GnuPG home is not a readable and writable directory: {$path}");
+        }
+
+        $permissions = fileperms($path);
+
+        if ($permissions !== false && DIRECTORY_SEPARATOR === '/' && ($permissions & 0077) !== 0) {
+            throw new RuntimeException("GnuPG home must not be accessible by group or other users: {$path}");
+        }
     }
 
     /**

@@ -250,6 +250,18 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | GnuPG Home Path
+    |--------------------------------------------------------------------------
+    |
+    | This directory stores the GnuPG keyring used for OpenPGP encryption.
+    | It must be readable and writable only by the application user.
+    |
+    */
+
+    'gnupg_home' => env('VOVAMAIL_GNUPG_HOME', '~/.gnupg'),
+
+    /*
+    |--------------------------------------------------------------------------
     | DKIM Signing Key Path
     |--------------------------------------------------------------------------
     |

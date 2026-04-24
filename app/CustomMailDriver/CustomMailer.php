@@ -75,7 +75,7 @@ class CustomMailer extends Mailer
             $recipient = Recipient::find($data['recipientId']);
 
             try {
-                $encrypter = new OpenPGPEncrypter(config('vovamail.signing_key_fingerprint'), $data['fingerprint'], '~/.gnupg', $recipient->protected_headers);
+                $encrypter = new OpenPGPEncrypter(config('vovamail.signing_key_fingerprint'), $data['fingerprint'], config('vovamail.gnupg_home'), $recipient->protected_headers);
 
                 $encryptedSymfonyMessage = $recipient->inline_encryption ? $encrypter->encryptInline($symfonyMessage) : $encrypter->encrypt($symfonyMessage);
             } catch (Exception $e) {

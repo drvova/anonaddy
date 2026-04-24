@@ -8,18 +8,15 @@ use App\Http\Resources\RecipientResource;
 
 class RecipientKeyController extends Controller
 {
-    protected $gnupg;
-
-    public function __construct()
-    {
-        $this->gnupg = new \gnupg;
-    }
-
     public function update(UpdateRecipientKeyRequest $request, $id)
     {
+        if (! class_exists('gnupg')) {
+            return response('GnuPG extension is not installed.', 503);
+        }
+
         $recipient = user()->recipients()->findOrFail($id);
 
-        $info = $this->gnupg->import($request->key_data);
+        $info = $this->gnupg()->import($request->key_data);
 
         if (! $info || ! $info['fingerprint']) {
             return response('Key could not be imported', 404);
@@ -35,6 +32,10 @@ class RecipientKeyController extends Controller
 
     public function destroy($id)
     {
+        if (! class_exists('gnupg')) {
+            return response('GnuPG extension is not installed.', 503);
+        }
+
         $recipient = user()->recipients()->findOrFail($id);
 
         user()->deleteKeyFromKeyring($recipient->fingerprint);
@@ -49,5 +50,13 @@ class RecipientKeyController extends Controller
         ]);
 
         return response('', 204);
+    }
+
+    protected function gnupg(): \gnupg
+    {
+        $gnupg = new \gnupg;
+        $gnupg->seterrormode(\gnupg::ERROR_EXCEPTION);
+
+        return $gnupg;
     }
 }

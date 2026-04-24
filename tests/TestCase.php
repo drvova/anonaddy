@@ -5,8 +5,10 @@ namespace Tests;
 use App\Models\Recipient;
 use App\Models\User;
 use App\Models\Username;
+use App\Services\StdinReader;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Testing\PendingCommand;
 use Illuminate\Testing\TestResponse;
 use Laravel\Sanctum\Sanctum;
 use PHPUnit\Framework\Assert;
@@ -52,6 +54,27 @@ abstract class TestCase extends BaseTestCase
         $this->user = $this->createUser();
 
         Sanctum::actingAs($this->user, []);
+    }
+
+    protected function receiveEmailFromFixture(string $fixture, array $parameters): PendingCommand
+    {
+        $this->app->instance(StdinReader::class, new class($fixture) extends StdinReader
+        {
+            public function __construct(private readonly string $fixture) {}
+
+            public function read(): string
+            {
+                $contents = file_get_contents(base_path($this->fixture));
+
+                if ($contents === false) {
+                    throw new \RuntimeException("Unable to read fixture [{$this->fixture}].");
+                }
+
+                return $contents;
+            }
+        });
+
+        return $this->artisan('vovamail:receive-email', $parameters);
     }
 
     protected function createUser(?string $username = null, ?string $email = null, array $userAttributes = [])

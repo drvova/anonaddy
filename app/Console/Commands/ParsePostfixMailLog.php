@@ -37,7 +37,7 @@ class ParsePostfixMailLog extends Command
     {
         $logPath = config('vovamail.postfix_log_path', '/var/log/mail.log');
 
-        if (! file_exists($logPath) || ! is_readable($logPath)) {
+        if (! is_file($logPath) || ! is_readable($logPath)) {
             $this->error("Cannot read log file: {$logPath}");
 
             return 1;
@@ -104,7 +104,12 @@ class ParsePostfixMailLog extends Command
                         $attemptedAt->subYear();
                     }
                 } catch (\Exception $e) {
-                    $attemptedAt = now();
+                    Log::warning('Skipped postfix rejection with invalid timestamp.', [
+                        'timestamp' => $timestampStr,
+                        'line' => trim($line),
+                    ]);
+
+                    continue;
                 }
 
                 $recipientLower = strtolower($recipient);
