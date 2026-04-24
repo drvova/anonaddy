@@ -2,7 +2,7 @@
 {{-- Header --}}
 @slot('header')
 @component('mail::header', ['url' => config('app.url')])
-<img class="logo" alt="vovamail.xyz Logo" src="{{ config('app.url') }}/logo.png">
+<img class="logo" alt="vovamail.xyz Logo" src="{{ config('app.url') }}/svg/logo.svg">
 @endcomponent
 @endslot
 
