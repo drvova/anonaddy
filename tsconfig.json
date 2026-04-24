@@ -12,10 +12,7 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "isolatedModules": true,
-    "paths": {
-      "ziggy-js": ["./vendor/tightenco/ziggy/dist/index.d.ts"]
-    }
+    "isolatedModules": true
   },
   "include": ["resources/js/**/*.ts", "resources/js/**/*.tsx"]
 }

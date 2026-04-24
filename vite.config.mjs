@@ -2,7 +2,6 @@ import { defineConfig, loadEnv } from 'vite'
 import laravel from 'laravel-vite-plugin'
 import solid from 'vite-plugin-solid'
 import fs from 'fs'
-import { resolve } from 'path'
 
 const resolveHost = appUrl => {
   if (!appUrl) {
@@ -57,10 +56,5 @@ export default defineConfig(({ mode }) => {
       }),
     ],
     base: '',
-    resolve: {
-      alias: {
-        'ziggy-js': resolve('vendor/tightenco/ziggy'),
-      },
-    },
   }
 })
