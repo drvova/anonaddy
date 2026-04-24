@@ -36,7 +36,7 @@ export default function AccountSettings() {
         <div class="py-10">
           <div class="space-y-1">
             <h3 class="text-lg font-medium leading-6 text-white">Danger Zone</h3>
-            <p class="text-base text-grey-700 text-grey-200">
+            <p class="text-base text-grey-200">
               Once you delete your account, there is no going back.
               <b>This username will not be able to be used again</b>. Please make sure you are
               certain. Before deleting your account, please export any alias data or information
@@ -46,7 +46,7 @@ export default function AccountSettings() {
                 href="https://vovamail.xyz/faq/#what-happens-when-i-delete-my-account"
                 rel="nofollow noopener noreferrer"
                 target="_blank"
-                class="text-secondary cursor-pointer text-indigo-400"
+                class="text-secondary cursor-pointer"
               >
                 FAQ item
               </a>
@@ -59,7 +59,7 @@ export default function AccountSettings() {
                 <div>
                   <label
                     for="current-password-delete"
-                    class="block text-sm font-medium leading-6 text-grey-600 text-white"
+                    class="block text-sm font-medium leading-6 text-white"
                   >
                     Enter your password to confirm
                   </label>
@@ -72,9 +72,9 @@ export default function AccountSettings() {
                       id="current-password-delete"
                       class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white"
                       classList={{
-                        'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500':
+                        'ring-red-300 placeholder:text-red-300 focus:ring-red-500':
                           !!deleteAccountForm.errors.password,
-                        'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary':
+                        'ring-grey-300 placeholder:text-grey-400 focus:ring-primary':
                           !deleteAccountForm.errors.password,
                       }}
                       placeholder="********"
@@ -110,7 +110,7 @@ export default function AccountSettings() {
         onOpenChange={setDeleteAccountModalOpen}
         title="Delete Account"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-200">
           Are you sure you want to <b>permanently</b> delete your account and any aliases you've
           created?
         </p>
@@ -126,7 +126,7 @@ export default function AccountSettings() {
           </button>
           <button
             onClick={() => setDeleteAccountModalOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
+            class="px-4 py-3 text-white font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
           >
             Cancel
           </button>

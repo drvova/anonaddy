@@ -1,5 +1,5 @@
-import { createSignal, createEffect, For, Show } from 'solid-js'
-import { usePage, Link, router, useForm } from '../lib/inertia'
+import { createSignal, createEffect, For, Show, onMount } from 'solid-js'
+import { usePage, Link, router } from '../lib/inertia'
 import http from '../lib/http'
 import FlashNotification from '../Components/FlashNotification'
 
@@ -26,9 +26,21 @@ const sidebarNavigation = [
 
 export default function AppLayout(props: AppLayoutProps) {
   const page = usePage()
+  const [collapsed, setCollapsed] = createSignal(false)
   const [mobileMenuOpen, setMobileMenuOpen] = createSignal(false)
   const [searchQuery, setSearchQuery] = createSignal(props.search ?? '')
   const [userMenuOpen, setUserMenuOpen] = createSignal(false)
+
+  onMount(() => {
+    const saved = localStorage.getItem('sidebarCollapsed')
+    if (saved !== null) setCollapsed(saved === 'true')
+  })
+
+  const toggleSidebar = () => {
+    const next = !collapsed()
+    setCollapsed(next)
+    localStorage.setItem('sidebarCollapsed', String(next))
+  }
 
   const isCurrentNav = (routeName: string) => {
     const current = page.component ?? ''
@@ -66,20 +78,33 @@ export default function AppLayout(props: AppLayoutProps) {
     http.post(route('logout')).then(() => router.visit('/'))
   }
 
+  const sidebarWidth = () => (collapsed() ? 'md:w-16' : 'md:w-56')
+  const contentPadding = () => (collapsed() ? 'md:pl-16' : 'md:pl-56')
+  const labelOpacity = () => (collapsed() ? 'opacity-0 w-0' : 'opacity-100 w-auto')
+
   return (
     <div class="min-h-screen bg-charcoal text-grey-100">
       {/* Sidebar - desktop */}
-      <aside class="hidden md:flex md:flex-col md:fixed md:inset-y-0 md:w-56 bg-charcoal">
-        <div class="flex items-center h-16 px-5">
+      <aside
+        class={`hidden md:flex md:flex-col md:fixed md:inset-y-0 ${sidebarWidth()} bg-charcoal transition-all duration-300 ease-in-out`}
+      >
+        <div class="flex items-center h-16 px-4 shrink-0">
           <Link href="/" class="flex items-center">
-            <img src="/svg/logo.svg" alt="VovaMail" class="block h-7 w-auto" />
+            <Show when={collapsed()}>
+              <img src="/svg/icon-logo.svg" alt="VovaMail" class="block h-7 w-7" />
+            </Show>
+            <Show when={!collapsed()}>
+              <img src="/svg/logo.svg" alt="VovaMail" class="block h-7 w-auto" />
+            </Show>
           </Link>
         </div>
-        <nav class="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
+
+        <nav class="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
           <For each={sidebarNavigation}>
             {item => (
               <Link
                 href={route(item.route)}
+                title={collapsed() ? item.name : undefined}
                 class={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
                   isCurrentNav(item.route)
                     ? 'text-primary bg-white/5'
@@ -135,13 +160,36 @@ export default function AppLayout(props: AppLayoutProps) {
                     <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                   </Show>
                 </svg>
-                <span>{item.name}</span>
+                <span
+                  class={`whitespace-nowrap overflow-hidden transition-all duration-300 ${labelOpacity()}`}
+                >
+                  {item.name}
+                </span>
               </Link>
             )}
           </For>
         </nav>
-        <Show when={page.props.version}>
-          <div class="px-5 py-4 text-xs text-grey-500">
+
+        <div class="px-2 py-3 shrink-0">
+          <button
+            onClick={toggleSidebar}
+            class="flex items-center justify-center w-full h-9 rounded-lg text-grey-400 hover:text-white hover:bg-white/5 transition-colors"
+            title={collapsed() ? 'Expand sidebar' : 'Collapse sidebar'}
+          >
+            <svg
+              class={`h-5 w-5 transition-transform duration-300 ${collapsed() ? 'rotate-180' : ''}`}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <polyline points="15 18 9 12 15 6" />
+            </svg>
+          </button>
+        </div>
+
+        <Show when={page.props.version && !collapsed()}>
+          <div class="px-5 py-3 text-xs text-grey-500 shrink-0">
             <span>v{page.props.version}</span>
             <Show when={page.props.updateAvailable}>
               <a
@@ -237,7 +285,7 @@ export default function AppLayout(props: AppLayoutProps) {
                       </Show>
                       <Show when={item.icon === 'cog'}>
                         <circle cx="12" cy="12" r="3" />
-                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                       </Show>
                     </svg>
                     <span>{item.name}</span>
@@ -250,9 +298,9 @@ export default function AppLayout(props: AppLayoutProps) {
       </Show>
 
       {/* Main content area */}
-      <div class="md:pl-56 flex flex-col min-h-screen">
+      <div class={`${contentPadding()} flex flex-col min-h-screen transition-all duration-300`}>
         {/* Header */}
-        <header class="sticky top-0 z-30 flex h-16 items-center gap-4 bg-charcoal px-5">
+        <header class="sticky top-0 z-30 flex h-16 items-center gap-4 bg-charcoal/95 backdrop-blur-sm px-5 border-b border-border-subtle/50">
           <button
             class="md:hidden text-grey-400 hover:text-white"
             onClick={() => setMobileMenuOpen(true)}
@@ -331,7 +379,7 @@ export default function AppLayout(props: AppLayoutProps) {
                 </div>
                 <Show when={!page.props.usesExternalAuthentication}>
                   <button
-                    class="w-full text-left px-4 py-2 text-sm text-grey-400 hover:text-white hover:bg-grey-900 transition-colors"
+                    class="w-full text-left px-4 py-2 text-sm text-grey-400 hover:text-white hover:bg-white/5 transition-colors"
                     onClick={handleLogout}
                   >
                     Logout

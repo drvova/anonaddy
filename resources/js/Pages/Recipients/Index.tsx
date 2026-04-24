@@ -380,6 +380,17 @@ export default function RecipientsIndex(props: RecipientsProps) {
 
   const username = () => (page.props as any).user?.username ?? ''
 
+  const SortLabel = (props: { field: string; label: string }) => (
+    <button
+      onClick={() => toggleSort(props.field)}
+      class={`text-xs font-medium uppercase tracking-wider transition-colors ${
+        sortField() === props.field ? 'text-primary' : 'text-grey-400 hover:text-grey-300'
+      }`}
+    >
+      {props.label} {sortField() === props.field ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+    </button>
+  )
+
   return (
     <div>
       <Title>Recipients</Title>
@@ -387,280 +398,244 @@ export default function RecipientsIndex(props: RecipientsProps) {
         Recipients
       </h1>
 
-      <div class="sm:flex sm:items-center mb-6">
-        <div class="sm:flex-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div>
           <h1 class="text-2xl font-semibold text-white">Recipients</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">
-            A list of all the recipients{' '}
-            {props.search ? 'found for your search' : 'in your account'}
-            <button onClick={() => setMoreInfoOpen(!moreInfoOpen())}>
-              <Icon
-                name="info"
-                class="inline-block w-6 h-6 cursor-pointer text-grey-500 text-grey-200"
-              />
+          <p class="mt-1 text-sm text-grey-400">
+            {props.search ? 'Search results' : 'Your account recipients'}
+            <button
+              onClick={() => setMoreInfoOpen(!moreInfoOpen())}
+              class="ml-1 text-grey-500 hover:text-grey-300"
+            >
+              <Icon name="info" class="inline-block w-4 h-4" />
             </button>
           </p>
         </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            onClick={openAddRecipientModal}
-            class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
-          >
-            Add Recipient
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={openAddRecipientModal}
+          class="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
+        >
+          <Icon name="plus" class="w-4 h-4" />
+          Add Recipient
+        </button>
       </div>
 
       <Show
         when={rows().length > 0}
         fallback={
-          <div class="text-center">
-            <Icon name="inbox" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-            <h3 class="mt-2 text-lg font-medium text-white">No Recipients found for that search</h3>
-            <p class="mt-1 text-md text-grey-500 text-grey-200">
-              Try entering a different search term.
-            </p>
+          <div class="text-center py-16">
+            <Icon name="inbox" class="mx-auto h-12 w-12 text-grey-500" />
+            <h3 class="mt-4 text-lg font-medium text-white">No recipients found</h3>
+            <p class="mt-1 text-sm text-grey-400">Try a different search or add a new recipient.</p>
             <div class="mt-6">
               <Link
                 href={(window as any).route('recipients.index')}
-                class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                class="inline-flex items-center rounded-lg bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
               >
-                View All Recipients
+                View All
               </Link>
             </div>
           </div>
         }
       >
-        <div class="overflow-x-auto">
-          <table class="min-w-full">
-            <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
-              <tr>
-                <th
-                  scope="col"
-                  class="p-3 text-left cursor-pointer select-none"
-                  onClick={() => toggleSort('created_at')}
-                >
-                  Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Key
-                  <span
-                    title={`Use this to attach recipients to new aliases as they are created e.g. alias+key@${username()}.vovamail.xyz. You can attach multiple recipients by doing alias+2.3.4@${username()}.vovamail.xyz. Separating each key by a full stop.`}
-                  >
-                    <Icon
-                      name="info"
-                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                    />
-                  </span>
-                </th>
-                <th
-                  scope="col"
-                  class="p-3 text-left cursor-pointer select-none"
-                  onClick={() => toggleSort('email')}
-                >
-                  Email {sortField() === 'email' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Alias Count
-                  <span title="This shows the total number of aliases that either the recipient is directly assigned to, or where the recipient is set as the default for a custom domain or username.">
-                    <Icon
-                      name="info"
-                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                    />
-                  </span>
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Encryption
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Verified
-                </th>
-                <th scope="col" class="p-3" />
-              </tr>
-            </thead>
-            <tbody>
-              <For each={sortedRows()}>
-                {row => (
-                  <tr class="border-b border-grey-100 border-border-subtle">
-                    <td class="p-3">
-                      <span
-                        class="cursor-default text-sm text-grey-500 text-grey-300"
-                        title={filters.formatDate(row.created_at)}
-                      >
-                        {filters.timeAgo(row.created_at)}
-                      </span>
-                    </td>
-                    <td class="p-3 text-grey-500 text-grey-300">{row.key}</td>
-                    <td class="p-3">
-                      <button
-                        class="font-medium text-grey-700 text-grey-200"
-                        title="Click to copy"
-                        onClick={() => clipboard(row.email)}
-                      >
-                        {filters.truncate(row.email, 30)}
-                      </button>
+        {/* Column headers */}
+        <div class="hidden sm:grid grid-cols-12 gap-4 px-4 pb-2 border-b border-border-subtle">
+          <div class="col-span-4">
+            <SortLabel field="email" label="Email" />
+          </div>
+          <div class="col-span-2">
+            <SortLabel field="created_at" label="Added" />
+          </div>
+          <div class="col-span-1 text-xs font-medium uppercase tracking-wider text-grey-400">
+            Key
+          </div>
+          <div class="col-span-2 text-xs font-medium uppercase tracking-wider text-grey-400">
+            Aliases
+          </div>
+          <div class="col-span-1 text-xs font-medium uppercase tracking-wider text-grey-400">
+            Encrypt
+          </div>
+          <div class="col-span-1 text-xs font-medium uppercase tracking-wider text-grey-400">
+            Verified
+          </div>
+          <div class="col-span-1" />
+        </div>
 
-                      <Show
-                        when={isDefault(row.id)}
-                        fallback={
-                          <Show when={row.email_verified_at}>
-                            <span class="block text-grey-400 text-sm py-1 text-grey-300">
-                              <button onClick={() => openMakeDefaultModal(row)}>
-                                Make Default
-                              </button>
-                            </span>
-                          </Show>
-                        }
+        {/* List rows */}
+        <div class="divide-y divide-border-subtle">
+          <For each={sortedRows()}>
+            {row => (
+              <div class="group flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-4 px-4 py-4 hover:bg-white/[0.02] transition-colors">
+                {/* Email */}
+                <div class="sm:col-span-4 min-w-0">
+                  <button
+                    class="text-sm font-medium text-white hover:text-primary transition-colors truncate block max-w-full"
+                    title="Click to copy"
+                    onClick={() => clipboard(row.email)}
+                  >
+                    {filters.truncate(row.email, 35)}
+                  </button>
+                  <div class="flex items-center gap-2 mt-1">
+                    <Show when={isDefault(row.id)}>
+                      <span class="text-[10px] font-medium uppercase tracking-wider text-primary border border-primary/30 rounded px-1.5 py-0.5">
+                        Default
+                      </span>
+                    </Show>
+                    <Show when={!isDefault(row.id) && row.email_verified_at}>
+                      <button
+                        onClick={() => openMakeDefaultModal(row)}
+                        class="text-[10px] font-medium uppercase tracking-wider text-grey-400 hover:text-white border border-border-subtle rounded px-1.5 py-0.5 transition-colors"
                       >
-                        <span
-                          class="ml-3 py-1 px-2 text-sm bg-yellow-200 text-yellow-900 rounded-full"
-                          title="This is your account's default recipient"
-                        >
-                          default
-                        </span>
-                      </Show>
-                    </td>
-                    <td class="p-3">
-                      <Show when={!aliasCountLoading()} fallback={<Loader />}>
-                        <Show
-                          when={row.aliases_count}
-                          fallback={<span class="text-grey-500 text-grey-300">0</span>}
-                        >
-                          <Link
-                            href={(window as any).route('aliases.index', { recipient: row.id })}
-                            class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
-                            title={
-                              isDefault(row.id)
-                                ? 'Click to view the aliases using your default recipient'
-                                : 'Click to view the aliases using this recipient'
-                            }
-                          >
-                            {row.aliases_count}
-                          </Link>
-                        </Show>
-                      </Show>
-                    </td>
-                    <td class="p-3">
-                      <Show
-                        when={row.fingerprint}
-                        fallback={
-                          <button
-                            onClick={() => openRecipientKeyModal(row)}
-                            class="text-sm text-grey-500 text-grey-300 rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                          >
-                            Add PGP key
-                          </button>
-                        }
+                        Make Default
+                      </button>
+                    </Show>
+                  </div>
+                </div>
+
+                {/* Created */}
+                <div class="sm:col-span-2 text-sm text-grey-400">
+                  <span title={filters.formatDate(row.created_at)}>
+                    {filters.timeAgo(row.created_at)}
+                  </span>
+                </div>
+
+                {/* Key */}
+                <div class="sm:col-span-1 text-sm text-grey-400">{row.key}</div>
+
+                {/* Alias count */}
+                <div class="sm:col-span-2 text-sm">
+                  <Show when={!aliasCountLoading()} fallback={<Loader />}>
+                    <Show when={row.aliases_count} fallback={<span class="text-grey-400">0</span>}>
+                      <Link
+                        href={(window as any).route('aliases.index', { recipient: row.id })}
+                        class="text-primary hover:text-primary/80 font-medium"
                       >
-                        <div class="flex items-center">
-                          <Toggle
-                            checked={row.should_encrypt}
-                            onChange={(checked: boolean) => {
-                              setRows(prev =>
-                                prev.map(r =>
-                                  r.id === row.id ? { ...r, should_encrypt: checked } : r,
-                                ),
-                              )
-                              if (checked) turnOnEncryption(row.id)
-                              else turnOffEncryption(row.id)
-                            }}
-                          />
-                          <button
-                            onClick={() => clipboard(row.fingerprint!)}
-                            title={row.fingerprint!}
-                            aria-label="Copy fingerprint"
-                          >
-                            <Icon
-                              name="fingerprint"
-                              class="block w-6 h-6 text-grey-300 fill-current mx-2"
-                            />
-                          </button>
-                          <button
-                            onClick={() => openDeleteRecipientKeyModal(row)}
-                            title="Remove public key"
-                            aria-label="Remove public key"
-                          >
-                            <Icon name="delete" class="block w-6 h-6 text-grey-300 fill-current" />
-                          </button>
-                        </div>
-                      </Show>
-                    </td>
-                    <td class="p-3">
-                      <Show
-                        when={row.email_verified_at}
-                        fallback={
-                          <button
-                            onClick={() => resendVerification(row.id)}
-                            class="text-sm disabled:cursor-not-allowed rounded-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
-                            disabled={resendVerificationLoading()}
-                          >
-                            Resend email
-                          </button>
-                        }
+                        {row.aliases_count}
+                      </Link>
+                    </Show>
+                  </Show>
+                </div>
+
+                {/* Encryption */}
+                <div class="sm:col-span-1">
+                  <Show
+                    when={row.fingerprint}
+                    fallback={
+                      <button
+                        onClick={() => openRecipientKeyModal(row)}
+                        class="text-xs text-grey-400 hover:text-white transition-colors"
                       >
-                        <span
-                          title={filters.formatDate(row.email_verified_at!)}
-                          class="py-1 px-2 bg-green-100 text-green-800 rounded-full text-xs font-semibold leading-5"
-                        >
-                          verified
-                        </span>
-                      </Show>
-                    </td>
-                    <td class="p-3">
-                      <div class="whitespace-nowrap">
-                        <Link
-                          href={(window as any).route('recipients.edit', row.id)}
-                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
-                        >
-                          Edit<span class="sr-only">, {row.email}</span>
-                        </Link>
-                        <Show when={!isDefault(row.id)}>
-                          <button
-                            onClick={() => openDeleteModal(row)}
-                            class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium ml-4"
-                          >
-                            Delete<span class="sr-only">, {row.email}</span>
-                          </button>
-                        </Show>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </For>
-            </tbody>
-          </table>
+                        Add key
+                      </button>
+                    }
+                  >
+                    <div class="flex items-center gap-2">
+                      <Toggle
+                        checked={row.should_encrypt}
+                        onChange={(checked: boolean) => {
+                          setRows(prev =>
+                            prev.map(r =>
+                              r.id === row.id ? { ...r, should_encrypt: checked } : r,
+                            ),
+                          )
+                          if (checked) turnOnEncryption(row.id)
+                          else turnOffEncryption(row.id)
+                        }}
+                      />
+                      <button
+                        onClick={() => clipboard(row.fingerprint!)}
+                        title={row.fingerprint!}
+                        aria-label="Copy fingerprint"
+                      >
+                        <Icon name="fingerprint" class="w-4 h-4 text-grey-400 hover:text-white" />
+                      </button>
+                      <button
+                        onClick={() => openDeleteRecipientKeyModal(row)}
+                        title="Remove public key"
+                        aria-label="Remove public key"
+                      >
+                        <Icon name="delete" class="w-4 h-4 text-grey-400 hover:text-red-400" />
+                      </button>
+                    </div>
+                  </Show>
+                </div>
+
+                {/* Verified */}
+                <div class="sm:col-span-1">
+                  <Show
+                    when={row.email_verified_at}
+                    fallback={
+                      <button
+                        onClick={() => resendVerification(row.id)}
+                        disabled={resendVerificationLoading()}
+                        class="text-xs text-grey-400 hover:text-white transition-colors disabled:opacity-50"
+                      >
+                        Resend
+                      </button>
+                    }
+                  >
+                    <span
+                      title={filters.formatDate(row.email_verified_at!)}
+                      class="inline-flex items-center gap-1 text-[10px] font-medium uppercase tracking-wider text-primary border border-primary/30 rounded px-1.5 py-0.5"
+                    >
+                      <Icon name="check" class="w-3 h-3" />
+                      Verified
+                    </span>
+                  </Show>
+                </div>
+
+                {/* Actions */}
+                <div class="sm:col-span-1 flex items-center justify-end gap-3">
+                  <Link
+                    href={(window as any).route('recipients.edit', row.id)}
+                    class="text-sm text-grey-400 hover:text-white transition-colors"
+                  >
+                    Edit
+                  </Link>
+                  <Show when={!isDefault(row.id)}>
+                    <button
+                      onClick={() => openDeleteModal(row)}
+                      class="text-sm text-grey-400 hover:text-red-400 transition-colors"
+                    >
+                      Delete
+                    </button>
+                  </Show>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
       </Show>
 
+      {/* Modals - unchanged logic */}
       <Modal
         open={addRecipientModalOpen()}
         onOpenChange={setAddRecipientModalOpen}
         title="Add new recipient"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
-          Enter the individual email of the new recipient you'd like to add. This is where your
-          aliases will <b>forward messages to</b>.
+        <p class="mt-4 text-grey-300 text-sm">
+          Enter the individual email of the new recipient. This is where your aliases will forward
+          messages to.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          You will receive an email with a verification link that will <b>expire in one hour</b>,
-          you can click "Resend email" to get a new one.
+        <p class="mt-2 text-grey-300 text-sm">
+          You will receive a verification link that expires in one hour.
         </p>
         <div class="mt-6">
           <Show when={errors().newRecipient}>
-            <p class="mb-3 text-red-500 text-sm">{errors().newRecipient}</p>
+            <p class="mb-3 text-red-400 text-sm">{errors().newRecipient}</p>
           </Show>
           <input
             value={newRecipient()}
             onInput={e => setNewRecipient(e.currentTarget.value)}
             type="email"
-            class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newRecipient ? 'ring-red-500' : ''}`}
+            class={`block w-full rounded-lg border-0 py-2.5 px-3 ring-1 ring-inset focus:ring-2 focus:ring-inset text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().newRecipient ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
             placeholder="johndoe@example.com"
           />
-          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <div class="mt-4 flex gap-3">
             <button
               onClick={validateNewRecipient}
-              class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
               disabled={addRecipientLoading()}
             >
               Add Recipient
@@ -670,7 +645,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
             </button>
             <button
               onClick={() => setAddRecipientModalOpen(false)}
-              class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -685,40 +660,23 @@ export default function RecipientsIndex(props: RecipientsProps) {
         }}
         title="Add Public GPG Key"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
-          Enter your <b>PUBLIC</b> key data in the text area below.
-        </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          Make sure to remove <b>Comment:</b> and <b>Version:</b>
-        </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          ElGamal keys are{' '}
-          <a
-            href="https://sequoia-pgp.org/status/#public-key-algorithms"
-            class="text-secondary text-indigo-400"
-            target="_blank"
-            rel="nofollow noreferrer noopener"
-          >
-            not currently supported
-          </a>
-          .
-        </p>
+        <p class="mt-4 text-grey-300 text-sm">Enter your PUBLIC key data below.</p>
+        <p class="mt-2 text-grey-300 text-sm">Make sure to remove Comment: and Version: lines.</p>
         <div class="mt-6">
           <Show when={errors().recipientKey}>
-            <p class="mb-3 text-red-500 text-sm">{errors().recipientKey}</p>
+            <p class="mb-3 text-red-400 text-sm">{errors().recipientKey}</p>
           </Show>
           <textarea
             value={recipientKey()}
             onInput={e => setRecipientKey(e.currentTarget.value)}
-            class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().recipientKey ? 'ring-red-500' : ''}`}
+            class={`block w-full rounded-lg border-0 py-2.5 px-3 ring-1 ring-inset focus:ring-2 focus:ring-inset text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().recipientKey ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
             placeholder="Begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'"
-            rows={10}
+            rows={8}
           />
-          <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+          <div class="mt-4 flex gap-3">
             <button
-              type="button"
               onClick={validateRecipientKey}
-              class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
               disabled={addRecipientKeyLoading()}
             >
               Add Key
@@ -728,7 +686,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
             </button>
             <button
               onClick={closeRecipientKeyModal}
-              class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
             >
               Cancel
             </button>
@@ -743,28 +701,27 @@ export default function RecipientsIndex(props: RecipientsProps) {
         }}
         title="Remove recipient public key"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300 text-sm">
           Are you sure you want to remove the public key for this recipient? It will also be removed
           from any other recipients using the same key.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex gap-3">
           <button
-            type="button"
             onClick={() => {
               const r = recipientKeyToDelete()
               if (r) deleteRecipientKey(r)
             }}
-            class="px-4 py-3 text-white font-semibold bg-red-500 hover:bg-red-600 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
             disabled={deleteRecipientKeyLoading()}
           >
-            Remove public key
-            <Show when={deleteRecipientLoading()}>
+            Remove key
+            <Show when={deleteRecipientKeyLoading()}>
               <Loader />
             </Show>
           </button>
           <button
             onClick={closeDeleteRecipientKeyModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
           >
             Cancel
           </button>
@@ -778,27 +735,24 @@ export default function RecipientsIndex(props: RecipientsProps) {
         }}
         title="Delete recipient"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
-          Are you sure you want to delete this recipient?
-        </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <p class="mt-4 text-grey-300 text-sm">Are you sure you want to delete this recipient?</p>
+        <div class="mt-6 flex gap-3">
           <button
-            type="button"
             onClick={() => {
               const r = recipientToDelete()
               if (r) deleteRecipient(r)
             }}
-            class="px-4 py-3 text-white font-semibold bg-red-500 hover:bg-red-600 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
             disabled={deleteRecipientLoading()}
           >
-            Delete recipient
+            Delete
             <Show when={deleteRecipientLoading()}>
               <Loader />
             </Show>
           </button>
           <button
             onClick={closeDeleteModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
           >
             Cancel
           </button>
@@ -812,30 +766,27 @@ export default function RecipientsIndex(props: RecipientsProps) {
         }}
         title="Make default recipient"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
-          The default recipient for your account is used for all general email notifications.
+        <p class="mt-4 text-grey-300 text-sm">
+          The default recipient is used for all general email notifications and any aliases without
+          specific recipients.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          It is also used for any aliases that do not have any specific recipients set.
-        </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex gap-3">
           <button
-            type="button"
             onClick={() => {
               const r = recipientToMakeDefault()
               if (r) makeDefaultRecipient(r)
             }}
-            class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
             disabled={makeDefaultLoading()}
           >
-            Make default recipient
+            Make default
             <Show when={makeDefaultLoading()}>
               <Loader />
             </Show>
           </button>
           <button
             onClick={closeMakeDefaultModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
           >
             Cancel
           </button>
@@ -843,21 +794,17 @@ export default function RecipientsIndex(props: RecipientsProps) {
       </Modal>
 
       <Modal open={moreInfoOpen()} onOpenChange={setMoreInfoOpen} title="More information">
-        <p class="mt-4 text-grey-700 text-grey-200">
-          This page shows all of the recipients in your account, these are your real email addresses
-          where emails can be forwarded to.
+        <p class="mt-4 text-grey-300 text-sm">
+          This page shows all recipients in your account - your real email addresses where aliases
+          forward emails to.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          You must verify each recipient before you can forwarded emails to it.
+        <p class="mt-2 text-grey-300 text-sm">
+          Each recipient must be verified before emails can be forwarded to it.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          To update your account's default recipient email address click "Make Default" next to that
-          recipient.
-        </p>
-        <div class="mt-6 flex flex-col sm:flex-row">
+        <div class="mt-6">
           <button
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
           >
             Close
           </button>

@@ -177,18 +177,16 @@ export default function EditRecipient(props: RecipientProps) {
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold text-white">Edit Recipient</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">
-            Make changes to your recipient email address
-          </p>
+          <p class="mt-2 text-sm text-grey-200">Make changes to your recipient email address</p>
         </div>
       </div>
 
       <div class="bg-surface rounded-lg p-4">
-        <div class="space-y-8 divide-y divide-grey-200 divide-border-subtle">
+        <div class="space-y-8 divide-y divide-border-subtle">
           <div>
             <div class="flex items-center">
               <h3
-                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer text-grey-100"
+                class="text-xl font-medium leading-6 text-grey-100 cursor-pointer"
                 onClick={() => clipboard(r().email)}
                 title="Click to copy"
               >
@@ -196,7 +194,7 @@ export default function EditRecipient(props: RecipientProps) {
               </h3>
               <Show when={r().email_verified_at}>
                 <span
-                  class="ml-2 py-1 px-2 bg-green-100 text-green-800 rounded-full text-xs font-semibold leading-5"
+                  class="ml-2 py-1 px-2 bg-green-900/30 text-green-300 rounded-full text-xs font-semibold leading-5"
                   title={filters.formatDate(r().email_verified_at!)}
                 >
                   verified
@@ -204,7 +202,7 @@ export default function EditRecipient(props: RecipientProps) {
               </Show>
               <Show when={defaultRecipientId() === r().id}>
                 <span
-                  class="ml-2 py-1 px-2 text-xs bg-yellow-200 text-yellow-900 rounded-full"
+                  class="ml-2 py-1 px-2 text-xs bg-yellow-900/30 text-yellow-300 rounded-full"
                   title="This is your account's default email address"
                 >
                   default
@@ -214,10 +212,10 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Can Reply/Send from Aliases
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               Toggle this option to determine whether this recipient is allowed to reply and send
               from your aliases. When set to off this recipient will not be able to reply or send
               from your aliases and you will be notified when an attempt is made.
@@ -235,10 +233,10 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Hide Email Subject
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               <Show when={!r().fingerprint}>
                 <span>
                   You <b>must add a PGP key before you can use this setting</b>.
@@ -279,10 +277,10 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Use PGP/Inline Encryption
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               <Show when={!r().fingerprint}>
                 <span>
                   You <b>must add a PGP key before you can use this setting</b>.
@@ -324,17 +322,17 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Remove PGP Keys from Replies/Sends
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               When enabled any attached PGP keys for replies/sends from this recipient will be
               automatically removed. This is to prevent you from accidentally sending the PGP key of
               your recipient which could inadvertently reveal your real email address. For example
               Proton mail has an option to always attach your public PGP key to every email that you
               send, this could expose your real email if sent through your aliases.
             </p>
-            <p class="mt-4 text-base text-grey-700 text-grey-200">
+            <p class="mt-4 text-base text-grey-200">
               <b>Only disable this option if you are certain</b> that you can not accidentally send
               the PGP key of your recipient when replying/sending from your aliases.
             </p>
@@ -351,16 +349,16 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Remove PGP Signatures from Replies/Sends
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               When enabled any attached PGP signatures for replies/sends from this recipient will be
               automatically removed. This is to prevent you from accidentally signing an outbound
               email with your recipient's PGP key which could inadvertently reveal your real email
               address.
             </p>
-            <p class="mt-4 text-base text-grey-700 text-grey-200">
+            <p class="mt-4 text-base text-grey-200">
               <b>Only disable this option if you are certain</b> that you can not accidentally sign
               outbound emails using the PGP key of your recipient when replying/sending from your
               aliases.
@@ -378,10 +376,7 @@ export default function EditRecipient(props: RecipientProps) {
           </div>
 
           <div class="pt-5">
-            <span
-              class="mt-2 text-sm text-grey-500 text-grey-300"
-              title={filters.formatDate(r().updated_at)}
-            >
+            <span class="mt-2 text-sm text-grey-300" title={filters.formatDate(r().updated_at)}>
               Last updated {filters.timeAgo(r().updated_at)}.
             </span>
           </div>

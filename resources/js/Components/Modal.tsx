@@ -17,7 +17,7 @@ export default function Modal(props: ModalProps) {
           <div class="flex min-h-full items-center justify-center p-4">
             <Dialog.Overlay class="fixed inset-0 bg-black/60 transition-opacity" />
             <Dialog.Content
-              class={`relative w-full transform rounded-xl bg-grey-950 border border-grey-800 p-6-2xl transition-all ${props.maxWidth ?? 'max-w-lg'}`}
+              class={`relative w-full transform rounded-xl bg-surface border border-border-subtle p-6 transition-all ${props.maxWidth ?? 'max-w-lg'}`}
             >
               {props.title && (
                 <Dialog.Title class="text-lg font-semibold text-white mb-4">

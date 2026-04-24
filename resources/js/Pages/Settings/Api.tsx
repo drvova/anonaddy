@@ -138,13 +138,13 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
         <div class="pt-10">
           <div class="space-y-1">
             <h3 class="text-lg font-medium leading-6 text-white">Manage your API Access Keys</h3>
-            <p class="text-base text-grey-700 text-grey-200">
+            <p class="text-base text-grey-200">
               Your API access keys can be used with the browser extension on{' '}
               <a
                 href="https://addons.mozilla.org/en-GB/firefox/addon/addy_io/"
                 target="_blank"
                 rel="nofollow noopener noreferrer"
-                class="text-secondary text-indigo-400"
+                class="text-secondary"
               >
                 Firefox
               </a>
@@ -153,7 +153,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                 href="https://chrome.google.com/webstore/detail/addyio-anonymous-email-fo/iadbdpnoknmbdeolbapdackdcogdmjpe"
                 target="_blank"
                 rel="nofollow noopener noreferrer"
-                class="text-secondary text-indigo-400"
+                class="text-secondary"
               >
                 Chrome
               </a>
@@ -162,7 +162,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                 href="https://microsoftedge.microsoft.com/addons/detail/addyio-anonymous-email/ohjlgpcfncgkijjfmabldlgnccmgcehl"
                 target="_blank"
                 rel="nofollow noopener noreferrer"
-                class="text-secondary text-indigo-400"
+                class="text-secondary"
               >
                 Edge
               </a>{' '}
@@ -171,7 +171,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                 href="https://apps.apple.com/app/addy-io-extension/id6670220050"
                 target="_blank"
                 rel="nofollow noopener noreferrer"
-                class="text-secondary text-indigo-400"
+                class="text-secondary"
               >
                 Safari
               </a>{' '}
@@ -179,7 +179,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               paste a key you've created into the browser extension or mobile apps to get started.
               Your API access keys <b>are secret and should be treated like your password</b>. For
               more information please see the{' '}
-              <a href="/docs" class="text-secondary text-indigo-400">
+              <a href="/docs" class="text-secondary">
                 API documentation
               </a>
               .
@@ -188,7 +188,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
           <div class="mt-4">
             <button
               onClick={openCreateTokenModal}
-              class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded w-full"
+              class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full"
             >
               Create New API Key
             </button>
@@ -198,14 +198,14 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
 
               <div class="my-4 w-24 border-b-2 border-grey-200"></div>
 
-              <p class="my-6 text-base text-grey-700 text-grey-200">
+              <p class="my-6 text-base text-grey-200">
                 Keys you have created that can be used to access the API. To revoke an access key
                 simply click the delete button next to it.
               </p>
 
               <div>
                 <Show when={tokens().length === 0}>
-                  <p class="mb-0 text-base text-grey-700 text-grey-200">
+                  <p class="mb-0 text-base text-grey-200">
                     You have not created any personal access tokens.
                   </p>
                 </Show>
@@ -221,7 +221,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                     </div>
                     <For each={tokens()}>
                       {token => (
-                        <div class="table-row even:bg-white/5 odd:bg-surface even:bg-surface odd:bg-surface">
+                        <div class="table-row even:bg-white/5 odd:bg-surface even:bg-white/5 odd:bg-surface">
                           <div class="table-cell p-1 md:p-4">{token.name}</div>
                           <div class="table-cell p-1 md:p-4">
                             {(window as any).filters?.timeAgo?.(token.created_at) ??
@@ -265,7 +265,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
       >
         <Show when={!accessToken()}>
           <div>
-            <p class="mt-4 text-grey-700 text-grey-200">
+            <p class="mt-4 text-grey-200">
               What's this API key going to be used for? Give it a short name so that you remember
               later. You can also select an expiry date for the key if you wish.
             </p>
@@ -281,7 +281,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               </Show>
               <label
                 for="create-token-name"
-                class="block text-sm my-2 font-medium leading-6 text-grey-600 text-white"
+                class="block text-sm my-2 font-medium leading-6 text-white"
               >
                 Name
               </label>
@@ -297,7 +297,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               />
               <label
                 for="create-token-expiration"
-                class="block font-medium leading-6 text-grey-600 text-sm my-2 text-white"
+                class="block font-medium leading-6 text-white text-sm my-2"
               >
                 Expiration
               </label>
@@ -329,7 +329,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               <Show when={!(page.props as any).usesExternalAuthentication}>
                 <label
                   for="create-token-password"
-                  class="block text-sm my-2 font-medium leading-6 text-grey-600 text-white"
+                  class="block text-sm my-2 font-medium leading-6 text-white"
                 >
                   Confirm Password
                 </label>
@@ -346,7 +346,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               </Show>
               <button
                 onClick={store}
-                class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
+                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
                 disabled={loading()}
               >
                 Create API Key
@@ -354,7 +354,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               </button>
               <button
                 onClick={closeCreateTokenModal}
-                class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
+                class="ml-4 px-4 py-3 text-white font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
               >
                 Close
               </button>
@@ -363,31 +363,31 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
         </Show>
         <Show when={accessToken()}>
           <div>
-            <p class="my-4 text-grey-700 text-grey-200">
+            <p class="my-4 text-grey-200">
               This is your new personal access key.
               <b>This is the only time the key will ever be displayed</b>, so please make a note of
               it in a safe place (e.g. password manager)!
             </p>
             <pre
               onClick={() => clipboard(accessToken()!)}
-              class="w-full bg-grey-100 border border-transparent text-grey-700 rounded p-3 text-md break-all bg-white/5 text-white cursor-pointer"
+              class="w-full bg-white/5 border border-transparent text-white rounded p-3 text-md break-all cursor-pointer"
               title="Copy To Clipboard"
             >
               <code class="break-all whitespace-normal">{accessToken()}</code>
             </pre>
-            <p class="text-left text-sm mt-2 text-grey-700 text-grey-200">
+            <p class="text-left text-sm mt-2 text-grey-200">
               You can scan this QR code to automatically login to the vovamail.xyz mobile app.
             </p>
             <div class="mt-6">
               <button
-                class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded"
+                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded"
                 onClick={() => clipboard(accessToken()!)}
               >
                 Copy To Clipboard
               </button>
               <button
                 onClick={closeCreateTokenModal}
-                class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
+                class="ml-4 px-4 py-3 text-white font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
               >
                 Close
               </button>
@@ -401,7 +401,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
         onOpenChange={setRevokeTokenModalOpen}
         title="Revoke API Access Key"
       >
-        <p class="my-4 text-grey-700 text-grey-200">
+        <p class="my-4 text-grey-200">
           Any browser extension, application or script using this API access key will no longer be
           able to access the API. This action cannot be undone.
         </p>
@@ -416,7 +416,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
           </button>
           <button
             onClick={closeRevokeTokenModal}
-            class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
+            class="ml-4 px-4 py-3 text-white font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
           >
             Close
           </button>

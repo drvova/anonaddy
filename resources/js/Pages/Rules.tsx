@@ -1,5 +1,5 @@
 import { Title } from '@solidjs/meta'
-import { createSignal, Show, For, createMemo } from 'solid-js'
+import { createSignal, Show, For } from 'solid-js'
 import { usePage, Link } from '../lib/inertia'
 import http from '../lib/http'
 import Modal from '../Components/Modal'
@@ -114,6 +114,17 @@ const emptyRuleObject = (): Omit<
   sends: false,
 })
 
+const successMessage = (text = '') => {
+  if ((window as any).__notify) {
+    ;(window as any).__notify({ title: 'Success', text, type: 'success' })
+  }
+}
+const errorMessage = (text = 'An error has occurred, please try again later') => {
+  if ((window as any).__notify) {
+    ;(window as any).__notify({ title: 'Error', text, type: 'error' })
+  }
+}
+
 function SortableRow(props: {
   rule: Rule
   onEdit: (rule: Rule) => void
@@ -124,67 +135,63 @@ function SortableRow(props: {
   const sortable = createSortable(props.rule.id)
 
   return (
-    <tr
+    <div
       ref={sortable.ref}
-      class={`border-b border-grey-100 h-20 border-border-subtle ${sortable.isActiveDraggable ? 'opacity-50 bg-cyan-50 bg-surface' : ''}`}
+      class={`group flex items-center gap-4 px-4 py-3 border-b border-border-subtle hover:bg-white/[0.03] transition-colors ${sortable.isActiveDraggable ? 'opacity-50 bg-surface' : ''}`}
       {...sortable.dragActivators}
     >
-      <td class="p-3">
-        <Icon name="menu" class="handle block w-6 h-6 text-grey-300 fill-current cursor-pointer" />
-      </td>
-      <td class="p-3">
-        <span
-          class="cursor-default text-sm text-grey-500 text-grey-300"
-          title={filters.formatDate(props.rule.created_at)}
-        >
+      <div class="shrink-0 cursor-grab active:cursor-grabbing">
+        <Icon name="menu" class="h-5 w-5 text-grey-600" />
+      </div>
+      <div class="shrink-0 w-24">
+        <span class="text-xs text-grey-500" title={filters.formatDate(props.rule.created_at)}>
           {filters.timeAgo(props.rule.created_at)}
         </span>
-      </td>
-      <td class="p-3">
-        <span class="font-medium text-grey-700 text-grey-200">{props.rule.name}</span>
-      </td>
-      <td class="p-3">
+      </div>
+      <div class="flex-1 min-w-0">
+        <span class="text-sm font-medium text-white">{props.rule.name}</span>
+      </div>
+      <div class="shrink-0">
         <Toggle
           checked={props.rule.active}
           onChange={(checked: boolean) => {
-            if (checked) {
-              props.onActivate(props.rule.id)
-            } else {
-              props.onDeactivate(props.rule.id)
-            }
+            if (checked) props.onActivate(props.rule.id)
+            else props.onDeactivate(props.rule.id)
           }}
         />
-      </td>
-      <td class="p-3">
+      </div>
+      <div class="shrink-0 w-20 text-right">
         <Show
           when={props.rule.last_applied}
-          fallback={<span class="text-grey-300">{props.rule.applied.toLocaleString()} </span>}
+          fallback={
+            <span class="text-sm text-grey-500">{props.rule.applied.toLocaleString()}</span>
+          }
         >
           <span
-            class="cursor-default font-semibold text-secondary text-indigo-400"
+            class="text-sm font-medium text-primary"
             title={`${filters.timeAgo(props.rule.last_applied!)} (${filters.formatDate(props.rule.last_applied!)})`}
           >
             {props.rule.applied.toLocaleString()}
           </span>
         </Show>
-      </td>
-      <td class="p-3 text-right w-0 min-w-fit whitespace-nowrap">
+      </div>
+      <div class="shrink-0 flex items-center gap-3">
         <button
           type="button"
-          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
+          class="text-sm text-grey-500 hover:text-white transition-colors"
           onClick={() => props.onEdit(props.rule)}
         >
           Edit
         </button>
         <button
           type="button"
-          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium ml-4"
+          class="text-sm text-grey-500 hover:text-red-400 transition-colors"
           onClick={() => props.onDelete(props.rule.id)}
         >
           Delete
         </button>
-      </td>
-    </tr>
+      </div>
+    </div>
   )
 }
 
@@ -249,9 +256,7 @@ function RuleForm(props: {
 
   const addValueToCondition = (key: number) => {
     const condition = rule().conditions[key]
-    if (!condition.currentConditionValue) {
-      return
-    }
+    if (!condition.currentConditionValue) return
     if (condition.values.length >= 50) return
     if (['matches regex', 'does not match regex'].includes(condition.match)) {
       try {
@@ -301,14 +306,11 @@ function RuleForm(props: {
 
   return (
     <>
-      <label
-        for="rule_name"
-        class="block font-medium leading-6 text-grey-600 text-sm my-2 text-white"
-      >
+      <label for="rule_name" class="block font-medium text-sm my-2 text-white">
         Name
       </label>
       <Show when={props.errors.ruleName}>
-        <p class="mb-3 text-red-500 text-sm">{props.errors.ruleName}</p>
+        <p class="mb-3 text-red-400 text-sm">{props.errors.ruleName}</p>
       </Show>
       <input
         value={rule().name}
@@ -317,13 +319,11 @@ function RuleForm(props: {
         }
         id="rule_name"
         type="text"
-        class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${
-          props.errors.ruleName ? 'ring-red-500' : ''
-        }`}
+        class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${props.errors.ruleName ? 'ring-red-500' : 'ring-border-subtle'}`}
         placeholder="Enter name"
       />
 
-      <fieldset class="border border-primary p-4 my-4 rounded-sm">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
         <legend class="px-2 leading-none text-sm text-white">Conditions</legend>
 
         <For each={rule().conditions}>
@@ -339,7 +339,7 @@ function RuleForm(props: {
                         operator: e.currentTarget.value,
                       }))
                     }
-                    class="block appearance-none w-full text-grey-700 text-white bg-white/5 p-2 pr-8 rounded focus:ring"
+                    class="block appearance-none w-full text-white bg-white/5 p-2 pr-8 rounded focus:ring-primary"
                   >
                     <option value="AND" class="bg-surface">
                       AND
@@ -351,102 +351,89 @@ function RuleForm(props: {
                 </div>
               </Show>
 
-              <div class="p-2 w-full bg-grey-100 bg-surface">
-                <div class="flex">
-                  <div class="w-full flex flex-col sm:flex-row sm:items-center space-y-2 sm:space-y-0">
-                    <span class="text-nowrap text-grey-200">If the</span>
-                    <span class="sm:ml-2">
+              <div class="p-3 w-full bg-surface rounded-lg">
+                <div class="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <span class="text-nowrap text-grey-400 text-sm">If the</span>
+                  <select
+                    value={condition.type}
+                    onChange={e => updateCondition(key(), 'type', e.currentTarget.value)}
+                    class="block appearance-none w-full sm:w-32 text-white bg-white/5 p-2 pr-8 rounded focus:ring-primary"
+                  >
+                    <For each={conditionTypeOptions}>
+                      {opt => (
+                        <option value={opt.value} class="bg-surface">
+                          {opt.label}
+                        </option>
+                      )}
+                    </For>
+                  </select>
+
+                  <Show when={conditionMatchOptions(rule().conditions, key()).length > 0}>
+                    <div class="flex flex-col sm:flex-row gap-2 sm:items-center flex-1">
                       <select
-                        value={condition.type}
-                        onChange={e => updateCondition(key(), 'type', e.currentTarget.value)}
-                        class="block appearance-none w-full sm:w-32 text-grey-700 text-white bg-white/5 p-2 pr-8 rounded focus:ring"
+                        value={condition.match}
+                        onChange={e => updateCondition(key(), 'match', e.currentTarget.value)}
+                        class="block appearance-none w-full sm:w-40 text-white bg-white/5 p-2 pr-8 rounded focus:ring-primary"
                       >
-                        <For each={conditionTypeOptions}>
+                        <For each={conditionMatchOptions(rule().conditions, key())}>
                           {opt => (
-                            <option value={opt.value} class="bg-surface">
-                              {opt.label}
+                            <option value={opt} class="bg-surface">
+                              {opt}
                             </option>
                           )}
                         </For>
                       </select>
-                    </span>
 
-                    <Show when={conditionMatchOptions(rule().conditions, key()).length > 0}>
-                      <span class="sm:ml-4 flex flex-col sm:flex-row space-y-2 sm:space-y-0">
-                        <div class="relative sm:mr-4">
-                          <select
-                            value={condition.match}
-                            onChange={e => {
-                              updateCondition(key(), 'match', e.currentTarget.value)
-                            }}
-                            class="block appearance-none w-full sm:w-40 text-grey-700 text-white bg-white/5 p-2 pr-8 rounded focus:ring"
-                          >
-                            <For each={conditionMatchOptions(rule().conditions, key())}>
-                              {opt => (
-                                <option value={opt} class="bg-surface">
-                                  {opt}
-                                </option>
-                              )}
-                            </For>
-                          </select>
-                        </div>
-
-                        <div class="flex">
-                          <input
-                            value={condition.currentConditionValue || ''}
-                            onInput={e =>
-                              updateCondition(key(), 'currentConditionValue', e.currentTarget.value)
+                      <div class="flex flex-1">
+                        <input
+                          value={condition.currentConditionValue || ''}
+                          onInput={e =>
+                            updateCondition(key(), 'currentConditionValue', e.currentTarget.value)
+                          }
+                          onKeyPress={e => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault()
+                              addValueToCondition(key())
                             }
-                            onKeyPress={e => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault()
-                                addValueToCondition(key())
-                              }
-                            }}
-                            type="text"
-                            class={`w-full appearance-none bg-surface border border-transparent rounded-l text-grey-700 focus:outline-none p-2 text-white bg-white/5 ${
-                              props.errors.ruleConditions ? 'border-red-500' : ''
-                            }`}
-                            placeholder="Enter value"
-                          />
-                          <button
-                            type="button"
-                            onClick={() => addValueToCondition(key())}
-                            class="p-2 bg-surface rounded-r text-grey-100 hover:bg-white/5 border-border-subtle"
-                          >
-                            Insert
-                          </button>
-                        </div>
-                      </span>
-                    </Show>
-                  </div>
-                  <div class="flex items-center">
-                    <Show when={rule().conditions.length > 1}>
-                      <span
-                        class="block ml-4 w-6 h-6 text-grey-300 fill-current cursor-pointer"
-                        onClick={() => deleteCondition(key())}
-                      >
-                        <Icon name="trash" class="w-6 h-6" />
-                      </span>
-                    </Show>
-                  </div>
+                          }}
+                          type="text"
+                          class={`w-full appearance-none bg-surface border border-transparent rounded-l-md text-white focus:outline-none p-2 bg-white/5 ${props.errors.ruleConditions ? 'border-red-500' : ''}`}
+                          placeholder="Enter value"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => addValueToCondition(key())}
+                          class="p-2 bg-surface rounded-r-md text-white hover:bg-white/5 border border-border-subtle"
+                        >
+                          Insert
+                        </button>
+                      </div>
+                    </div>
+                  </Show>
+
+                  <Show when={rule().conditions.length > 1}>
+                    <button
+                      type="button"
+                      onClick={() => deleteCondition(key())}
+                      class="text-grey-500 hover:text-red-400 shrink-0"
+                    >
+                      <Icon name="trash" class="w-5 h-5" />
+                    </button>
+                  </Show>
                 </div>
-                <div class="mt-2 text-left">
+                <div class="mt-2 flex flex-wrap gap-2">
                   <For each={condition.values}>
                     {(value, index) => (
                       <>
                         <span
-                          class="bg-green-200 text-sm font-semibold rounded-sm pl-1 text-nowrap cursor-pointer"
+                          class="inline-flex items-center gap-1 bg-primary/10 text-primary text-sm font-medium rounded-md px-2 py-0.5 cursor-pointer"
                           onClick={() => removeConditionValue(key(), index())}
                         >
                           {value}
-                          <Icon
-                            name="close"
-                            class="inline-block w-4 h-4 text-grey-900 fill-current"
-                          />
+                          <Icon name="close" class="w-3 h-3" />
                         </span>
                         <Show when={index() + 1 !== condition.values.length}>
-                          <span class="mx-1">or</span>
+                          <span class="text-grey-500 text-sm">or</span>
                         </Show>
                       </>
                     )}
@@ -459,17 +446,17 @@ function RuleForm(props: {
         <button
           type="button"
           onClick={addCondition}
-          class="mt-4 p-2 text-grey-100 bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          class="mt-4 p-2 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md text-sm"
         >
           Add condition
         </button>
 
         <Show when={props.errors.ruleConditions}>
-          <p class="mt-2 text-red-500 text-sm">{props.errors.ruleConditions}</p>
+          <p class="mt-2 text-red-400 text-sm">{props.errors.ruleConditions}</p>
         </Show>
       </fieldset>
 
-      <fieldset class="border border-primary p-4 my-4 rounded-sm">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
         <legend class="px-2 leading-none text-sm text-white">Actions</legend>
 
         <For each={rule().actions}>
@@ -477,135 +464,120 @@ function RuleForm(props: {
             <div>
               <Show when={key() !== 0}>
                 <div class="flex justify-center my-2">
-                  <div class="relative text-grey-200">AND</div>
+                  <div class="text-grey-400 text-sm">AND</div>
                 </div>
               </Show>
 
-              <div class="p-2 w-full bg-grey-100 bg-surface">
-                <div class="flex">
-                  <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:items-center w-full">
-                    <span class="text-grey-200">Then</span>
-                    <span class="sm:ml-2">
-                      <select
-                        value={action.type}
-                        onChange={e => {
-                          ruleActionChange(key(), e.currentTarget.value)
-                          updateAction(key(), 'type', e.currentTarget.value)
-                        }}
-                        class="w-full block appearance-none text-grey-700 text-white bg-white/5 p-2 pr-8 rounded focus:ring"
+              <div class="p-3 w-full bg-surface rounded-lg">
+                <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
+                  <span class="text-grey-400 text-sm shrink-0">Then</span>
+                  <select
+                    value={action.type}
+                    onChange={e => {
+                      ruleActionChange(key(), e.currentTarget.value)
+                      updateAction(key(), 'type', e.currentTarget.value)
+                    }}
+                    class="w-full sm:w-auto block appearance-none text-white bg-white/5 p-2 pr-8 rounded focus:ring-primary"
+                  >
+                    <For each={actionTypeOptions}>
+                      {opt => (
+                        <option value={opt.value} class="bg-surface">
+                          {opt.label}
+                        </option>
+                      )}
+                    </For>
+                  </select>
+
+                  <Show when={action.type === 'subject' || action.type === 'displayFrom'}>
+                    <div class="flex flex-col w-full">
+                      <input
+                        value={action.value || ''}
+                        onInput={e => updateAction(key(), 'value', e.currentTarget.value)}
+                        type="text"
+                        class={`w-full appearance-none bg-surface border border-transparent rounded-md text-white focus:outline-none p-2 bg-white/5 ${props.errors.ruleActions ? 'border-red-500' : ''}`}
+                        placeholder={
+                          action.type === 'subject' ? 'e.g. [Fwd] {{subject}}' : 'Enter value'
+                        }
+                      />
+                      <Show when={action.type === 'subject'}>
+                        <p class="mt-1.5 text-xs text-grey-500">
+                          Use{' '}
+                          <code class="px-1 py-0.5 rounded bg-surface font-mono text-grey-300">
+                            {'{{subject}}'}
+                          </code>{' '}
+                          placeholder to include the original subject.
+                        </p>
+                      </Show>
+                    </div>
+                  </Show>
+
+                  <Show when={action.type === 'forwardTo'}>
+                    <div class="flex relative w-full sm:w-48">
+                      <button
+                        type="button"
+                        class="w-full text-left p-2 bg-white/5 border border-border-subtle rounded-md text-white text-sm"
+                        onClick={() =>
+                          props.setRecipientDropdownOpen(prev => ({
+                            ...prev,
+                            [key()]: !prev[key()],
+                          }))
+                        }
                       >
-                        <For each={actionTypeOptions}>
-                          {opt => (
-                            <option value={opt.value} class="bg-surface">
-                              {opt.label}
-                            </option>
-                          )}
-                        </For>
-                      </select>
-                    </span>
-
-                    <Show when={action.type === 'subject' || action.type === 'displayFrom'}>
-                      <span class="sm:ml-4 flex flex-col w-full">
-                        <div class="flex w-full">
-                          <input
-                            value={action.value || ''}
-                            onInput={e => updateAction(key(), 'value', e.currentTarget.value)}
-                            type="text"
-                            class={`w-full appearance-none bg-surface border border-transparent rounded text-grey-700 focus:outline-none p-2 text-white bg-white/5 ${
-                              props.errors.ruleActions ? 'border-red-500' : ''
-                            }`}
-                            placeholder={
-                              action.type === 'subject' ? 'e.g. [Fwd] {{subject}}' : 'Enter value'
-                            }
-                          />
+                        {action.value
+                          ? (props.recipientOptions.find(r => r.id === action.value)?.email ??
+                            'Select recipient')
+                          : 'Select recipient'}
+                      </button>
+                      <Show when={props.recipientDropdownOpen()?.[key()]}>
+                        <div class="absolute top-full left-0 z-20 mt-1 w-full bg-surface border border-border-subtle rounded-md max-h-48 overflow-y-auto">
+                          <For each={props.recipientOptions}>
+                            {recipient => (
+                              <div
+                                class="flex items-center px-3 py-2 hover:bg-white/5 cursor-pointer"
+                                onClick={() => {
+                                  props.toggleRecipient(key(), recipient.id)
+                                  props.setRecipientDropdownOpen(prev => ({
+                                    ...prev,
+                                    [key()]: false,
+                                  }))
+                                }}
+                              >
+                                <span class="text-sm text-white">{recipient.email}</span>
+                              </div>
+                            )}
+                          </For>
                         </div>
-                        <Show when={action.type === 'subject'}>
-                          <p class="mt-1.5 text-xs text-grey-500 text-grey-300">
-                            Use{' '}
-                            <code class="px-1 py-0.5 rounded bg-grey-100 bg-surface font-mono text-grey-700 text-grey-200">
-                              {'{{subject}}'}
-                            </code>{' '}
-                            placeholder to include the original subject (e.g. to prepend or append
-                            text).
-                          </p>
-                        </Show>
-                      </span>
-                    </Show>
+                      </Show>
+                    </div>
+                  </Show>
 
-                    <Show when={action.type === 'forwardTo'}>
-                      <span class="sm:ml-4 flex relative">
-                        <button
-                          type="button"
-                          class="w-full sm:w-48 text-left p-2 bg-surface border border-grey-300 rounded bg-white/5 text-white border-border-subtle"
-                          onClick={() =>
-                            props.setRecipientDropdownOpen(prev => ({
-                              ...prev,
-                              [key()]: !prev[key()],
-                            }))
-                          }
-                        >
-                          {action.value
-                            ? (props.recipientOptions.find(r => r.id === action.value)?.email ??
-                              'Select recipient')
-                            : 'Select recipient'}
-                        </button>
-                        <Show when={props.recipientDropdownOpen()?.[key()]}>
-                          <div class="absolute top-full left-0 z-20 mt-1 w-full bg-surface border border-grey-300 rounded max-h-48 overflow-y-auto bg-surface border-border-subtle">
-                            <For each={props.recipientOptions}>
-                              {recipient => (
-                                <div
-                                  class="flex items-center px-3 py-2 hover:bg-white/5 cursor-pointer"
-                                  onClick={() => {
-                                    props.toggleRecipient(key(), recipient.id)
-                                    props.setRecipientDropdownOpen(prev => ({
-                                      ...prev,
-                                      [key()]: false,
-                                    }))
-                                  }}
-                                >
-                                  <span class="text-sm text-grey-700 text-grey-200">
-                                    {recipient.email}
-                                  </span>
-                                </div>
-                              )}
-                            </For>
-                          </div>
-                        </Show>
-                      </span>
-                    </Show>
+                  <Show when={action.type === 'banner'}>
+                    <select
+                      value={action.value || 'top'}
+                      onChange={e => updateAction(key(), 'value', e.currentTarget.value)}
+                      class="w-full sm:w-40 block appearance-none text-white bg-white/5 p-2 pr-8 rounded focus:ring-primary"
+                    >
+                      <option value="top" class="bg-surface">
+                        Top
+                      </option>
+                      <option value="bottom" class="bg-surface">
+                        Bottom
+                      </option>
+                      <option value="off" class="bg-surface">
+                        Off
+                      </option>
+                    </select>
+                  </Show>
 
-                    <Show when={action.type === 'banner'}>
-                      <span class="sm:ml-4 flex">
-                        <div class="relative sm:mr-4 w-full">
-                          <select
-                            value={action.value || 'top'}
-                            onChange={e => updateAction(key(), 'value', e.currentTarget.value)}
-                            class="w-full block appearance-none sm:w-40 text-grey-700 text-white bg-white/5 p-2 pr-8 rounded focus:ring"
-                          >
-                            <option value="top" class="bg-surface">
-                              Top
-                            </option>
-                            <option value="bottom" class="bg-surface">
-                              Bottom
-                            </option>
-                            <option value="off" class="bg-surface">
-                              Off
-                            </option>
-                          </select>
-                        </div>
-                      </span>
-                    </Show>
-                  </div>
-                  <div class="flex items-center">
-                    <Show when={rule().actions.length > 1}>
-                      <span
-                        class="block ml-4 w-6 h-6 text-grey-300 fill-current cursor-pointer"
-                        onClick={() => deleteAction(key())}
-                      >
-                        <Icon name="trash" class="w-6 h-6" />
-                      </span>
-                    </Show>
-                  </div>
+                  <Show when={rule().actions.length > 1}>
+                    <button
+                      type="button"
+                      onClick={() => deleteAction(key())}
+                      class="text-grey-500 hover:text-red-400 shrink-0"
+                    >
+                      <Icon name="trash" class="w-5 h-5" />
+                    </button>
+                  </Show>
                 </div>
               </div>
             </div>
@@ -614,64 +586,52 @@ function RuleForm(props: {
         <button
           type="button"
           onClick={addAction}
-          class="mt-4 p-2 text-grey-100 bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+          class="mt-4 p-2 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md text-sm"
         >
           Add action
         </button>
 
         <Show when={props.errors.ruleActions}>
-          <p class="mt-2 text-red-500 text-sm">{props.errors.ruleActions}</p>
+          <p class="mt-2 text-red-400 text-sm">{props.errors.ruleActions}</p>
         </Show>
       </fieldset>
 
-      <fieldset class="border border-primary p-4 my-4 rounded-sm">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
         <legend class="px-2 leading-none text-sm text-white">Apply rule on</legend>
-        <div class="w-full flex">
-          <div class="relative flex items-center">
+        <div class="flex gap-6">
+          <label class="relative flex items-center cursor-pointer">
             <input
               type="checkbox"
               checked={rule().forwards}
               onChange={e =>
                 props.setRuleObject((prev: any) => ({ ...prev, forwards: e.currentTarget.checked }))
               }
-              id="forwards"
-              name="forwards"
-              class="focus:ring-primary h-4 w-4 text-secondary text-indigo-400 bg-surface border-grey-300 rounded"
+              class="focus:ring-primary h-4 w-4 text-primary bg-surface border-border-subtle rounded"
             />
-            <label for="forwards" class="ml-2 text-sm text-grey-700 text-grey-200">
-              Forwards
-            </label>
-          </div>
-          <div class="relative flex items-center mx-4">
+            <span class="ml-2 text-sm text-white">Forwards</span>
+          </label>
+          <label class="relative flex items-center cursor-pointer">
             <input
               type="checkbox"
               checked={rule().replies}
               onChange={e =>
                 props.setRuleObject((prev: any) => ({ ...prev, replies: e.currentTarget.checked }))
               }
-              id="replies"
-              name="replies"
-              class="focus:ring-primary h-4 w-4 text-secondary text-indigo-400 bg-surface border-grey-300 rounded"
+              class="focus:ring-primary h-4 w-4 text-primary bg-surface border-border-subtle rounded"
             />
-            <label for="replies" class="ml-2 text-sm text-grey-700 text-grey-200">
-              Replies
-            </label>
-          </div>
-          <div class="relative flex items-center">
+            <span class="ml-2 text-sm text-white">Replies</span>
+          </label>
+          <label class="relative flex items-center cursor-pointer">
             <input
               type="checkbox"
               checked={rule().sends}
               onChange={e =>
                 props.setRuleObject((prev: any) => ({ ...prev, sends: e.currentTarget.checked }))
               }
-              id="sends"
-              name="sends"
-              class="focus:ring-primary h-4 w-4 text-secondary text-indigo-400 bg-surface border-grey-300 rounded"
+              class="focus:ring-primary h-4 w-4 text-primary bg-surface border-border-subtle rounded"
             />
-            <label for="sends" class="ml-2 text-sm text-grey-700 text-grey-200">
-              Sends
-            </label>
-          </div>
+            <span class="ml-2 text-sm text-white">Sends</span>
+          </label>
         </div>
       </fieldset>
     </>
@@ -700,18 +660,6 @@ export default function Rules(props: RulesProps) {
   const [editRecipientDropdownOpen, setEditRecipientDropdownOpen] = createSignal<
     Record<number, boolean>
   >({})
-
-  const successMessage = (text = '') => {
-    if ((window as any).__notify) {
-      ;(window as any).__notify({ title: 'Success', text, type: 'success' })
-    }
-  }
-
-  const errorMessage = (text = 'An error has occurred, please try again later') => {
-    if ((window as any).__notify) {
-      ;(window as any).__notify({ title: 'Error', text, type: 'error' })
-    }
-  }
 
   const toggleRecipientCreate = (actionKey: number, recipientId: string) => {
     setCreateRuleObject(prev => {
@@ -760,7 +708,6 @@ export default function Rules(props: RulesProps) {
 
   const validateRule = (ruleObj: any): Record<string, string> | null => {
     const errs: Record<string, string> = {}
-
     if (!ruleObj.name.length) {
       errs.ruleName = 'Please enter a rule name'
       return errs
@@ -769,21 +716,18 @@ export default function Rules(props: RulesProps) {
       errs.ruleName = 'Rule name cannot exceed 50 characters'
       return errs
     }
-
     ruleObj.conditions.forEach((condition: RuleCondition, key: number) => {
       if (!condition.values.length) {
         errs.ruleConditions = `You must add some values for the ${indexToHuman[key]} condition, make sure to click "Insert"`
       }
     })
     if (errs.ruleConditions) return errs
-
     ruleObj.actions.forEach((action: RuleAction, key: number) => {
       if (!action.value && action.value !== false) {
         errs.ruleActions = `You must add a value for the ${indexToHuman[key]} action`
       }
     })
     if (errs.ruleActions) return errs
-
     return null
   }
 
@@ -794,7 +738,6 @@ export default function Rules(props: RulesProps) {
       setErrors(validationErrors)
       return
     }
-
     setCreateRuleLoading(true)
     http
       .post('/api/v1/rules', {
@@ -837,7 +780,6 @@ export default function Rules(props: RulesProps) {
       setErrors(validationErrors)
       return
     }
-
     setEditRuleLoading(true)
     http
       .patch(`/api/v1/rules/${ruleObj.id}`, {
@@ -903,9 +845,7 @@ export default function Rules(props: RulesProps) {
   const activateRule = (id: string) => {
     http
       .post('/api/v1/active-rules', { id })
-      .then(() => {
-        setRows(prev => prev.map(r => (r.id === id ? { ...r, active: true } : r)))
-      })
+      .then(() => setRows(prev => prev.map(r => (r.id === id ? { ...r, active: true } : r))))
       .catch((error: any) => {
         if (error.response?.data !== undefined) {
           errorMessage(error.response?.data ?? error.message)
@@ -918,9 +858,7 @@ export default function Rules(props: RulesProps) {
   const deactivateRule = (id: string) => {
     http
       .delete(`/api/v1/active-rules/${id}`)
-      .then(() => {
-        setRows(prev => prev.map(r => (r.id === id ? { ...r, active: false } : r)))
-      })
+      .then(() => setRows(prev => prev.map(r => (r.id === id ? { ...r, active: false } : r))))
       .catch((error: any) => {
         if (error.response?.data !== undefined) {
           errorMessage(error.response?.data ?? error.message)
@@ -949,12 +887,10 @@ export default function Rules(props: RulesProps) {
   const onDragEnd = (dragEvent: any) => {
     const { draggable: dragged, droppable: dropped } = dragEvent
     if (!dropped) return
-
     const currentRows = rows()
     const fromIndex = currentRows.findIndex(r => r.id === dragged.id)
     const toIndex = currentRows.findIndex(r => r.id === dropped.id)
     if (fromIndex === -1 || toIndex === -1 || fromIndex === toIndex) return
-
     const reordered = [...currentRows]
     const [moved] = reordered.splice(fromIndex, 1)
     reordered.splice(toIndex, 0, moved)
@@ -969,28 +905,24 @@ export default function Rules(props: RulesProps) {
         Rules
       </h1>
 
-      <div class="sm:flex sm:items-center mb-6">
-        <div class="sm:flex-auto">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+        <div>
           <h1 class="text-2xl font-semibold text-white">Rules</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">
+          <p class="mt-1 text-sm text-grey-400 flex items-center gap-2">
             A list of all the rules {props.search ? 'found for your search' : 'in your account'}
             <button type="button" onClick={() => setMoreInfoOpen(!moreInfoOpen())}>
-              <Icon
-                name="info"
-                class="h-6 w-6 inline-block cursor-pointer text-grey-500 text-grey-200"
-              />
+              <Icon name="info" class="h-4 w-4 text-grey-500 hover:text-grey-300" />
             </button>
           </p>
         </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            onClick={openCreateModal}
-            class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
-          >
-            Create Rule
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={openCreateModal}
+          class="inline-flex items-center justify-center rounded-md bg-primary hover:bg-primary/90 text-charcoal px-4 py-2 text-sm font-medium shrink-0"
+        >
+          <Icon name="plus" class="mr-1.5 h-4 w-4" />
+          Create Rule
+        </button>
       </div>
 
       <Show
@@ -999,36 +931,31 @@ export default function Rules(props: RulesProps) {
           <Show
             when={props.search}
             fallback={
-              <div class="text-center">
-                <Icon name="funnel" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-white">No Rules</h3>
-                <p class="mt-1 text-md text-grey-500 text-grey-200">
-                  Get started by creating a new rule.
-                </p>
-                <div class="mt-6">
+              <div class="text-center py-16">
+                <Icon name="funnel" class="mx-auto h-12 w-12 text-grey-600" />
+                <h3 class="mt-3 text-base font-medium text-white">No Rules</h3>
+                <p class="mt-1 text-sm text-grey-500">Get started by creating a new rule.</p>
+                <div class="mt-4">
                   <button
                     type="button"
                     onClick={openCreateModal}
-                    class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                    class="inline-flex items-center rounded-md bg-primary hover:bg-primary/90 text-charcoal px-4 py-2 text-sm font-medium"
                   >
-                    <Icon name="plus" class="-ml-1 mr-2 h-5 w-5" />
+                    <Icon name="plus" class="mr-1.5 h-4 w-4" />
                     Create a Rule
                   </button>
                 </div>
               </div>
             }
           >
-            <div class="text-center">
-              <Icon name="funnel" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-white">No Rules found for that search</h3>
-              <p class="mt-1 text-md text-grey-500 text-grey-200">
-                Try entering a different search term.
-              </p>
-              <div class="mt-6">
+            <div class="text-center py-16">
+              <Icon name="funnel" class="mx-auto h-12 w-12 text-grey-600" />
+              <h3 class="mt-3 text-base font-medium text-white">No Rules found for that search</h3>
+              <p class="mt-1 text-sm text-grey-500">Try entering a different search term.</p>
+              <div class="mt-4">
                 <Link
                   href={(window as any).route('rules.index')}
-                  type="button"
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                  class="inline-flex items-center rounded-md bg-primary hover:bg-primary/90 text-charcoal px-4 py-2 text-sm font-medium"
                 >
                   View All Rules
                 </Link>
@@ -1037,48 +964,31 @@ export default function Rules(props: RulesProps) {
           </Show>
         }
       >
-        <div class="bg-surface">
+        <div class="border-t border-border-subtle">
           <DragDropProvider onDragEnd={onDragEnd} collisionDetector={closestCenter}>
             <DragDropSensors />
-            <table class="table-auto w-full">
-              <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
-                <tr>
-                  <th scope="col" class="p-3" />
-                  <th scope="col" class="p-3 text-left">
-                    Created
-                  </th>
-                  <th scope="col" class="p-3 text-left">
-                    Name
-                  </th>
-                  <th scope="col" class="p-3 text-left">
-                    Active
-                  </th>
-                  <th scope="col" class="p-3 text-left">
-                    Applied
-                    <Icon
-                      name="info"
-                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                    />
-                  </th>
-                  <th scope="col" class="p-3" />
-                </tr>
-              </thead>
-              <SortableProvider ids={rows().map(r => r.id)}>
-                <tbody>
-                  <For each={rows()}>
-                    {rule => (
-                      <SortableRow
-                        rule={rule}
-                        onEdit={openEditModal}
-                        onDelete={openDeleteModal}
-                        onActivate={activateRule}
-                        onDeactivate={deactivateRule}
-                      />
-                    )}
-                  </For>
-                </tbody>
-              </SortableProvider>
-            </table>
+            {/* Column headers */}
+            <div class="hidden sm:grid sm:grid-cols-12 gap-4 px-4 py-2 text-xs font-medium text-grey-500 uppercase tracking-wider border-b border-border-subtle">
+              <div class="col-span-1" />
+              <div class="col-span-2">Created</div>
+              <div class="col-span-4">Name</div>
+              <div class="col-span-1">Active</div>
+              <div class="col-span-2 text-right">Applied</div>
+              <div class="col-span-2" />
+            </div>
+            <SortableProvider ids={rows().map(r => r.id)}>
+              <For each={rows()}>
+                {rule => (
+                  <SortableRow
+                    rule={rule}
+                    onEdit={openEditModal}
+                    onDelete={openDeleteModal}
+                    onActivate={activateRule}
+                    onDeactivate={deactivateRule}
+                  />
+                )}
+              </For>
+            </SortableProvider>
             <DragOverlay>{null}</DragOverlay>
           </DragDropProvider>
         </div>
@@ -1090,7 +1000,7 @@ export default function Rules(props: RulesProps) {
         title="Create new rule"
         maxWidth="md:max-w-3xl"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Rules work on all emails, including replies and also send froms. New conditions and
           actions will be added over time.
         </p>
@@ -1103,11 +1013,11 @@ export default function Rules(props: RulesProps) {
           setRecipientDropdownOpen={setCreateRecipientDropdownOpen}
           toggleRecipient={toggleRecipientCreate}
         />
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             onClick={createNewRule}
-            class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="bg-primary hover:bg-primary/90 text-charcoal font-bold py-2.5 px-4 rounded-md disabled:cursor-not-allowed"
             disabled={createRuleLoading()}
           >
             Create Rule
@@ -1118,7 +1028,7 @@ export default function Rules(props: RulesProps) {
           <button
             type="button"
             onClick={() => setCreateRuleModalOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
           >
             Cancel
           </button>
@@ -1133,7 +1043,7 @@ export default function Rules(props: RulesProps) {
         title="Edit rule"
         maxWidth="md:max-w-3xl"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Rules work on all emails, including replies and also send froms. New conditions and
           actions will be added over time.
         </p>
@@ -1146,11 +1056,11 @@ export default function Rules(props: RulesProps) {
           setRecipientDropdownOpen={setEditRecipientDropdownOpen}
           toggleRecipient={toggleRecipientEdit}
         />
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             onClick={editRule}
-            class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="bg-primary hover:bg-primary/90 text-charcoal font-bold py-2.5 px-4 rounded-md disabled:cursor-not-allowed"
             disabled={editRuleLoading()}
           >
             Save
@@ -1161,7 +1071,7 @@ export default function Rules(props: RulesProps) {
           <button
             type="button"
             onClick={closeEditModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
           >
             Cancel
           </button>
@@ -1175,12 +1085,12 @@ export default function Rules(props: RulesProps) {
         }}
         title="Delete rule"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">Are you sure you want to delete this rule?</p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <p class="mt-4 text-grey-300">Are you sure you want to delete this rule?</p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
             onClick={() => deleteRule(ruleIdToDelete())}
-            class="px-4 py-3 text-white font-semibold bg-red-500 hover:bg-red-600 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-2.5 text-white font-semibold bg-red-500 hover:bg-red-600 rounded-md disabled:cursor-not-allowed"
             disabled={deleteRuleLoading()}
           >
             Delete rule
@@ -1191,7 +1101,7 @@ export default function Rules(props: RulesProps) {
           <button
             type="button"
             onClick={closeDeleteModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
           >
             Cancel
           </button>
@@ -1199,25 +1109,25 @@ export default function Rules(props: RulesProps) {
       </Modal>
 
       <Modal open={moreInfoOpen()} onOpenChange={setMoreInfoOpen} title="More information">
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Rules can be used to perform different actions if certain conditions are met.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           For example you could create a rule that checks if the alias is for your custom domain and
           if so then to replace the email subject.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           You can choose to apply rules on forwards, replies and/or sends.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Rules are applied in the order displayed on this page from top to bottom. You can re-order
           your rules by dragging them using the icon on the left of each row.
         </p>
-        <div class="mt-6 flex flex-col">
+        <div class="mt-6">
           <button
             type="button"
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
           >
             Close
           </button>

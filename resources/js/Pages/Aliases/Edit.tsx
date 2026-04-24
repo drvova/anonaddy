@@ -112,12 +112,12 @@ export default function EditAlias(props: AliasProps) {
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
           <h1 class="text-2xl font-semibold text-white">Edit Alias</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">Make changes to your alias</p>
+          <p class="mt-2 text-sm text-grey-200">Make changes to your alias</p>
         </div>
       </div>
 
       <div class="bg-surface rounded-lg p-4">
-        <div class="space-y-8 divide-y divide-grey-200 divide-border-subtle">
+        <div class="space-y-8 divide-y divide-border-subtle">
           <div>
             <div class="flex items-center">
               <span
@@ -127,33 +127,27 @@ export default function EditAlias(props: AliasProps) {
                 <span class={`bg-${status.colour}-400 h-2 w-2 rounded-full`} />
               </span>
               <h3
-                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer text-grey-100"
+                class="text-xl font-medium leading-6 text-grey-100 cursor-pointer"
                 onClick={() => clipboard(getAliasEmail())}
                 title="Click to copy"
               >
                 <span class="font-semibold text-primary">{getAliasLocalPart()}</span>
-                <span class="font-semibold text-grey-500 text-grey-200">
-                  @{props.initialAlias.domain}
-                </span>
+                <span class="font-semibold text-grey-200">@{props.initialAlias.domain}</span>
               </h3>
             </div>
             <Show when={props.initialAlias.description}>
-              <div class="mt-2 text-sm text-grey-500 text-grey-300">
-                {props.initialAlias.description}
-              </div>
+              <div class="mt-2 text-sm text-grey-300">{props.initialAlias.description}</div>
             </Show>
           </div>
 
           <div class="pt-8">
-            <div class="block text-lg font-medium text-grey-700 text-grey-200">
-              Alias 'From Name'
-            </div>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <div class="block text-lg font-medium text-grey-200">Alias 'From Name'</div>
+            <p class="mt-1 text-base text-grey-200">
               The 'From Name' is shown when you send an email from an alias or reply anonymously to
               a forwarded email. If left blank, then the email alias itself will be used as the
               'From Name' e.g. "{props.initialAlias.email}".
             </p>
-            <div class="mt-2 text-base text-grey-700 text-grey-200">
+            <div class="mt-2 text-base text-grey-200">
               The 'From Name' that is used for an alias is determined by the following{' '}
               <b>priority</b>:
               <ul class="list-decimal list-inside text-grey-700 text-base mt-2 text-grey-200">
@@ -164,7 +158,7 @@ export default function EditAlias(props: AliasProps) {
                 <li>Global 'From Name' from the settings page</li>
               </ul>
             </div>
-            <p class="mt-2 text-base text-grey-700 text-grey-200">
+            <p class="mt-2 text-base text-grey-200">
               If you set the 'From Name' for this specific alias, it will override the other
               settings.
             </p>
@@ -181,7 +175,7 @@ export default function EditAlias(props: AliasProps) {
                     id="from_name"
                     value={fromName()}
                     onInput={e => setFromName(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="John Doe"
                   />
                   <Show when={errors().from_name}>
@@ -209,10 +203,10 @@ export default function EditAlias(props: AliasProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-200 text-lg pointer-events-none cursor-default">
               Limit Replies/Sends to attached recipients only
             </label>
-            <p class="mt-1 text-base text-grey-700 text-grey-200">
+            <p class="mt-1 text-base text-grey-200">
               Toggle this option to only allow verified recipients that are <b>directly</b> attached
               to this alias to reply or send from it. If this option is enabled and no recipients
               are directly attached then it will <b>not be possible to reply/send</b> from this
@@ -232,7 +226,7 @@ export default function EditAlias(props: AliasProps) {
 
           <div class="pt-5">
             <span
-              class="mt-2 text-sm text-grey-500 text-grey-300"
+              class="mt-2 text-sm text-grey-300"
               title={filters.formatDate(props.initialAlias.updated_at)}
             >
               Last updated {filters.timeAgo(props.initialAlias.updated_at)}.

@@ -1,7 +1,6 @@
 import { Title } from '@solidjs/meta'
-import { createSignal, Show, For, onMount, createMemo } from 'solid-js'
-import { usePage } from '../../lib/inertia'
-import { Link } from '../../lib/inertia'
+import { createSignal, Show, For, createMemo } from 'solid-js'
+import { usePage, Link } from '../../lib/inertia'
 import http from '../../lib/http'
 import Modal from '../../Components/Modal'
 import Loader from '../../Components/Loader'
@@ -21,6 +20,24 @@ interface BlocklistEntry {
 interface BlocklistProps {
   initialRows: BlocklistEntry[]
   search: string | null
+}
+
+const successMessage = (text = '') => {
+  if ((window as any).__notify) {
+    ;(window as any).__notify({ title: 'Success', text, type: 'success' })
+  }
+}
+const errorMessage = (text = 'An error has occurred, please try again later') => {
+  if ((window as any).__notify) {
+    ;(window as any).__notify({ title: 'Error', text, type: 'error' })
+  }
+}
+
+const clipboard = (str: string) => {
+  navigator.clipboard.writeText(str).then(
+    () => successMessage('Copied to clipboard'),
+    () => errorMessage('Could not copy to clipboard'),
+  )
 }
 
 export default function BlocklistIndex(props: BlocklistProps) {
@@ -50,10 +67,6 @@ export default function BlocklistIndex(props: BlocklistProps) {
   const [bulkAddError, setBulkAddError] = createSignal<string | null>(null)
 
   const selectedRows = createMemo(() => rows().filter(row => selectedRowIds().includes(row.id)))
-
-  const indeterminate = createMemo(
-    () => selectedRowIds().length > 0 && selectedRowIds().length < rows().length,
-  )
 
   const parsedBulkAddValues = createMemo(() => {
     const text = bulkAddText()
@@ -215,25 +228,6 @@ export default function BlocklistIndex(props: BlocklistProps) {
       .finally(() => setBulkAddLoading(false))
   }
 
-  const clipboard = (str: string) => {
-    navigator.clipboard.writeText(str).then(
-      () => successMessage('Copied to clipboard'),
-      () => errorMessage('Could not copy to clipboard'),
-    )
-  }
-
-  const successMessage = (text = '') => {
-    if ((window as any).__notify) {
-      ;(window as any).__notify({ title: 'Success', text, type: 'success' })
-    }
-  }
-
-  const errorMessage = (text = 'An error has occurred, please try again later') => {
-    if ((window as any).__notify) {
-      ;(window as any).__notify({ title: 'Error', text, type: 'error' })
-    }
-  }
-
   return (
     <div>
       <Title>Blocklist</Title>
@@ -241,22 +235,20 @@ export default function BlocklistIndex(props: BlocklistProps) {
         Blocklist
       </h1>
 
-      <div class="sm:flex sm:items-center mb-6">
-        <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-white">Blocklist</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">
-            Blocked senders and domains
-            {props.search ? ' found for your search' : ' - these entries cannot reach your aliases'}
-          </p>
-        </div>
+      <div class="mb-8">
+        <h1 class="text-2xl font-semibold text-white">Blocklist</h1>
+        <p class="mt-1 text-sm text-grey-400">
+          Blocked senders and domains
+          {props.search ? ' found for your search' : ' — these entries cannot reach your aliases'}
+        </p>
       </div>
 
-      <div class="mb-6 p-4 bg-surface rounded-lg">
-        <div class="flex items-center justify-between mb-3">
+      <div class="mb-8 p-5 bg-surface rounded-xl">
+        <div class="flex items-center justify-between mb-4">
           <h2 class="text-sm font-medium text-white">Add to blocklist</h2>
           <button
             type="button"
-            class="text-sm font-medium text-secondary hover:text-secondary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
+            class="text-sm font-medium text-primary hover:text-primary/80"
             onClick={() => setBulkAddModalOpen(true)}
           >
             Bulk add
@@ -270,17 +262,14 @@ export default function BlocklistIndex(props: BlocklistProps) {
           }}
         >
           <div class="flex-shrink-0">
-            <label
-              for="blocklist-type"
-              class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
-            >
+            <label for="blocklist-type" class="block text-sm font-medium text-grey-400 mb-1">
               Type
             </label>
             <select
               id="blocklist-type"
               value={addFormType()}
               onChange={e => setAddFormType(e.currentTarget.value)}
-              class="rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+              class="rounded-md border-border-subtle bg-white/5 text-white focus:border-primary focus:ring-primary sm:text-sm"
             >
               <option value="email" class="bg-surface">
                 Email
@@ -291,15 +280,12 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </select>
             <div class="mt-1 min-h-[1.25rem]">
               <Show when={addFormErrors().type}>
-                <p class="text-sm text-red-500">{addFormErrors().type}</p>
+                <p class="text-sm text-red-400">{addFormErrors().type}</p>
               </Show>
             </div>
           </div>
           <div class="min-w-[200px] flex-1">
-            <label
-              for="blocklist-value"
-              class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
-            >
+            <label for="blocklist-value" class="block text-sm font-medium text-grey-400 mb-1">
               {addFormType() === 'email' ? 'Email address' : 'Domain'}
             </label>
             <input
@@ -310,11 +296,11 @@ export default function BlocklistIndex(props: BlocklistProps) {
               placeholder={
                 addFormType() === 'email' ? 'e.g. sender@example.com' : 'e.g. example.com'
               }
-              class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+              class="block w-full rounded-md border-border-subtle bg-white/5 text-white focus:border-primary focus:ring-primary sm:text-sm"
             />
             <div class="mt-1 min-h-[1.25rem]">
               <Show when={addFormErrors().value}>
-                <p class="text-sm text-red-500">{addFormErrors().value}</p>
+                <p class="text-sm text-red-400">{addFormErrors().value}</p>
               </Show>
             </div>
           </div>
@@ -324,7 +310,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </span>
             <button
               type="submit"
-              class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-2 px-3 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-charcoal font-bold py-2 px-4 rounded-md disabled:cursor-not-allowed"
               disabled={addFormLoading()}
             >
               Add to blocklist
@@ -343,27 +329,25 @@ export default function BlocklistIndex(props: BlocklistProps) {
           <Show
             when={props.search}
             fallback={
-              <div class="text-center py-12">
-                <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-white">No blocklist entries</h3>
-                <p class="mt-1 text-md text-grey-500 text-grey-200">
+              <div class="text-center py-16">
+                <Icon name="no-symbol" class="mx-auto h-12 w-12 text-grey-600" />
+                <h3 class="mt-3 text-base font-medium text-white">No blocklist entries</h3>
+                <p class="mt-1 text-sm text-grey-500">
                   Add an email address or domain above to block it from reaching your aliases.
                 </p>
               </div>
             }
           >
-            <div class="text-center py-12">
-              <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-white">
+            <div class="text-center py-16">
+              <Icon name="no-symbol" class="mx-auto h-12 w-12 text-grey-600" />
+              <h3 class="mt-3 text-base font-medium text-white">
                 No blocklist entries found for that search
               </h3>
-              <p class="mt-1 text-md text-grey-500 text-grey-200">
-                Try entering a different search term.
-              </p>
-              <div class="mt-6">
+              <p class="mt-1 text-sm text-grey-500">Try entering a different search term.</p>
+              <div class="mt-4">
                 <Link
                   href={(window as any).route('blocklist.index')}
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                  class="inline-flex items-center rounded-md bg-primary hover:bg-primary/90 text-charcoal px-4 py-2 text-sm font-medium"
                 >
                   View all blocklist entries
                 </Link>
@@ -372,168 +356,128 @@ export default function BlocklistIndex(props: BlocklistProps) {
           </Show>
         }
       >
-        <div class="relative">
-          <Show when={selectedRowIds().length > 0}>
-            <div
-              id="bulk-actions"
-              class="absolute px-0.5 top-0 left-12 flex flex-nowrap h-12 items-center space-x-3 bg-gradient-to-r from-white from-surface z-10 overflow-x-auto"
-              style={{ width: 'calc(100% - 3rem)' }}
+        {/* Bulk actions bar */}
+        <Show when={selectedRowIds().length > 0}>
+          <div class="flex items-center gap-3 mb-4 px-1">
+            <button
+              type="button"
+              class="inline-flex items-center rounded-md border border-border-subtle bg-surface px-3 py-1.5 text-sm text-grey-300 hover:text-white hover:bg-white/5 disabled:cursor-not-allowed"
+              disabled={bulkDeleteLoading()}
+              onClick={() => {
+                if (selectedRowIds().length === 1) {
+                  openDeleteModal(selectedRowIds()[0])
+                } else {
+                  setBulkDeleteModalOpen(true)
+                }
+              }}
             >
-              <button
-                type="button"
-                class="ml-1 inline-flex items-center rounded border border-grey-300 bg-surface px-2.5 py-1.5 text-xs font-medium text-grey-700-sm hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 border-border-subtle bg-surface text-grey-200 hover:bg-white/5"
-                disabled={bulkDeleteLoading()}
-                onClick={() => {
-                  if (selectedRowIds().length === 1) {
-                    openDeleteModal(selectedRowIds()[0])
-                  } else {
-                    setBulkDeleteModalOpen(true)
-                  }
-                }}
-              >
-                Delete
-                <Show when={bulkDeleteLoading()}>
-                  <Loader />
-                </Show>
-              </button>
-              <span class="font-semibold text-secondary hidden md:inline-block text-indigo-400">
-                {selectedRowIds().length === 1 ? '1 entry' : `${selectedRowIds().length} entries`}
-              </span>
-            </div>
-          </Show>
-
-          <div class="overflow-x-auto">
-            <table class="min-w-full">
-              <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
-                <tr>
-                  <th scope="col" class="p-3 w-10">
-                    <input
-                      type="checkbox"
-                      class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary text-indigo-400 bg-surface"
-                      checked={indeterminate() || selectedRowIds().length === rows().length}
-                      ref={el => {
-                        ;(el as any).indeterminate = indeterminate()
-                      }}
-                      onChange={e => {
-                        setSelectedRowIds(e.currentTarget.checked ? rows().map(r => r.id) : [])
-                      }}
-                    />
-                  </th>
-                  <th
-                    scope="col"
-                    class="p-3 text-left cursor-pointer select-none"
-                    onClick={() => toggleSort('value')}
-                  >
-                    Value {sortField() === 'value' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''} />
-                  </th>
-                  <th
-                    scope="col"
-                    class="p-3 text-left cursor-pointer select-none"
-                    onClick={() => toggleSort('type')}
-                  >
-                    Type {sortField() === 'type' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''} />
-                  </th>
-                  <th scope="col" class="p-3 text-left">
-                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''}>
-                      Blocked
-                      <Icon
-                        name="info"
-                        class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                      />
-                    </span>
-                  </th>
-                  <th
-                    scope="col"
-                    class="p-3 text-left cursor-pointer select-none"
-                    onClick={() => toggleSort('created_at')}
-                  >
-                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''}>
-                      Created{' '}
-                      {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                    </span>
-                  </th>
-                  <th scope="col" class="p-3" />
-                </tr>
-              </thead>
-              <tbody>
-                <For each={sortedRows()}>
-                  {row => (
-                    <tr
-                      class={`border-b border-grey-100 border-border-subtle ${
-                        selectedRowIds().includes(row.id) ? 'bg-white/5 bg-surface' : ''
-                      }`}
-                    >
-                      <td class="p-3 relative">
-                        <Show when={selectedRowIds().includes(row.id)}>
-                          <div class="absolute inset-y-0 left-0 w-0.5 bg-secondary" />
-                        </Show>
-                        <input
-                          type="checkbox"
-                          class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary text-indigo-400 bg-surface"
-                          checked={selectedRowIds().includes(row.id)}
-                          onChange={e => {
-                            if (e.currentTarget.checked) {
-                              setSelectedRowIds(prev => [...prev, row.id])
-                            } else {
-                              setSelectedRowIds(prev => prev.filter(id => id !== row.id))
-                            }
-                          }}
-                        />
-                      </td>
-                      <td class="p-3">
-                        <span
-                          class="cursor-pointer text-sm font-medium text-grey-700 text-grey-200"
-                          onClick={() => clipboard(row.value)}
-                          title="Click to copy"
-                        >
-                          {row.value}
-                        </span>
-                      </td>
-                      <td class="p-3">
-                        <span class="text-sm text-grey-500 text-grey-300">
-                          {row.type === 'email' ? 'Email' : 'Domain'}
-                        </span>
-                      </td>
-                      <td class="p-3">
-                        <Show
-                          when={row.last_blocked}
-                          fallback={
-                            <span class="text-grey-300">{row.blocked.toLocaleString()} </span>
-                          }
-                        >
-                          <span
-                            class="font-semibold text-secondary text-indigo-400"
-                            title={`${filters.timeAgo(row.last_blocked!)} (${filters.formatDate(row.last_blocked!)})`}
-                          >
-                            {row.blocked.toLocaleString()}
-                          </span>
-                        </Show>
-                      </td>
-                      <td class="p-3">
-                        <span
-                          class="cursor-default text-sm text-grey-500 text-grey-300"
-                          title={filters.formatDate(row.created_at)}
-                        >
-                          {filters.timeAgo(row.created_at)}
-                        </span>
-                      </td>
-                      <td class="p-3 text-right">
-                        <button
-                          type="button"
-                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
-                          onClick={() => openDeleteModal(row.id)}
-                        >
-                          Delete
-                        </button>
-                      </td>
-                    </tr>
-                  )}
-                </For>
-              </tbody>
-            </table>
+              Delete
+              <Show when={bulkDeleteLoading()}>
+                <Loader />
+              </Show>
+            </button>
+            <span class="text-sm text-grey-500">
+              {selectedRowIds().length === 1 ? '1 entry' : `${selectedRowIds().length} entries`}{' '}
+              selected
+            </span>
           </div>
+        </Show>
+
+        {/* Column headers */}
+        <div class="hidden sm:grid sm:grid-cols-12 gap-4 px-4 pb-2 text-xs font-medium text-grey-500 uppercase tracking-wider">
+          <div class="col-span-1">
+            <input
+              type="checkbox"
+              class="h-4 w-4 rounded border-border-subtle text-primary focus:ring-primary bg-surface"
+              checked={selectedRowIds().length === rows().length}
+              onChange={e => {
+                setSelectedRowIds(e.currentTarget.checked ? rows().map(r => r.id) : [])
+              }}
+            />
+          </div>
+          <div class="col-span-4 cursor-pointer select-none" onClick={() => toggleSort('value')}>
+            Value {sortField() === 'value' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </div>
+          <div class="col-span-2 cursor-pointer select-none" onClick={() => toggleSort('type')}>
+            Type {sortField() === 'type' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </div>
+          <div class="col-span-2">Blocked</div>
+          <div
+            class="col-span-2 cursor-pointer select-none"
+            onClick={() => toggleSort('created_at')}
+          >
+            Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </div>
+          <div class="col-span-1" />
+        </div>
+
+        {/* List rows */}
+        <div class="divide-y divide-border-subtle border-t border-border-subtle">
+          <For each={sortedRows()}>
+            {row => (
+              <div
+                class={`group flex flex-col sm:grid sm:grid-cols-12 gap-2 sm:gap-4 px-4 py-3 hover:bg-white/[0.03] transition-colors ${selectedRowIds().includes(row.id) ? 'bg-white/[0.03]' : ''}`}
+              >
+                <div class="col-span-1 flex items-center">
+                  <input
+                    type="checkbox"
+                    class="h-4 w-4 rounded border-border-subtle text-primary focus:ring-primary bg-surface"
+                    checked={selectedRowIds().includes(row.id)}
+                    onChange={e => {
+                      if (e.currentTarget.checked) {
+                        setSelectedRowIds(prev => [...prev, row.id])
+                      } else {
+                        setSelectedRowIds(prev => prev.filter(id => id !== row.id))
+                      }
+                    }}
+                  />
+                </div>
+                <div class="col-span-4">
+                  <span
+                    class="cursor-pointer text-sm font-medium text-white hover:text-primary"
+                    onClick={() => clipboard(row.value)}
+                    title="Click to copy"
+                  >
+                    {row.value}
+                  </span>
+                </div>
+                <div class="col-span-2">
+                  <span class="text-sm text-grey-400">
+                    {row.type === 'email' ? 'Email' : 'Domain'}
+                  </span>
+                </div>
+                <div class="col-span-2">
+                  <Show
+                    when={row.last_blocked}
+                    fallback={
+                      <span class="text-sm text-grey-400">{row.blocked.toLocaleString()}</span>
+                    }
+                  >
+                    <span
+                      class="text-sm font-medium text-primary"
+                      title={`${filters.timeAgo(row.last_blocked!)} (${filters.formatDate(row.last_blocked!)})`}
+                    >
+                      {row.blocked.toLocaleString()}
+                    </span>
+                  </Show>
+                </div>
+                <div class="col-span-2">
+                  <span class="text-sm text-grey-500" title={filters.formatDate(row.created_at)}>
+                    {filters.timeAgo(row.created_at)}
+                  </span>
+                </div>
+                <div class="col-span-1 flex justify-end">
+                  <button
+                    type="button"
+                    class="text-sm text-grey-500 hover:text-red-400 transition-colors"
+                    onClick={() => openDeleteModal(row.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
       </Show>
 
@@ -544,14 +488,14 @@ export default function BlocklistIndex(props: BlocklistProps) {
         }}
         title="Remove from blocklist"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Are you sure you want to remove this entry from your blocklist? The sender or domain will
           be able to reach your aliases again.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
-            class="px-4 py-3 text-white font-semibold bg-red-500 hover:bg-red-600 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-2.5 text-white font-semibold bg-red-500 hover:bg-red-600 rounded-md disabled:cursor-not-allowed"
             disabled={deleteLoading()}
             onClick={confirmDelete}
           >
@@ -561,7 +505,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </Show>
           </button>
           <button
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
             onClick={closeDeleteModal}
           >
             Cancel
@@ -574,14 +518,14 @@ export default function BlocklistIndex(props: BlocklistProps) {
         onOpenChange={setBulkDeleteModalOpen}
         title="Remove from blocklist"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Are you sure you want to remove these <b>{selectedRows().length}</b> entries from your
           blocklist? The senders or domains will be able to reach your aliases again.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
-            class="px-4 py-3 text-white font-semibold bg-red-500 hover:bg-red-600 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-2.5 text-white font-semibold bg-red-500 hover:bg-red-600 rounded-md disabled:cursor-not-allowed"
             disabled={bulkDeleteLoading()}
             onClick={bulkDeleteBlocklist}
           >
@@ -591,7 +535,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </Show>
           </button>
           <button
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
             onClick={() => setBulkDeleteModalOpen(false)}
           >
             Cancel
@@ -606,22 +550,19 @@ export default function BlocklistIndex(props: BlocklistProps) {
         }}
         title="Bulk add to blocklist"
       >
-        <p class="mt-2 text-sm text-grey-600 text-grey-300">
+        <p class="mt-2 text-sm text-grey-400">
           Enter one {bulkAddType() === 'email' ? 'email address' : 'domain'} per line. Duplicates
           and entries already on your blocklist will be skipped. Maximum 50 entries.
         </p>
         <div class="mt-4">
-          <label
-            for="bulk-add-type"
-            class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
-          >
+          <label for="bulk-add-type" class="block text-sm font-medium text-grey-400 mb-1">
             Type
           </label>
           <select
             id="bulk-add-type"
             value={bulkAddType()}
             onChange={e => setBulkAddType(e.currentTarget.value)}
-            class="rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+            class="rounded-md border-border-subtle bg-white/5 text-white focus:border-primary focus:ring-primary sm:text-sm"
           >
             <option value="email" class="bg-surface">
               Email
@@ -632,10 +573,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
           </select>
         </div>
         <div class="mt-4">
-          <label
-            for="bulk-add-values"
-            class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
-          >
+          <label for="bulk-add-values" class="block text-sm font-medium text-grey-400 mb-1">
             Entries
           </label>
           <textarea
@@ -643,7 +581,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             value={bulkAddText()}
             onInput={e => setBulkAddText(e.currentTarget.value)}
             rows={8}
-            class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm font-mono"
+            class="block w-full rounded-md border-border-subtle bg-white/5 text-white focus:border-primary focus:ring-primary sm:text-sm font-mono"
             placeholder={
               bulkAddType() === 'email'
                 ? 'spam@example.com\nnewsletter@company.com'
@@ -651,13 +589,13 @@ export default function BlocklistIndex(props: BlocklistProps) {
             }
           />
           <Show when={bulkAddError()}>
-            <p class="mt-1 text-sm text-red-500">{bulkAddError()}</p>
+            <p class="mt-1 text-sm text-red-400">{bulkAddError()}</p>
           </Show>
         </div>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
           <button
             type="button"
-            class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="bg-primary hover:bg-primary/90 text-charcoal font-bold py-2.5 px-4 rounded-md disabled:cursor-not-allowed"
             disabled={bulkAddLoading() || !parsedBulkAddValues().length}
             onClick={submitBulkAdd}
           >
@@ -668,7 +606,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
           </button>
           <button
             type="button"
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-2.5 text-grey-300 font-medium bg-white/5 hover:bg-white/10 rounded-md border border-border-subtle"
             onClick={closeBulkAddModal}
           >
             Cancel

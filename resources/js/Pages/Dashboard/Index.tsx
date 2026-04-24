@@ -2,7 +2,6 @@ import { createSignal, createMemo, onMount, Show } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { Link } from '../../lib/inertia'
 import http from '../../lib/http'
-import Icon from '../../Components/Icon'
 import Loader from '../../Components/Loader'
 import OutboundMessagesGraph from './OutboundMessagesGraph'
 import OutboundMessagesPie from './OutboundMessagesPie'
@@ -59,58 +58,44 @@ export default function DashboardIndex(props: DashboardProps) {
     return Math.min(pct, 100).toFixed(2)
   })
 
-  const bandwidthPercentageClass = createMemo(() => {
+  const bandwidthColor = createMemo(() => {
     const pct = Number(bandwidthPercentage())
-    if (pct === 100) return 'from-red-200 to-red-500'
-    if (pct > 80) return 'from-yellow-200 to-yellow-600'
-    return 'from-cyan-500 to-indigo-500'
+    if (pct === 100) return 'bg-red-500'
+    if (pct > 80) return 'bg-yellow-500'
+    return 'bg-primary'
   })
 
-  const stats = [
-    {
-      name: 'Shared Domain Aliases',
-      stat: props.aliases,
-      icon: 'at-symbol',
-      url: route('aliases.index', { shared_domain: 'true', active: 'true' }),
-    },
-    { name: 'Recipients', stat: props.recipients, icon: 'inbox', url: route('recipients.index') },
-    { name: 'Usernames', stat: props.usernames, icon: 'users', url: route('usernames.index') },
-    { name: 'Domains', stat: props.domains, icon: 'globe', url: route('domains.index') },
-    { name: 'Rules', stat: props.rules, icon: 'funnel', url: route('rules.index') },
+  const resources = [
+    { name: 'Aliases', stat: props.aliases, url: route('aliases.index') },
+    { name: 'Recipients', stat: props.recipients, url: route('recipients.index') },
+    { name: 'Usernames', stat: props.usernames, url: route('usernames.index') },
+    { name: 'Domains', stat: props.domains, url: route('domains.index') },
+    { name: 'Rules', stat: props.rules, url: route('rules.index') },
   ]
 
-  const aliasStats = [
-    {
-      name: 'Total Aliases',
-      stat: parseInt(String(props.totals.total)),
-      icon: 'at-symbol',
-      url: route('aliases.index', { deleted: 'with' }),
-    },
+  const aliasCounts = [
     {
       name: 'Active',
       stat: parseInt(String(props.totals.active)),
-      icon: 'check-circle',
       url: route('aliases.index', { active: 'true' }),
     },
     {
       name: 'Inactive',
       stat: parseInt(String(props.totals.inactive)),
-      icon: 'cross-circle',
       url: route('aliases.index', { active: 'false' }),
     },
     {
       name: 'Deleted',
       stat: parseInt(String(props.totals.deleted)),
-      icon: 'trash',
       url: route('aliases.index', { deleted: 'only' }),
     },
   ]
 
-  const emailStats = [
-    { name: 'Emails Forwarded', stat: parseInt(String(props.totals.forwarded)), icon: 'send' },
-    { name: 'Emails Blocked', stat: parseInt(String(props.totals.blocked)), icon: 'blocked' },
-    { name: 'Email Replies', stat: parseInt(String(props.totals.replies)), icon: 'corner-up-left' },
-    { name: 'Emails Sent', stat: props.totals.sent, icon: 'arrow-right' },
+  const emailCounts = [
+    { name: 'Forwarded', stat: parseInt(String(props.totals.forwarded)) },
+    { name: 'Blocked', stat: parseInt(String(props.totals.blocked)) },
+    { name: 'Replies', stat: parseInt(String(props.totals.replies)) },
+    { name: 'Sent', stat: props.totals.sent },
   ]
 
   return (
@@ -121,132 +106,101 @@ export default function DashboardIndex(props: DashboardProps) {
       </h1>
 
       {Number(bandwidthPercentage()) === 100 && (
-        <div
-          class="text-base border-t-8 rounded text-yellow-800 border-yellow-600 bg-yellow-100 px-3 py-4 mb-4"
-          role="alert"
-        >
-          <div class="flex items-center mb-2">
-            <span class="rounded-full bg-yellow-400 uppercase px-2 py-1 text-xs font-bold mr-2">
-              Warning
-            </span>
-            <div>
-              Exceeded bandwidth limit for <b>{props.month}</b>.
-            </div>
-          </div>
+        <div class="mb-6 rounded-lg bg-yellow-500/10 border border-yellow-500/20 px-4 py-3 text-sm text-yellow-400">
+          Bandwidth limit exceeded for <span class="font-semibold">{props.month}</span>.
         </div>
       )}
 
-      <h1 class="text-2xl font-semibold text-white">Dashboard</h1>
-
-      <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-        {stats.map(item => (
-          <div class="relative overflow-hidden rounded-lg bg-surface px-4 pb-12 pt-5 sm:px-6 sm:pt-6">
-            <dt>
-              <div class="absolute rounded-md bg-primary/10 p-3">
-                <Icon name={item.icon} class="h-6 w-6 text-primary" />
-              </div>
-              <p class="ml-16 truncate text-sm font-medium text-grey-300">{item.name}</p>
-            </dt>
-            <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-              <p class="text-2xl font-semibold text-white">{item.stat.toLocaleString()}</p>
-              <div class="absolute inset-x-0 bottom-0 bg-surface px-4 py-4 sm:px-6">
-                <div class="text-sm">
-                  <Link href={item.url} class="font-medium text-primary hover:text-primary/80">
-                    View all<span class="sr-only"> {item.name} stats</span>
-                  </Link>
-                </div>
-              </div>
-            </dd>
-          </div>
-        ))}
-      </dl>
-
-      <h3 class="mt-6 text-base font-semibold leading-6 text-grey-300">
-        Bandwidth ({props.month})
-      </h3>
-
-      <div class="mt-6">
-        <div class="overflow-hidden rounded-full bg-surface relative">
-          <div
-            class={`relative h-8 flex items-center justify-end rounded-full bg-gradient-to-r z-10 min-w-[25%] sm:min-w-fit ${bandwidthPercentageClass()}`}
-            style={{ width: `${bandwidthPercentage()}%` }}
+      {/* Top resource row */}
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border-subtle rounded-lg overflow-hidden">
+        {resources.map(item => (
+          <Link
+            href={item.url}
+            class="bg-surface hover:bg-white/[0.03] transition-colors px-4 py-5 text-center group"
           >
-            <span class="text-white px-4 font-semibold">{props.bandwidthMb}MB</span>
-          </div>
-          <span class="h-8 absolute top-0 right-0 flex items-center pr-4 text-grey-300 font-semibold">
-            {props.bandwidthLimit}MB
+            <p class="text-2xl font-semibold text-white group-hover:text-primary transition-colors">
+              {item.stat.toLocaleString()}
+            </p>
+            <p class="text-xs text-grey-400 mt-1">{item.name}</p>
+          </Link>
+        ))}
+      </div>
+
+      {/* Bandwidth */}
+      <div class="mt-8">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-sm font-medium text-grey-300">Bandwidth ({props.month})</h2>
+          <span class="text-xs text-grey-400">
+            {props.bandwidthMb} MB / {props.bandwidthLimit} MB
           </span>
         </div>
-      </div>
-
-      <div class="mt-6">
-        <h3 class="text-base font-semibold leading-6 text-grey-300">Aliases</h3>
-
-        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {aliasStats.map((item, idx) => (
-            <div class="relative overflow-hidden rounded-lg bg-surface px-4 pb-12 pt-5 sm:px-6 sm:pt-6">
-              <dt>
-                <div class="absolute rounded-md bg-primary/10 p-3">
-                  <Icon name={item.icon} class="h-6 w-6 text-primary" />
-                </div>
-                <p class="ml-16 truncate text-sm font-medium text-grey-300">{item.name}</p>
-              </dt>
-              <dd class="ml-16 flex items-baseline pb-6 sm:pb-7">
-                <p class="text-2xl font-semibold text-white">{item.stat.toLocaleString()}</p>
-                <div class="absolute inset-x-0 bottom-0 bg-surface px-4 py-4 sm:px-6">
-                  <div class="text-sm">
-                    <Link href={item.url} class="font-medium text-primary hover:text-primary/80">
-                      {idx === 0 ? 'View All' : `View ${item.name}`}
-                      <span class="sr-only"> {item.name} stats</span>
-                    </Link>
-                  </div>
-                </div>
-              </dd>
-            </div>
-          ))}
-        </dl>
-
-        <h3 class="mt-6 text-base font-semibold leading-6 text-grey-300">Stats</h3>
-
-        <dl class="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {emailStats.map(item => (
-            <div class="relative overflow-hidden rounded-lg bg-surface p-4">
-              <dt>
-                <Icon
-                  name={item.icon}
-                  class="inline-block w-16 h-16 text-primary/10 absolute top-0 right-0"
-                />
-                <p class="truncate text-sm font-medium text-grey-300">{item.name}</p>
-              </dt>
-              <dd class="flex items-baseline">
-                <p class="text-3xl font-semibold text-white">{item.stat.toLocaleString()}</p>
-              </dd>
-            </div>
-          ))}
-        </dl>
-      </div>
-
-      <h3 class="mt-6 text-base font-semibold leading-6 text-grey-300">
-        Outbound Messages Last 7 Days {chartsLoading() && <Loader />}
-      </h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-        <div class="mt-5 bg-surface overflow-hidden sm:rounded-lg p-4 flex justify-center max-h-80">
-          <OutboundMessagesGraph
-            forwardsData={forwardsData()}
-            repliesData={repliesData()}
-            sendsData={sendsData()}
-            labels={labels()}
+        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
+          <div
+            class={`h-full rounded-full ${bandwidthColor()} transition-all`}
+            style={{ width: `${bandwidthPercentage()}%` }}
           />
         </div>
-        <div class="mt-5 bg-surface overflow-hidden sm:rounded-lg p-4 flex justify-center max-h-80">
-          <Show
-            when={outboundMessageTotals()}
-            fallback={
-              <div class="flex items-center justify-center text-grey-400">No data to display</div>
-            }
-          >
-            {totals => <OutboundMessagesPie totals={totals()} />}
+      </div>
+
+      {/* Alias & email stats */}
+      <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Alias breakdown */}
+        <div>
+          <h2 class="text-sm font-medium text-grey-300 mb-3">Aliases</h2>
+          <div class="bg-surface rounded-lg divide-y divide-border-subtle">
+            {aliasCounts.map(item => (
+              <Link
+                href={item.url}
+                class="flex items-center justify-between px-4 py-3 hover:bg-white/[0.03] transition-colors group"
+              >
+                <span class="text-sm text-grey-400 group-hover:text-white transition-colors">
+                  {item.name}
+                </span>
+                <span class="text-sm font-medium text-white">{item.stat.toLocaleString()}</span>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* Email stats */}
+        <div>
+          <h2 class="text-sm font-medium text-grey-300 mb-3">Activity</h2>
+          <div class="bg-surface rounded-lg divide-y divide-border-subtle">
+            {emailCounts.map(item => (
+              <div class="flex items-center justify-between px-4 py-3">
+                <span class="text-sm text-grey-400">{item.name}</span>
+                <span class="text-sm font-medium text-white">{item.stat.toLocaleString()}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Charts */}
+      <div class="mt-8">
+        <h2 class="text-sm font-medium text-grey-300 mb-3 flex items-center gap-2">
+          Outbound Messages (Last 7 Days)
+          <Show when={chartsLoading()}>
+            <Loader />
           </Show>
+        </h2>
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="lg:col-span-2 bg-surface rounded-lg p-4">
+            <OutboundMessagesGraph
+              forwardsData={forwardsData()}
+              repliesData={repliesData()}
+              sendsData={sendsData()}
+              labels={labels()}
+            />
+          </div>
+          <div class="bg-surface rounded-lg p-4 flex items-center justify-center">
+            <Show
+              when={outboundMessageTotals()}
+              fallback={<span class="text-sm text-grey-400">No data</span>}
+            >
+              {totals => <OutboundMessagesPie totals={totals()} />}
+            </Show>
+          </div>
         </div>
       </div>
     </div>

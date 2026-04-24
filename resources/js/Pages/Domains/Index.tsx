@@ -438,28 +438,24 @@ export default function DomainsIndex(props: DomainsProps) {
         Domains
       </h1>
 
-      <div class="sm:flex sm:items-center mb-6">
-        <div class="sm:flex-auto">
+      <div class="flex items-center justify-between mb-6">
+        <div>
           <h1 class="text-2xl font-semibold text-white">Domains</h1>
-          <p class="mt-2 text-sm text-grey-700 text-grey-200">
+          <p class="mt-1 text-sm text-grey-400">
             A list of all the domains {props.search ? 'found for your search' : 'in your account'}
-            <button onClick={() => setMoreInfoOpen(!moreInfoOpen())}>
-              <Icon
-                name="info"
-                class="inline-block w-6 h-6 cursor-pointer text-grey-500 text-grey-200"
-              />
+            <button onClick={() => setMoreInfoOpen(!moreInfoOpen())} class="ml-1">
+              <Icon name="info" class="inline-block w-5 h-5 text-grey-500 hover:text-white" />
             </button>
           </p>
         </div>
-        <div class="mt-4 sm:mt-0 sm:ml-16 sm:flex-none">
-          <button
-            type="button"
-            onClick={openAddDomainModal}
-            class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
-          >
-            Add Domain
-          </button>
-        </div>
+        <button
+          type="button"
+          onClick={openAddDomainModal}
+          class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
+        >
+          <Icon name="plus" class="w-4 h-4" />
+          Add Domain
+        </button>
       </div>
 
       <Show
@@ -468,35 +464,31 @@ export default function DomainsIndex(props: DomainsProps) {
           <Show
             when={props.search}
             fallback={
-              <div class="text-center">
-                <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-white">No Domains</h3>
-                <p class="mt-1 text-md text-grey-500 text-grey-200">
-                  Get started by creating a new domain.
-                </p>
+              <div class="text-center py-12">
+                <Icon name="globe" class="mx-auto h-16 w-16 text-grey-600" />
+                <h3 class="mt-4 text-lg font-medium text-white">No Domains</h3>
+                <p class="mt-2 text-grey-400">Get started by creating a new domain.</p>
                 <div class="mt-6">
                   <button
                     onClick={openAddDomainModal}
                     type="button"
-                    class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
                   >
-                    <Icon name="plus" class="-ml-1 mr-2 h-5 w-5" />
+                    <Icon name="plus" class="w-4 h-4" />
                     Add a Domain
                   </button>
                 </div>
               </div>
             }
           >
-            <div class="text-center">
-              <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-white">No Domains found for that search</h3>
-              <p class="mt-1 text-md text-grey-500 text-grey-200">
-                Try entering a different search term.
-              </p>
+            <div class="text-center py-12">
+              <Icon name="globe" class="mx-auto h-16 w-16 text-grey-600" />
+              <h3 class="mt-4 text-lg font-medium text-white">No Domains found for that search</h3>
+              <p class="mt-2 text-grey-400">Try entering a different search term.</p>
               <div class="mt-6">
                 <Link
                   href={(window as any).route('domains.index')}
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
+                  class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
                 >
                   View All Domains
                 </Link>
@@ -505,288 +497,260 @@ export default function DomainsIndex(props: DomainsProps) {
           </Show>
         }
       >
-        <div class="overflow-x-auto">
-          <table class="min-w-full">
-            <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
-              <tr>
-                <th
-                  scope="col"
-                  class="p-3 text-left cursor-pointer select-none"
-                  onClick={() => toggleSort('created_at')}
-                >
-                  Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                </th>
-                <th
-                  scope="col"
-                  class="p-3 text-left cursor-pointer select-none"
-                  onClick={() => toggleSort('domain')}
-                >
-                  Domain {sortField() === 'domain' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Description
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Default Recipient
-                </th>
-                <th
-                  scope="col"
-                  class="p-3 text-left cursor-pointer select-none"
-                  onClick={() => toggleSort('aliases_count')}
-                >
-                  Alias Count{' '}
-                  {sortField() === 'aliases_count' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Active
-                  <span title="When a domain is deactivated, any messages sent to its aliases will be silently discarded.">
-                    <Icon
-                      name="info"
-                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                    />
+        <div class="mb-3 flex items-center gap-4 text-xs text-grey-500">
+          <button
+            class="hover:text-white transition-colors"
+            onClick={() => toggleSort('created_at')}
+          >
+            Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </button>
+          <button class="hover:text-white transition-colors" onClick={() => toggleSort('domain')}>
+            Domain {sortField() === 'domain' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </button>
+          <button
+            class="hover:text-white transition-colors"
+            onClick={() => toggleSort('aliases_count')}
+          >
+            Aliases {sortField() === 'aliases_count' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+          </button>
+        </div>
+
+        <div class="space-y-3">
+          <For each={sortedRows()}>
+            {row => (
+              <div class="bg-surface rounded-lg p-4">
+                <div class="flex flex-wrap items-start justify-between gap-2">
+                  <div class="flex items-center flex-wrap gap-2">
+                    <button
+                      type="button"
+                      class="font-medium text-white hover:text-primary transition-colors"
+                      onClick={() => clipboard(row.domain)}
+                      title="Click to copy"
+                    >
+                      {filters.truncate(row.domain, 30)}
+                    </button>
+                    <VerifiedBadge domain={row} />
+                  </div>
+                  <span
+                    class="text-xs text-grey-500 cursor-default"
+                    title={filters.formatDate(row.created_at)}
+                  >
+                    {filters.timeAgo(row.created_at)}
                   </span>
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Catch-All
-                  <span title="When catch-all is disabled, only aliases that already exist for the domain will forward messages.">
-                    <Icon
-                      name="info"
-                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
-                    />
-                  </span>
-                </th>
-                <th scope="col" class="p-3 text-left">
-                  Verified Records
-                </th>
-                <th scope="col" class="p-3" />
-              </tr>
-            </thead>
-            <tbody>
-              <For each={sortedRows()}>
-                {row => (
-                  <tr class="border-b border-grey-100 border-border-subtle">
-                    <td class="p-3">
-                      <span
-                        class="cursor-default text-sm text-grey-500 text-grey-300"
-                        title={filters.formatDate(row.created_at)}
-                      >
-                        {filters.timeAgo(row.created_at)}
-                      </span>
-                    </td>
-                    <td class="p-3">
-                      <button
-                        class="cursor-pointer font-medium text-grey-700 text-grey-200"
-                        title="Click to copy"
-                        onClick={() => clipboard(row.domain)}
-                      >
-                        {filters.truncate(row.domain, 30)}
-                      </button>
-                    </td>
-                    <td class="p-3">
-                      <Show
-                        when={domainIdToEdit() === row.id}
-                        fallback={
+                </div>
+
+                <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                      Description
+                    </span>
+                    <Show
+                      when={domainIdToEdit() === row.id}
+                      fallback={
+                        <div class="mt-1 flex items-center gap-2">
                           <Show
                             when={row.description}
                             fallback={
-                              <div class="flex justify-center">
-                                <button
-                                  onClick={() => {
-                                    setDomainIdToEdit(row.id)
-                                    setDomainDescriptionToEdit('')
-                                  }}
-                                  aria-label="Add description"
-                                >
-                                  <Icon
-                                    name="plus"
-                                    class="block w-6 h-6 text-grey-300 fill-current"
-                                  />
-                                </button>
-                              </div>
-                            }
-                          >
-                            <div class="flex items-center">
-                              <span class="text-grey-500 text-grey-300 mr-2">
-                                {filters.truncate(row.description!, 60)}
-                              </span>
                               <button
+                                type="button"
                                 onClick={() => {
                                   setDomainIdToEdit(row.id)
-                                  setDomainDescriptionToEdit(row.description || '')
+                                  setDomainDescriptionToEdit('')
                                 }}
-                                aria-label="Edit"
+                                aria-label="Add description"
                               >
-                                <Icon
-                                  name="edit"
-                                  class="inline-block w-6 h-6 text-grey-300 fill-current"
-                                />
+                                <Icon name="plus" class="w-5 h-5 text-grey-500 hover:text-white" />
                               </button>
-                            </div>
+                            }
+                          >
+                            <span class="text-sm text-grey-300">
+                              {filters.truncate(row.description!, 60)}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setDomainIdToEdit(row.id)
+                                setDomainDescriptionToEdit(row.description || '')
+                              }}
+                              aria-label="Edit"
+                            >
+                              <Icon name="edit" class="w-4 h-4 text-grey-500 hover:text-white" />
+                            </button>
                           </Show>
-                        }
-                      >
-                        <div class="flex items-center">
-                          <input
-                            onKeyDown={e => {
-                              if (e.key === 'Enter') editDomain(row)
-                              if (e.key === 'Escape') {
-                                setDomainIdToEdit(null)
-                                setDomainDescriptionToEdit('')
-                              }
-                            }}
-                            value={domainDescriptionToEdit()}
-                            onInput={e => setDomainDescriptionToEdit(e.currentTarget.value)}
-                            type="text"
-                            class={`grow appearance-none bg-white/5 border text-grey-700 focus:outline-none rounded px-2 py-1 text-white bg-white/5 ${
-                              domainDescriptionToEdit().length > 200
-                                ? 'border-red-500'
-                                : 'border-transparent'
-                            }`}
-                            placeholder="Add description"
-                          />
-                          <button
-                            onClick={() => {
+                        </div>
+                      }
+                    >
+                      <div class="mt-1 flex items-center gap-1">
+                        <input
+                          onKeyDown={e => {
+                            if (e.key === 'Enter') editDomain(row)
+                            if (e.key === 'Escape') {
                               setDomainIdToEdit(null)
                               setDomainDescriptionToEdit('')
-                            }}
-                            aria-label="Cancel"
-                          >
-                            <Icon
-                              name="close"
-                              class="inline-block w-6 h-6 text-red-300 fill-current"
-                            />
-                          </button>
-                          <button onClick={() => editDomain(row)} aria-label="Save">
-                            <Icon
-                              name="save"
-                              class="inline-block w-6 h-6 text-cyan-500 fill-current"
-                            />
-                          </button>
-                        </div>
-                      </Show>
-                    </td>
-                    <td class="p-3">
-                      <Show
-                        when={row.default_recipient}
-                        fallback={
-                          <div class="flex justify-center">
-                            <button
-                              onClick={() => openDomainDefaultRecipientModal(row)}
-                              aria-label="Add Default Recipient"
-                            >
-                              <Icon name="plus" class="block w-6 h-6 text-grey-300 fill-current" />
-                            </button>
-                          </div>
-                        }
-                      >
-                        <div class="flex items-center">
-                          <span
-                            class="cursor-pointer font-medium text-grey-500 text-grey-300 mr-2"
-                            title="Click to copy"
-                            onClick={() => clipboard(row.default_recipient!.email)}
-                          >
-                            {filters.truncate(row.default_recipient!.email, 30)}
-                          </span>
+                            }
+                          }}
+                          value={domainDescriptionToEdit()}
+                          onInput={e => setDomainDescriptionToEdit(e.currentTarget.value)}
+                          type="text"
+                          classList={{
+                            'grow appearance-none bg-white/5 border rounded px-2 py-1 text-sm text-white focus:outline-none': true,
+                            'border-red-500': domainDescriptionToEdit().length > 200,
+                            'border-transparent': domainDescriptionToEdit().length <= 200,
+                          }}
+                          placeholder="Add description"
+                        />
+                        <button
+                          onClick={() => {
+                            setDomainIdToEdit(null)
+                            setDomainDescriptionToEdit('')
+                          }}
+                          aria-label="Cancel"
+                        >
+                          <Icon name="close" class="w-5 h-5 text-red-400 hover:text-red-300" />
+                        </button>
+                        <button onClick={() => editDomain(row)} aria-label="Save">
+                          <Icon name="save" class="w-5 h-5 text-primary hover:text-primary/80" />
+                        </button>
+                      </div>
+                    </Show>
+                  </div>
+
+                  <div>
+                    <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                      Default Recipient
+                    </span>
+                    <Show
+                      when={row.default_recipient}
+                      fallback={
+                        <div class="mt-1">
                           <button
+                            type="button"
                             onClick={() => openDomainDefaultRecipientModal(row)}
-                            aria-label="Edit Default Recipient"
+                            aria-label="Add Default Recipient"
                           >
-                            <Icon
-                              name="edit"
-                              class="inline-block w-6 h-6 text-grey-300 fill-current"
-                            />
+                            <Icon name="plus" class="w-5 h-5 text-grey-500 hover:text-white" />
                           </button>
                         </div>
-                      </Show>
-                    </td>
-                    <td class="p-3">
+                      }
+                    >
+                      <div class="mt-1 flex items-center gap-2">
+                        <span
+                          class="cursor-pointer text-sm text-grey-300 hover:text-white"
+                          onClick={() => clipboard(row.default_recipient!.email)}
+                          title="Click to copy"
+                        >
+                          {filters.truncate(row.default_recipient!.email, 30)}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => openDomainDefaultRecipientModal(row)}
+                          aria-label="Edit Default Recipient"
+                        >
+                          <Icon name="edit" class="w-4 h-4 text-grey-500 hover:text-white" />
+                        </button>
+                      </div>
+                    </Show>
+                  </div>
+
+                  <div>
+                    <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                      Alias Count
+                    </span>
+                    <div class="mt-1">
                       <Show
                         when={row.aliases_count}
-                        fallback={
-                          <span class="text-grey-500 text-grey-300">{row.aliases_count}</span>
-                        }
+                        fallback={<span class="text-sm text-grey-300">{row.aliases_count}</span>}
                       >
                         <Link
                           href={(window as any).route('aliases.index', { domain: row.id })}
-                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
+                          class="text-sm font-medium text-primary hover:text-primary/80"
                           title="Click to view the aliases using this domain"
                         >
                           {row.aliases_count.toLocaleString()}
                         </Link>
                       </Show>
-                    </td>
-                    <td class="p-3">
-                      <div class="flex items-center">
-                        <Toggle
-                          checked={row.active}
-                          onChange={(checked: boolean) => {
-                            setRows(prev =>
-                              prev.map(r => (r.id === row.id ? { ...r, active: checked } : r)),
-                            )
-                            if (checked) activateDomain(row.id)
-                            else deactivateDomain(row.id)
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td class="p-3">
-                      <div class="flex items-center">
-                        <Toggle
-                          checked={row.catch_all}
-                          onChange={(checked: boolean) => {
-                            setRows(prev =>
-                              prev.map(r => (r.id === row.id ? { ...r, catch_all: checked } : r)),
-                            )
-                            if (checked) enableCatchAll(row.id)
-                            else disableCatchAll(row.id)
-                          }}
-                        />
-                      </div>
-                    </td>
-                    <td class="p-3">
-                      <div class="flex items-center">
-                        <VerifiedBadge domain={row} />
-                        <Show
-                          when={row.domain_sending_verified_at || row.domain_mx_validated_at}
-                          fallback={
-                            <button
-                              onClick={() => openCheckRecordsModal(row)}
-                              class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 text-grey-300 rounded-sm"
-                            >
-                              Check Records
-                            </button>
-                          }
-                        >
+                    </div>
+                  </div>
+
+                  <div class="flex items-center gap-6">
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                        Active
+                      </span>
+                      <Toggle
+                        checked={row.active}
+                        onChange={(checked: boolean) => {
+                          setRows(prev =>
+                            prev.map(r => (r.id === row.id ? { ...r, active: checked } : r)),
+                          )
+                          if (checked) activateDomain(row.id)
+                          else deactivateDomain(row.id)
+                        }}
+                      />
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                        Catch-All
+                      </span>
+                      <Toggle
+                        checked={row.catch_all}
+                        onChange={(checked: boolean) => {
+                          setRows(prev =>
+                            prev.map(r => (r.id === row.id ? { ...r, catch_all: checked } : r)),
+                          )
+                          if (checked) enableCatchAll(row.id)
+                          else disableCatchAll(row.id)
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <span class="text-xs font-medium text-grey-500 uppercase tracking-wide">
+                      Verified Records
+                    </span>
+                    <div class="mt-1 flex items-center gap-2">
+                      <VerifiedBadge domain={row} />
+                      <Show
+                        when={row.domain_sending_verified_at || row.domain_mx_validated_at}
+                        fallback={
                           <button
                             onClick={() => openCheckRecordsModal(row)}
-                            class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 text-grey-300 rounded-sm"
+                            class="text-sm text-grey-500 hover:text-white transition-colors"
                           >
-                            Recheck
+                            Check Records
                           </button>
-                        </Show>
-                      </div>
-                    </td>
-                    <td class="p-3">
-                      <div class="flex items-center justify-center whitespace-nowrap">
-                        <Link
-                          href={(window as any).route('domains.edit', row.id)}
-                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
-                        >
-                          Edit<span class="sr-only">, {row.domain}</span>
-                        </Link>
+                        }
+                      >
                         <button
-                          onClick={() => openDeleteModal(row.id)}
-                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium ml-4"
+                          onClick={() => openCheckRecordsModal(row)}
+                          class="text-sm text-grey-500 hover:text-white transition-colors"
                         >
-                          Delete<span class="sr-only">, {row.domain}</span>
+                          Recheck
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                )}
-              </For>
-            </tbody>
-          </table>
+                      </Show>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="mt-3 pt-3 border-t border-border-subtle flex items-center gap-4">
+                  <Link
+                    href={(window as any).route('domains.edit', row.id)}
+                    class="text-sm font-medium text-grey-400 hover:text-white transition-colors"
+                  >
+                    Edit
+                  </Link>
+                  <button
+                    type="button"
+                    class="text-sm font-medium text-grey-400 hover:text-red-400 transition-colors"
+                    onClick={() => openDeleteModal(row.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </div>
+            )}
+          </For>
         </div>
       </Show>
 
@@ -802,13 +766,13 @@ export default function DomainsIndex(props: DomainsProps) {
           when={!domainToCheck()}
           fallback={
             <>
-              <p class="mt-4 mb-2 text-grey-700 text-grey-200">
+              <p class="mt-4 mb-2 text-grey-300">
                 Please set the following DNS records for your custom domain. <b>Note</b>: if you are
                 already using your custom domain for emails elsewhere e.g. with ProtonMail,
                 NameCheap etc. please{' '}
                 <a
                   href="https://vovamail.xyz/faq/#can-i-add-a-domain-if-im-already-using-it-for-email-somewhere-else"
-                  class="text-secondary text-indigo-400 font-bold"
+                  class="text-primary font-semibold hover:text-primary/80"
                   target="_blank"
                   rel="nofollow noreferrer noopener"
                 >
@@ -912,7 +876,7 @@ export default function DomainsIndex(props: DomainsProps) {
               <div class="mt-6">
                 <button
                   onClick={() => checkRecords(domainToCheck()!)}
-                  class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+                  class="bg-primary hover:bg-primary/90 text-grey-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
                   disabled={checkRecordsLoading()}
                 >
                   Check Records
@@ -922,16 +886,16 @@ export default function DomainsIndex(props: DomainsProps) {
                 </button>
                 <button
                   onClick={closeCheckRecordsModal}
-                  class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  class="ml-4 px-4 py-3 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   Cancel
                 </button>
               </div>
-              <div class="mt-2 text-sm text-grey-200">
+              <div class="mt-2 text-sm text-grey-300">
                 For more information or if you are adding a <b>subdomain</b> please read{' '}
                 <a
                   href="https://vovamail.xyz/help/adding-a-custom-domain/"
-                  class="text-secondary text-indigo-400 font-bold"
+                  class="text-primary font-semibold hover:text-primary/80"
                   target="_blank"
                   rel="nofollow noreferrer noopener"
                 >
@@ -941,7 +905,7 @@ export default function DomainsIndex(props: DomainsProps) {
             </>
           }
         >
-          <p class="mt-4 mb-2 text-grey-700 text-grey-200">
+          <p class="mt-4 mb-2 text-grey-300">
             To verify ownership of the domain, please add the following TXT record and then click
             Add Domain below. Once you've added the domain you can safely remove this TXT record.
           </p>
@@ -967,18 +931,18 @@ export default function DomainsIndex(props: DomainsProps) {
           </div>
           <div class="mt-6">
             <Show when={errors().newDomain}>
-              <p class="mb-3 text-red-500 text-sm">{errors().newDomain}</p>
+              <p class="mb-3 text-red-400 text-sm">{errors().newDomain}</p>
             </Show>
             <input
               value={newDomain()}
               onInput={e => setNewDomain(e.currentTarget.value)}
               type="text"
-              class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newDomain ? 'ring-red-500' : ''}`}
+              class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newDomain ? 'ring-red-500' : 'ring-grey-700'}`}
               placeholder="example.com"
             />
             <button
               onClick={validateNewDomain}
-              class="bg-primary hover:bg-primary/90 text-cyan-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-grey-900 font-bold py-3 px-4 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
               disabled={addDomainLoading()}
             >
               Add Domain
@@ -988,16 +952,16 @@ export default function DomainsIndex(props: DomainsProps) {
             </button>
             <button
               onClick={() => setAddDomainModalOpen(false)}
-              class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="ml-4 px-4 py-3 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Cancel
             </button>
           </div>
-          <div class="mt-2 text-sm text-grey-200">
+          <div class="mt-2 text-sm text-grey-300">
             For <b>subdomains</b> you will need to change the host value, please read{' '}
             <a
               href="https://vovamail.xyz/help/adding-a-custom-domain/"
-              class="text-secondary text-indigo-400 font-bold"
+              class="text-primary font-semibold hover:text-primary/80"
               target="_blank"
               rel="nofollow noreferrer noopener"
             >
@@ -1014,7 +978,7 @@ export default function DomainsIndex(props: DomainsProps) {
         }}
         title="Update Default Recipient"
       >
-        <p class="my-4 text-grey-700 text-grey-200">
+        <p class="my-4 text-grey-300">
           Select the default recipient for this domain. This overrides the default recipient in your
           account settings. Leave it empty if you would like to use the default recipient in your
           account settings.
@@ -1022,7 +986,7 @@ export default function DomainsIndex(props: DomainsProps) {
         <select
           value={defaultRecipientId() ?? ''}
           onChange={e => setDefaultRecipientId(e.currentTarget.value || null)}
-          class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+          class="block w-full rounded-md border-border-subtle bg-white/5 text-white text-sm focus:border-primary focus:ring-primary sm:text-sm"
         >
           <option value="" class="bg-surface">
             Select recipient
@@ -1035,11 +999,11 @@ export default function DomainsIndex(props: DomainsProps) {
             )}
           </For>
         </select>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 text-grey-200">
+        <div class="mt-6 flex flex-col sm:flex-row gap-4">
           <button
             type="button"
             onClick={editDefaultRecipient}
-            class="px-4 py-3 text-cyan-900 font-semibold bg-primary hover:bg-primary/90 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+            class="px-4 py-3 text-grey-900 font-semibold bg-primary hover:bg-primary/90 border border-transparent rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
             disabled={editDefaultRecipientLoading()}
           >
             Update Default Recipient
@@ -1049,7 +1013,7 @@ export default function DomainsIndex(props: DomainsProps) {
           </button>
           <button
             onClick={closeDomainDefaultRecipientModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
@@ -1063,12 +1027,12 @@ export default function DomainsIndex(props: DomainsProps) {
         }}
         title="Delete domain"
       >
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Are you sure you want to delete this domain? This will also{' '}
           <b>remove all aliases associated with this domain</b>. You will no longer be able to
           receive any emails at this domain.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+        <div class="mt-6 flex flex-col sm:flex-row gap-4">
           <button
             type="button"
             onClick={() => deleteDomain(domainIdToDelete()!)}
@@ -1082,7 +1046,7 @@ export default function DomainsIndex(props: DomainsProps) {
           </button>
           <button
             onClick={closeDeleteModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
@@ -1090,26 +1054,24 @@ export default function DomainsIndex(props: DomainsProps) {
       </Modal>
 
       <Modal open={moreInfoOpen()} onOpenChange={setMoreInfoOpen} title="More information">
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Adding a custom domain such as <b>example.com</b> will allow you to create unlimited
           aliases e.g. xyz@example.com. You can also add a subdomain such as <b>mail.example.com</b>
           .
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           To get started all you have to do is add a TXT record to your domain to verify ownership
           and then add the domain here by clicking the button above.
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
-          The TXT record needs to have the following values:
-        </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">The TXT record needs to have the following values:</p>
+        <p class="mt-4 text-grey-300">
           Type: <b>TXT</b>
           <br />
           Host: <b>@</b>
           <br />
           Value:{' '}
           <b
-            class="break-words cursor-pointer"
+            class="break-words cursor-pointer hover:text-primary"
             title="Copy"
             onClick={() => clipboard(`aa-verify=${aaVerify()}`)}
           >
@@ -1117,14 +1079,14 @@ export default function DomainsIndex(props: DomainsProps) {
           </b>
           <br />
         </p>
-        <p class="mt-4 text-grey-700 text-grey-200">
+        <p class="mt-4 text-grey-300">
           Once the DNS changes propagate and you have verified ownership of the domain you will need
           to add a few more records to be able to receive emails at your own domain.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row">
+        <div class="mt-6">
           <button
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Close
           </button>

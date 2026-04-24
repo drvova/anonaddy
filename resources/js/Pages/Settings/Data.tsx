@@ -38,7 +38,7 @@ export default function DataSettings() {
       <div class="divide-y divide-grey-200">
         <div class="py-10">
           <div>
-            <div class="mb-6 text-base text-grey-700 text-grey-200">
+            <div class="mb-6 text-base text-grey-200">
               <h3 class="text-lg font-medium leading-6 text-white">Import Aliases</h3>
 
               <div class="mt-4 w-24 border-b-2 border-grey-200"></div>
@@ -66,7 +66,7 @@ export default function DataSettings() {
                 <a
                   href="/import-aliases-template.csv"
                   rel="nofollow noopener noreferrer"
-                  class="text-secondary cursor-pointer text-indigo-400"
+                  class="text-secondary cursor-pointer"
                 >
                   Click here to download the CSV import template
                 </a>
@@ -89,14 +89,14 @@ export default function DataSettings() {
 
                 <div class="mt-4">
                   {!domainsCount() ? (
-                    <div class="bg-primary block w-full text-center hover:bg-primary/90 text-white font-bold py-3 px-4 rounded cursor-not-allowed">
+                    <div class="bg-primary block w-full text-center hover:bg-primary/90 text-black font-bold py-3 px-4 rounded cursor-not-allowed">
                       You don't have any custom domains
                     </div>
                   ) : (
                     <button
                       type="submit"
                       disabled={importAliasesForm.processing}
-                      class="bg-primary hover:bg-primary/90 text-white font-bold py-3 px-4 rounded w-full"
+                      class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full"
                     >
                       Import Alias Data
                       {importAliasesForm.processing && <Loader />}
@@ -112,14 +112,12 @@ export default function DataSettings() {
               <div class="mt-4 w-24 border-b-2 border-grey-200"></div>
 
               {totalAliasesCount() ? (
-                <p class="mt-6 text-base text-grey-700 text-grey-200">
+                <p class="mt-6 text-base text-grey-200">
                   You can click the button below to export all the data for your{' '}
                   <b>{totalAliasesCount()}</b> aliases as a .csv file.
                 </p>
               ) : (
-                <p class="mt-6 text-base text-grey-700 text-grey-200">
-                  You don't have any aliases to export.
-                </p>
+                <p class="mt-6 text-base text-grey-200">You don't have any aliases to export.</p>
               )}
             </div>
 
@@ -129,12 +127,12 @@ export default function DataSettings() {
             {totalAliasesCount() ? (
               <a
                 href={route('aliases.export')!}
-                class="bg-primary block w-full text-center hover:bg-primary/90 text-white font-bold py-3 px-4 rounded"
+                class="bg-primary block w-full text-center hover:bg-primary/90 text-black font-bold py-3 px-4 rounded"
               >
                 Export Alias Data
               </a>
             ) : (
-              <div class="bg-primary block w-full text-center hover:bg-primary/90 text-white font-bold py-3 px-4 rounded cursor-not-allowed">
+              <div class="bg-primary block w-full text-center hover:bg-primary/90 text-black font-bold py-3 px-4 rounded cursor-not-allowed">
                 Export Alias Data
               </div>
             )}
