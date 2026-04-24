@@ -44,7 +44,7 @@ export default async function createInertiaApp({
   config.replace(defaults)
 
   const el = isServer ? null : document.getElementById(id)
-  const initialPage = page || JSON.parse(el.dataset.page)
+  const initialPage = page || getInitialPage(id, el)
   // @ts-expect-error
   const resolveComponent = (name) => Promise.resolve(resolve(name)).then((module) => module.default || module)
 
@@ -76,9 +76,31 @@ export default async function createInertiaApp({
     setupProgress(progress)
   }
 
+  if (!el) {
+    throw new Error(`Inertia root element "#${id}" was not found.`)
+  }
+
   setup({
     el,
     App,
     props,
   })
+}
+
+function getInitialPage(id: string, el: HTMLElement | null): Page {
+  const elementPayload = el?.dataset.page
+
+  if (elementPayload) {
+    return JSON.parse(elementPayload)
+  }
+
+  const scriptPayload = document
+    .querySelector(`script[data-page="${id}"]`)
+    ?.textContent?.trim()
+
+  if (scriptPayload) {
+    return JSON.parse(scriptPayload)
+  }
+
+  throw new Error(`Inertia initial page payload was not found for "#${id}".`)
 }

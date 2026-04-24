@@ -15,4 +15,14 @@ class AppPageViewTest extends TestCase
         $this->assertStringContainsString('<title>VovaMail</title>', $layout);
         $this->assertStringNotContainsString('Encrypted email aliases', $layout);
     }
+
+    #[Test]
+    public function inertia_client_bootstrap_supports_script_element_page_payloads(): void
+    {
+        $bootstrap = file_get_contents(resource_path('js/lib/inertia/createInertiaApp.ts'));
+
+        $this->assertStringContainsString('script[data-page', $bootstrap);
+        $this->assertStringContainsString('Inertia initial page payload was not found', $bootstrap);
+        $this->assertStringNotContainsString('JSON.parse(el.dataset.page)', $bootstrap);
+    }
 }
