@@ -6,9 +6,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>VovaMail — Encrypted email aliases</title>
 
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="apple-touch-icon" href="/svg/icon-logo.svg">
+    <link rel="icon" type="image/svg+xml" href="/svg/icon-logo.svg">
+    <link rel="alternate icon" href="/svg/icon-logo.svg">
     <link rel="manifest" href="/site.webmanifest">
     <meta name="theme-color" content="#000000">
     <meta name="description" content="Private email aliases, custom domains, and delivery control for the inbox you actually use.">
