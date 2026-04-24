@@ -77,7 +77,7 @@ class ZeaburTransport extends AbstractTransport
         $headers = [];
         foreach ($originalMessage->getHeaders()->all() as $header) {
             $name = $header->getName();
-            if (in_array($name, ['From', 'To', 'Cc', 'Bcc', 'Reply-To', 'Subject', 'Date', 'MIME-Version', 'Content-Type', 'Content-Transfer-Encoding'], true)) {
+            if (in_array($name, ['From', 'To', 'Cc', 'Bcc', 'Reply-To', 'Subject', 'Date', 'MIME-Version', 'Content-Type', 'Content-Transfer-Encoding', 'Return-Path'], true)) {
                 continue;
             }
             $headers[$name] = $header->getBodyAsString();
