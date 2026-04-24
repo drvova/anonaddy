@@ -16,7 +16,6 @@ use App\Http\Controllers\Api\BlocklistController;
 use App\Http\Controllers\Api\CatchAllDomainController;
 use App\Http\Controllers\Api\CatchAllUsernameController;
 use App\Http\Controllers\Api\ChartDataController;
-use App\Http\Controllers\Api\CloudflareInboundController;
 use App\Http\Controllers\Api\DomainController;
 use App\Http\Controllers\Api\DomainDefaultRecipientController;
 use App\Http\Controllers\Api\DomainOptionController;
@@ -36,6 +35,7 @@ use App\Http\Controllers\Api\ResendableFailedDeliveryController;
 use App\Http\Controllers\Api\RuleController;
 use App\Http\Controllers\Api\UsernameController;
 use App\Http\Controllers\Api\UsernameDefaultRecipientController;
+use App\Http\Controllers\Api\ZeaburWebhookController;
 use App\Http\Controllers\Auth\ApiAuthenticationController;
 use App\Http\Controllers\BlocklistCheckController;
 use App\Http\Controllers\RecipientVerificationController;
@@ -57,8 +57,8 @@ Route::get('blocklist-check', [BlocklistCheckController::class, 'check'])
     ->middleware('blocklist.api')
     ->name('blocklist.check');
 
-Route::post('cloudflare/inbound', [CloudflareInboundController::class, 'handle'])
-    ->name('cloudflare.inbound');
+Route::post('zeabur/webhook', [ZeaburWebhookController::class, 'handle'])
+    ->name('zeabur.webhook');
 
 // API auth routes for mobile apps and browser extension
 Route::controller(ApiAuthenticationController::class)->prefix('auth')->group(function () {

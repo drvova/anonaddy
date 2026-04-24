@@ -354,8 +354,8 @@ class CustomMailer extends Mailer
         }
 
         foreach (preg_split('/\r\n|\r|\n/', $debug) as $line) {
-            if (Str::startsWith($line, 'cloudflare:')) {
-                $metadata = json_decode(Str::after($line, 'cloudflare:'), true);
+            if (Str::startsWith($line, 'zeabur:')) {
+                $metadata = json_decode(Str::after($line, 'zeabur:'), true);
 
                 return is_array($metadata) ? $metadata : [];
             }
@@ -369,8 +369,8 @@ class CustomMailer extends Mailer
         $defaultMailer = config('mail.default');
         $transport = config("mail.mailers.{$defaultMailer}.transport");
 
-        if ($transport === 'cloudflare') {
-            return 'cloudflare';
+        if ($transport === 'zeabur') {
+            return 'zeabur';
         }
 
         return null;
@@ -381,8 +381,8 @@ class CustomMailer extends Mailer
         $defaultMailer = config('mail.default');
         $transport = config("mail.mailers.{$defaultMailer}.transport");
 
-        if ($transport === 'cloudflare') {
-            return parse_url(config("mail.mailers.{$defaultMailer}.base_url"), PHP_URL_HOST) ?: 'api.cloudflare.com';
+        if ($transport === 'zeabur') {
+            return parse_url(config("mail.mailers.{$defaultMailer}.base_url"), PHP_URL_HOST) ?: 'api.zeabur.com';
         }
 
         return config('mail.mailers.smtp.host');

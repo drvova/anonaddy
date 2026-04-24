@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\CustomMailDriver\Transports\CloudflareTransport;
+use App\CustomMailDriver\Transports\ZeaburTransport;
 use App\Http\Responses\LoginViewResponse;
 use App\Http\Responses\RegisterSuccessResponse;
 use App\Http\Responses\RegisterViewResponse;
@@ -41,12 +41,11 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        Mail::extend('cloudflare', function (array $config) {
-            return new CloudflareTransport(
+        Mail::extend('zeabur', function (array $config) {
+            return new ZeaburTransport(
                 app(Factory::class),
-                $config['api_token'] ?? '',
-                $config['account_id'] ?? '',
-                $config['base_url'] ?? 'https://api.cloudflare.com/client/v4',
+                $config['api_key'] ?? '',
+                $config['base_url'] ?? 'https://api.zeabur.com/api/v1/zsend',
                 (int) ($config['timeout'] ?? 30)
             );
         });

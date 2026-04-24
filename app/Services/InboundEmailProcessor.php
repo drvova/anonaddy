@@ -284,7 +284,7 @@ class InboundEmailProcessor
 
     protected function shouldCheckDmarc(): bool
     {
-        return config('mail.default') !== 'cloudflare';
+        return true;
     }
 
     protected function handleUnsubscribe(): void

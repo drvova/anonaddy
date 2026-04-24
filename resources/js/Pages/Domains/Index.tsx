@@ -37,11 +37,7 @@ interface DomainsProps {
   domainName: string
   hostname: string
   dkimSelector: string
-  mailProvider: 'cloudflare' | 'self-hosted'
-  cloudflareDkimSelector: string
-  cloudflareSpfValue: string
-  cloudflareRoutingUrl: string
-  cloudflareSendingUrl: string
+  mailProvider: 'zeabur' | 'self-hosted'
   recipientOptions: RecipientOption[]
   initialAaVerify: string
   search: string | null
@@ -49,7 +45,6 @@ interface DomainsProps {
 
 export default function DomainsIndex(props: DomainsProps) {
   const page = usePage()
-  const usingCloudflareMail = createMemo(() => props.mailProvider === 'cloudflare')
 
   const [rows, setRows] = createSignal<Domain[]>([...props.initialRows])
   const [aaVerify, setAaVerify] = createSignal(props.initialAaVerify)
@@ -713,130 +708,62 @@ export default function DomainsIndex(props: DomainsProps) {
           when={!domainToCheck()}
           fallback={
             <>
-              <Show
-                when={usingCloudflareMail()}
-                fallback={
-                  <>
-                    <p class="mt-4 mb-2 text-grey-700 dark:text-grey-200">
-                      Please set the following DNS records for your custom domain. <b>Note</b>: if you are
-                      already using your custom domain for emails elsewhere e.g. with ProtonMail, NameCheap etc.
-                      please{' '}
-                      <a
-                        href="https://vovamail.xyz/faq/#can-i-add-a-domain-if-im-already-using-it-for-email-somewhere-else"
-                        class="text-secondary dark:text-indigo-400 font-bold"
-                        target="_blank"
-                        rel="nofollow noreferrer noopener"
-                      >
-                        read this
-                      </a>.
-                    </p>
-                    <div class="table w-full">
-                      <div class="table-row">
-                        <div class="table-cell py-2 font-semibold dark:text-grey-100">Type</div>
-                        <div class="table-cell py-2 px-4 font-semibold dark:text-grey-100">Host</div>
-                        <div class="table-cell py-2 font-semibold dark:text-grey-100">Value/Points to</div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">MX 10</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard(props.hostname)} class="focus-visible:outline-primary">{props.hostname}.</button>
-                        </div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">TXT</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('v=spf1 mx -all')} class="focus-visible:outline-primary">v=spf1 mx -all</button>
-                        </div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">CNAME</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey.${props.domainName}.`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey.{props.domainName}.</button>
-                        </div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">TXT</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('_dmarc')} class="focus-visible:outline-primary">_dmarc</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('v=DMARC1; p=quarantine; adkim=s')} class="focus-visible:outline-primary">v=DMARC1; p=quarantine; adkim=s</button>
-                        </div>
-                      </div>
-                    </div>
-                  </>
-                }
-              >
-                <div class="mt-4 space-y-4 text-sm text-grey-700 dark:text-grey-200">
-                  <p>
-                    This VovaMail install uses <b>Cloudflare Email Service</b>. Add your ownership TXT record here,
-                    then finish onboarding the same domain in Cloudflare for both routing and sending.
-                  </p>
-                  <ol class="list-decimal space-y-2 pl-5">
-                    <li>
-                      Open{' '}
-                      <a href={props.cloudflareRoutingUrl} class="text-secondary dark:text-indigo-400 font-bold" target="_blank" rel="nofollow noreferrer noopener">
-                        Cloudflare Email Routing
-                      </a>{' '}
-                      and onboard this zone. Cloudflare will add the required root MX, SPF, and routing DKIM records automatically.
-                    </li>
-                    <li>
-                      Open{' '}
-                      <a href={props.cloudflareSendingUrl} class="text-secondary dark:text-indigo-400 font-bold" target="_blank" rel="nofollow noreferrer noopener">
-                        Cloudflare Email Sending
-                      </a>{' '}
-                      and onboard the same zone. Cloudflare will add the sending records on the <code>cf-bounce</code> subdomain.
-                    </li>
-                    <li>Wait for DNS propagation, then click <b>Check Records</b> below.</li>
-                  </ol>
-                  <div class="rounded-2xl border border-grey-800 bg-grey-950/80 p-4">
-                    <div class="table w-full">
-                      <div class="table-row">
-                        <div class="table-cell py-2 font-semibold dark:text-grey-100">Check</div>
-                        <div class="table-cell py-2 px-4 font-semibold dark:text-grey-100">Host</div>
-                        <div class="table-cell py-2 font-semibold dark:text-grey-100">Expected value</div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">Routing MX</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">@</div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">Cloudflare route*.mx.cloudflare.net records</div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">SPF</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">@</div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard(props.cloudflareSpfValue)} class="focus-visible:outline-primary">{props.cloudflareSpfValue}</button>
-                        </div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">DKIM</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard(`${props.cloudflareDkimSelector}._domainkey`)} class="focus-visible:outline-primary">{props.cloudflareDkimSelector}._domainkey</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">Added automatically by Cloudflare Email Sending</div>
-                      </div>
-                      <div class="table-row">
-                        <div class="table-cell py-2 dark:text-grey-100">DMARC</div>
-                        <div class="table-cell py-2 px-4 dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('_dmarc')} class="focus-visible:outline-primary">_dmarc</button>
-                        </div>
-                        <div class="table-cell py-2 break-words dark:text-grey-100">
-                          <button title="Copy" onClick={() => clipboard('v=DMARC1; p=quarantine; adkim=s')} class="focus-visible:outline-primary">v=DMARC1; p=quarantine; adkim=s</button>
-                        </div>
-                      </div>
-                    </div>
+              <p class="mt-4 mb-2 text-grey-700 dark:text-grey-200">
+                Please set the following DNS records for your custom domain. <b>Note</b>: if you are
+                already using your custom domain for emails elsewhere e.g. with ProtonMail, NameCheap etc.
+                please{' '}
+                <a
+                  href="https://vovamail.xyz/faq/#can-i-add-a-domain-if-im-already-using-it-for-email-somewhere-else"
+                  class="text-secondary dark:text-indigo-400 font-bold"
+                  target="_blank"
+                  rel="nofollow noreferrer noopener"
+                >
+                  read this
+                </a>.
+              </p>
+              <div class="table w-full">
+                <div class="table-row">
+                  <div class="table-cell py-2 font-semibold dark:text-grey-100">Type</div>
+                  <div class="table-cell py-2 px-4 font-semibold dark:text-grey-100">Host</div>
+                  <div class="table-cell py-2 font-semibold dark:text-grey-100">Value/Points to</div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell py-2 dark:text-grey-100">MX 10</div>
+                  <div class="table-cell py-2 px-4 dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
+                  </div>
+                  <div class="table-cell py-2 break-words dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard(props.hostname)} class="focus-visible:outline-primary">{props.hostname}.</button>
                   </div>
                 </div>
-              </Show>
+                <div class="table-row">
+                  <div class="table-cell py-2 dark:text-grey-100">TXT</div>
+                  <div class="table-cell py-2 px-4 dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
+                  </div>
+                  <div class="table-cell py-2 break-words dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard('v=spf1 mx -all')} class="focus-visible:outline-primary">v=spf1 mx -all</button>
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell py-2 dark:text-grey-100">CNAME</div>
+                  <div class="table-cell py-2 px-4 dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey</button>
+                  </div>
+                  <div class="table-cell py-2 break-words dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey.${props.domainName}.`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey.{props.domainName}.</button>
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell py-2 dark:text-grey-100">TXT</div>
+                  <div class="table-cell py-2 px-4 dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard('_dmarc')} class="focus-visible:outline-primary">_dmarc</button>
+                  </div>
+                  <div class="table-cell py-2 break-words dark:text-grey-100">
+                    <button title="Copy" onClick={() => clipboard('v=DMARC1; p=quarantine; adkim=s')} class="focus-visible:outline-primary">v=DMARC1; p=quarantine; adkim=s</button>
+                  </div>
+                </div>
+              </div>
               <div class="mt-6">
                 <button
                   onClick={() => checkRecords(domainToCheck()!)}
@@ -854,24 +781,15 @@ export default function DomainsIndex(props: DomainsProps) {
                 </button>
               </div>
               <div class="mt-2 text-sm dark:text-grey-200">
-                <Show
-                  when={usingCloudflareMail()}
-                  fallback={
-                    <>
-                      For more information or if you are adding a <b>subdomain</b> please read{' '}
-                      <a
-                        href="https://vovamail.xyz/help/adding-a-custom-domain/"
-                        class="text-secondary dark:text-indigo-400 font-bold"
-                        target="_blank"
-                        rel="nofollow noreferrer noopener"
-                      >
-                        this article
-                      </a>
-                    </>
-                  }
+                For more information or if you are adding a <b>subdomain</b> please read{' '}
+                <a
+                  href="https://vovamail.xyz/help/adding-a-custom-domain/"
+                  class="text-secondary dark:text-indigo-400 font-bold"
+                  target="_blank"
+                  rel="nofollow noreferrer noopener"
                 >
-                  Cloudflare Email Service only works on domains that use Cloudflare DNS for this zone.
-                </Show>
+                  this article
+                </a>
               </div>
             </>
           }

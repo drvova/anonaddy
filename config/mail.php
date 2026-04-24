@@ -34,17 +34,11 @@ return [
     */
 
     'mailers' => [
-        'cloudflare' => [
-            'transport' => 'cloudflare',
-            'api_token' => env('CLOUDFLARE_EMAIL_API_TOKEN'),
-            'account_id' => env('CLOUDFLARE_EMAIL_ACCOUNT_ID'),
-            'zone_id' => env('CLOUDFLARE_EMAIL_ZONE_ID'),
-            'base_url' => env('CLOUDFLARE_EMAIL_BASE_URL', 'https://api.cloudflare.com/client/v4'),
-            'graphql_url' => env('CLOUDFLARE_EMAIL_GRAPHQL_URL', 'https://api.cloudflare.com/client/v4/graphql'),
-            'timeout' => env('CLOUDFLARE_EMAIL_TIMEOUT', 30),
-            'sync_window_minutes' => env('CLOUDFLARE_EMAIL_SYNC_WINDOW_MINUTES', 15),
-            'sync_limit' => env('CLOUDFLARE_EMAIL_SYNC_LIMIT', 500),
-            'webhook_secret' => env('CLOUDFLARE_EMAIL_WEBHOOK_SECRET'),
+        'zeabur' => [
+            'transport' => 'zeabur',
+            'api_key' => env('ZEABUR_EMAIL_API_KEY'),
+            'base_url' => env('ZEABUR_EMAIL_BASE_URL', 'https://api.zeabur.com/api/v1/zsend'),
+            'timeout' => env('ZEABUR_EMAIL_TIMEOUT', 30),
         ],
 
         'smtp' => [

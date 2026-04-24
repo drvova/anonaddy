@@ -11,7 +11,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class Domain extends Model
 {
@@ -257,10 +256,6 @@ class Domain extends Model
         try {
             $spf = collect(dns_get_record($this->domain.'.', DNS_TXT))
                 ->contains(function ($r) {
-                    if ($this->usesCloudflareMail()) {
-                        return preg_match('/^(v=spf1).*(include:_spf\.mx\.cloudflare\.net).*(-|~)all$/', $r['txt']);
-                    }
-
                     return preg_match("/^(v=spf1).*(include:spf\.".config('vovamail.domain').'|mx).*(-|~)all$/', $r['txt']);
                 });
         } catch (Exception $e) {
@@ -272,9 +267,7 @@ class Domain extends Model
         if (! $spf) {
             return response()->json([
                 'success' => false,
-                'message' => $this->usesCloudflareMail()
-                    ? 'SPF record not found or missing include:_spf.mx.cloudflare.net. Finish Cloudflare Email Service onboarding and try again later.'
-                    : 'SPF record not found. This could be due to DNS caching, please try again later.',
+                'message' => 'SPF record not found. This could be due to DNS caching, please try again later.',
                 'data' => new DomainResource($this->fresh()),
             ]);
         }
@@ -303,9 +296,7 @@ class Domain extends Model
         if (! $dkim) {
             return response()->json([
                 'success' => false,
-                'message' => $this->usesCloudflareMail()
-                    ? 'Cloudflare Email Sending DKIM record not found on cf-bounce._domainkey. Finish Cloudflare Email Service onboarding and try again later.'
-                    : 'CNAME '.config('vovamail.dkim_selector').'._domainkey record not found. This could be due to DNS caching, please try again later.',
+                'message' => 'CNAME '.config('vovamail.dkim_selector').'._domainkey record not found. This could be due to DNS caching, please try again later.',
                 'data' => new DomainResource($this->fresh()),
             ]);
         }
@@ -314,35 +305,13 @@ class Domain extends Model
 
         return response()->json([
             'success' => true,
-            'message' => $this->usesCloudflareMail() ? 'Cloudflare Email Service records successfully verified.' : 'Records successfully verified.',
+            'message' => 'Records successfully verified.',
             'data' => new DomainResource($this->fresh()),
         ]);
     }
 
-    protected function usesCloudflareMail(): bool
-    {
-        $defaultMailer = config('mail.default');
-
-        return config("mail.mailers.{$defaultMailer}.transport") === 'cloudflare';
-    }
-
     protected function hasValidMxRecords($mxRecords): bool
     {
-        if ($this->usesCloudflareMail()) {
-            $cloudflareMxTargets = collect([
-                'route1.mx.cloudflare.net',
-                'route2.mx.cloudflare.net',
-                'route3.mx.cloudflare.net',
-            ]);
-
-            return $mxRecords
-                ->pluck('target')
-                ->filter()
-                ->map(fn ($target) => Str::lower(rtrim($target, '.')))
-                ->intersect($cloudflareMxTargets)
-                ->isNotEmpty();
-        }
-
         $mx = $mxRecords->sortBy('pri')->first();
 
         return isset($mx['target']) && $mx['target'] === config('vovamail.hostname');
@@ -351,18 +320,6 @@ class Domain extends Model
     protected function checkDkimRecord(): ?bool
     {
         try {
-            if ($this->usesCloudflareMail()) {
-                $selector = 'cf-bounce._domainkey.'.$this->domain.'.';
-
-                $cnameRecords = collect(dns_get_record($selector, DNS_CNAME));
-
-                if ($cnameRecords->isNotEmpty()) {
-                    return true;
-                }
-
-                return collect(dns_get_record($selector, DNS_TXT))->isNotEmpty();
-            }
-
             return collect(dns_get_record(config('vovamail.dkim_selector').'._domainkey.'.$this->domain.'.', DNS_CNAME))
                 ->contains(function ($r) {
                     return $r['target'] === config('vovamail.dkim_selector').'._domainkey.'.config('vovamail.domain');

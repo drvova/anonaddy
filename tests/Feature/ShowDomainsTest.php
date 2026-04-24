@@ -87,22 +87,22 @@ class ShowDomainsTest extends TestCase
     }
 
     #[Test]
-    public function domains_page_includes_cloudflare_setup_metadata_when_cloudflare_mail_is_active()
+    public function domains_page_includes_zeabur_setup_metadata_when_zeabur_mail_is_active()
     {
         config([
-            'mail.default' => 'cloudflare',
-            'mail.mailers.cloudflare.transport' => 'cloudflare',
+            'mail.default' => 'zeabur',
+            'mail.mailers.zeabur.transport' => 'zeabur',
         ]);
 
         $response = $this->get('/domains');
 
         $response->assertSuccessful();
         $response->assertInertia(fn (Assert $page) => $page
-            ->where('mailProvider', 'cloudflare')
-            ->where('cloudflareDkimSelector', 'cf-bounce')
-            ->where('cloudflareSpfValue', 'include:_spf.mx.cloudflare.net')
-            ->where('cloudflareRoutingUrl', 'https://developers.cloudflare.com/email-service/get-started/route-emails/')
-            ->where('cloudflareSendingUrl', 'https://developers.cloudflare.com/email-service/get-started/send-emails/')
+            ->where('mailProvider', 'zeabur')
+            ->missing('cloudflareDkimSelector')
+            ->missing('cloudflareSpfValue')
+            ->missing('cloudflareRoutingUrl')
+            ->missing('cloudflareSendingUrl')
         );
     }
 }
