@@ -37,6 +37,7 @@ return [
         'zeabur' => [
             'transport' => 'zeabur',
             'api_key' => env('ZEABUR_EMAIL_API_KEY'),
+            'webhook_secret' => env('ZEABUR_WEBHOOK_SECRET'),
             'base_url' => env('ZEABUR_EMAIL_BASE_URL', 'https://api.zeabur.com/api/v1/zsend'),
             'timeout' => env('ZEABUR_EMAIL_TIMEOUT', 30),
         ],

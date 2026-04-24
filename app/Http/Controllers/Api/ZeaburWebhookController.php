@@ -13,6 +13,10 @@ class ZeaburWebhookController extends Controller
 {
     public function handle(Request $request): JsonResponse
     {
+        if (! $this->isValidSignature($request)) {
+            return response()->json(['message' => 'Invalid signature'], 401);
+        }
+
         $payload = $request->all();
 
         if (! isset($payload['event'], $payload['message_id'])) {
@@ -102,5 +106,34 @@ class ZeaburWebhookController extends Controller
                 $alias->decrement('emails_sent');
             }
         }
+    }
+
+    protected function isValidSignature(Request $request): bool
+    {
+        $signature = $request->header('X-ZSend-Signature');
+        $timestamp = $request->header('X-ZSend-Timestamp');
+
+        if (blank($signature) || blank($timestamp)) {
+            return false;
+        }
+
+        // Reject timestamps older than 5 minutes to prevent replay attacks
+        if (abs(time() - (int) $timestamp) > 300) {
+            return false;
+        }
+
+        $secret = config('mail.mailers.zeabur.webhook_secret')
+            ?? config('mail.mailers.zeabur.api_key')
+            ?? '';
+
+        if (blank($secret)) {
+            return false;
+        }
+
+        $body = $request->getContent();
+        $message = $timestamp.'.'.$body;
+        $expected = 'sha256='.hash_hmac('sha256', $message, $secret);
+
+        return hash_equals($expected, $signature);
     }
 }

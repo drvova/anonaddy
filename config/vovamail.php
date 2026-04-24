@@ -337,6 +337,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Inbound Webhook Secret
+    |--------------------------------------------------------------------------
+    |
+    | Shared secret used to authenticate inbound email webhooks from the
+    | Cloudflare Email Worker. Must match the VOVAMAIL_WEBHOOK_SECRET
+    | configured in the Worker's secrets.
+    |
+    */
+
+    'inbound_webhook_secret' => env('INBOUND_WEBHOOK_SECRET'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Username Blacklist & Word Lists
     |--------------------------------------------------------------------------
     |

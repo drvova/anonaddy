@@ -1,0 +1,6 @@
+name = "vovamail-inbound"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+VOVAMAIL_INBOUND_ENDPOINT = "https://vovamail.xyz/api/inbound"

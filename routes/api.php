@@ -35,6 +35,7 @@ use App\Http\Controllers\Api\ResendableFailedDeliveryController;
 use App\Http\Controllers\Api\RuleController;
 use App\Http\Controllers\Api\UsernameController;
 use App\Http\Controllers\Api\UsernameDefaultRecipientController;
+use App\Http\Controllers\Api\InboundWebhookController;
 use App\Http\Controllers\Api\ZeaburWebhookController;
 use App\Http\Controllers\Auth\ApiAuthenticationController;
 use App\Http\Controllers\BlocklistCheckController;
@@ -59,6 +60,9 @@ Route::get('blocklist-check', [BlocklistCheckController::class, 'check'])
 
 Route::post('zeabur/webhook', [ZeaburWebhookController::class, 'handle'])
     ->name('zeabur.webhook');
+
+Route::post('inbound', [InboundWebhookController::class, 'handle'])
+    ->name('inbound.webhook');
 
 // API auth routes for mobile apps and browser extension
 Route::controller(ApiAuthenticationController::class)->prefix('auth')->group(function () {

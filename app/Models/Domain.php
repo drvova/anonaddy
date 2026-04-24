@@ -314,7 +314,24 @@ class Domain extends Model
     {
         $mx = $mxRecords->sortBy('pri')->first();
 
-        return isset($mx['target']) && $mx['target'] === config('vovamail.hostname');
+        if (! isset($mx['target'])) {
+            return false;
+        }
+
+        $target = $mx['target'];
+        $hostname = config('vovamail.hostname');
+
+        // Self-hosted VovaMail hostname
+        if ($target === $hostname) {
+            return true;
+        }
+
+        // Cloudflare Email Routing MX records (*.mx.cloudflare.com)
+        if (str_ends_with($target, '.mx.cloudflare.com')) {
+            return true;
+        }
+
+        return false;
     }
 
     protected function checkDkimRecord(): ?bool

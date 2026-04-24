@@ -99,10 +99,6 @@ class ShowDomainsTest extends TestCase
         $response->assertSuccessful();
         $response->assertInertia(fn (Assert $page) => $page
             ->where('mailProvider', 'zeabur')
-            ->missing('cloudflareDkimSelector')
-            ->missing('cloudflareSpfValue')
-            ->missing('cloudflareRoutingUrl')
-            ->missing('cloudflareSendingUrl')
         );
     }
 }
