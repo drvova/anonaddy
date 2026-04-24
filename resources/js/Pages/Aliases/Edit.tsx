@@ -8,16 +8,20 @@ import http from '../../lib/http'
 import { filters } from '../../app'
 
 const successMessage = (text = '') => {
-  window.dispatchEvent(new CustomEvent('notify', { detail: { title: 'Success', text, type: 'success' } }))
+  window.dispatchEvent(
+    new CustomEvent('notify', { detail: { title: 'Success', text, type: 'success' } }),
+  )
 }
 const errorMessage = (text = 'An error has occurred, please try again later') => {
-  window.dispatchEvent(new CustomEvent('notify', { detail: { title: 'Error', text, type: 'error' } }))
+  window.dispatchEvent(
+    new CustomEvent('notify', { detail: { title: 'Error', text, type: 'error' } }),
+  )
 }
 
 const clipboard = (str: string) => {
   navigator.clipboard.writeText(str).then(
     () => successMessage('Copied to clipboard'),
-    () => errorMessage('Could not copy to clipboard')
+    () => errorMessage('Could not copy to clipboard'),
   )
 }
 
@@ -40,7 +44,9 @@ interface AliasProps {
 export default function EditAlias(props: AliasProps) {
   const [fromName, setFromName] = createSignal(props.initialAlias.from_name ?? '')
   const [fromNameLoading, setFromNameLoading] = createSignal(false)
-  const [attachedRecipientsOnly, setAttachedRecipientsOnly] = createSignal(props.initialAlias.attached_recipients_only)
+  const [attachedRecipientsOnly, setAttachedRecipientsOnly] = createSignal(
+    props.initialAlias.attached_recipients_only,
+  )
   const [errors, setErrors] = createSignal<Record<string, string>>({})
 
   const getAliasEmail = () => {
@@ -68,7 +74,8 @@ export default function EditAlias(props: AliasProps) {
       return
     }
     setFromNameLoading(true)
-    http.patch(`/api/v1/aliases/${props.initialAlias.id}`, { from_name: fromName() })
+    http
+      .patch(`/api/v1/aliases/${props.initialAlias.id}`, { from_name: fromName() })
       .then(() => {
         setFromNameLoading(false)
         successMessage("Alias 'From Name' updated")
@@ -80,13 +87,15 @@ export default function EditAlias(props: AliasProps) {
   }
 
   const enableAttachedRecipientsOnly = () => {
-    http.post('/api/v1/attached-recipients-only', { id: props.initialAlias.id })
+    http
+      .post('/api/v1/attached-recipients-only', { id: props.initialAlias.id })
       .then(() => successMessage('Attached recipients only enabled'))
       .catch(() => errorMessage())
   }
 
   const disableAttachedRecipientsOnly = () => {
-    http.delete(`/api/v1/attached-recipients-only/${props.initialAlias.id}`)
+    http
+      .delete(`/api/v1/attached-recipients-only/${props.initialAlias.id}`)
       .then(() => successMessage('Attached recipients only disabled'))
       .catch(() => errorMessage())
   }
@@ -96,68 +105,83 @@ export default function EditAlias(props: AliasProps) {
   return (
     <div>
       <Title>Edit Alias</Title>
-      <h1 id="primary-heading" class="sr-only">Edit Alias</h1>
+      <h1 id="primary-heading" class="sr-only">
+        Edit Alias
+      </h1>
 
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-grey-900 dark:text-white">Edit Alias</h1>
-          <p class="mt-2 text-sm text-grey-700 dark:text-grey-200">Make changes to your alias</p>
+          <h1 class="text-2xl font-semibold text-white">Edit Alias</h1>
+          <p class="mt-2 text-sm text-grey-700 text-grey-200">Make changes to your alias</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow p-4 dark:bg-grey-900">
-        <div class="space-y-8 divide-y divide-grey-200 dark:divide-grey-400">
+      <div class="bg-surface rounded-lg p-4">
+        <div class="space-y-8 divide-y divide-grey-200 divide-border-subtle">
           <div>
             <div class="flex items-center">
-              <span class={`bg-${status.colour}-100 tooltip outline-none h-4 w-4 rounded-full flex items-center justify-center mr-2`} tabindex="-1">
+              <span
+                class={`bg-${status.colour}-100 tooltip outline-none h-4 w-4 rounded-full flex items-center justify-center mr-2`}
+                tabindex="-1"
+              >
                 <span class={`bg-${status.colour}-400 h-2 w-2 rounded-full`} />
               </span>
               <h3
-                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer dark:text-grey-100"
+                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer text-grey-100"
                 onClick={() => clipboard(getAliasEmail())}
                 title="Click to copy"
               >
                 <span class="font-semibold text-primary">{getAliasLocalPart()}</span>
-                <span class="font-semibold text-grey-500 dark:text-grey-200">@{props.initialAlias.domain}</span>
+                <span class="font-semibold text-grey-500 text-grey-200">
+                  @{props.initialAlias.domain}
+                </span>
               </h3>
             </div>
             <Show when={props.initialAlias.description}>
-              <div class="mt-2 text-sm text-grey-500 dark:text-grey-300">{props.initialAlias.description}</div>
+              <div class="mt-2 text-sm text-grey-500 text-grey-300">
+                {props.initialAlias.description}
+              </div>
             </Show>
           </div>
 
           <div class="pt-8">
-            <div class="block text-lg font-medium text-grey-700 dark:text-grey-200">
+            <div class="block text-lg font-medium text-grey-700 text-grey-200">
               Alias 'From Name'
             </div>
-            <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
-              The 'From Name' is shown when you send an email from an alias or reply anonymously to a
-              forwarded email. If left blank, then the email alias itself will be used as the 'From
-              Name' e.g. "{props.initialAlias.email}".
+            <p class="mt-1 text-base text-grey-700 text-grey-200">
+              The 'From Name' is shown when you send an email from an alias or reply anonymously to
+              a forwarded email. If left blank, then the email alias itself will be used as the
+              'From Name' e.g. "{props.initialAlias.email}".
             </p>
-            <div class="mt-2 text-base text-grey-700 dark:text-grey-200">
-              The 'From Name' that is used for an alias is determined by the following <b>priority</b>:
-              <ul class="list-decimal list-inside text-grey-700 text-base mt-2 dark:text-grey-200">
-                <li><b>Alias 'From Name'</b></li>
+            <div class="mt-2 text-base text-grey-700 text-grey-200">
+              The 'From Name' that is used for an alias is determined by the following{' '}
+              <b>priority</b>:
+              <ul class="list-decimal list-inside text-grey-700 text-base mt-2 text-grey-200">
+                <li>
+                  <b>Alias 'From Name'</b>
+                </li>
                 <li>Username or Custom Domain 'From Name'</li>
                 <li>Global 'From Name' from the settings page</li>
               </ul>
             </div>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
-              If you set the 'From Name' for this specific alias, it will override the other settings.
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
+              If you set the 'From Name' for this specific alias, it will override the other
+              settings.
             </p>
 
             <div class="mb-6">
               <div class="mt-6 grid grid-cols-1 mb-4">
-                <label for="from_name" class="block text-sm font-medium leading-6 text-grey-900 dark:text-white">Alias From Name</label>
+                <label for="from_name" class="block text-sm font-medium leading-6 text-white">
+                  Alias From Name
+                </label>
                 <div class="relative mt-2">
                   <input
                     type="text"
                     name="from_name"
                     id="from_name"
                     value={fromName()}
-                    onInput={(e) => setFromName(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 dark:text-white dark:bg-white/5 ${errors().from_name ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    onInput={e => setFromName(e.currentTarget.value)}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="John Doe"
                   />
                   <Show when={errors().from_name}>
@@ -185,19 +209,20 @@ export default function EditAlias(props: AliasProps) {
           </div>
 
           <div class="pt-8">
-            <label class="block font-medium text-grey-700 dark:text-grey-200 text-lg pointer-events-none cursor-default">
+            <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
               Limit Replies/Sends to attached recipients only
             </label>
-            <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-1 text-base text-grey-700 text-grey-200">
               Toggle this option to only allow verified recipients that are <b>directly</b> attached
-              to this alias to reply or send from it. If this option is enabled and no recipients are
-              directly attached then it will <b>not be possible to reply/send</b> from this alias.
+              to this alias to reply or send from it. If this option is enabled and no recipients
+              are directly attached then it will <b>not be possible to reply/send</b> from this
+              alias.
             </p>
             <Toggle
               id="can_reply_send"
               class="mt-4"
               checked={attachedRecipientsOnly()}
-              onChange={(checked) => {
+              onChange={checked => {
                 setAttachedRecipientsOnly(checked)
                 if (checked) enableAttachedRecipientsOnly()
                 else disableAttachedRecipientsOnly()
@@ -206,7 +231,10 @@ export default function EditAlias(props: AliasProps) {
           </div>
 
           <div class="pt-5">
-            <span class="mt-2 text-sm text-grey-500 dark:text-grey-300" title={filters.formatDate(props.initialAlias.updated_at)}>
+            <span
+              class="mt-2 text-sm text-grey-500 text-grey-300"
+              title={filters.formatDate(props.initialAlias.updated_at)}
+            >
               Last updated {filters.timeAgo(props.initialAlias.updated_at)}.
             </span>
           </div>

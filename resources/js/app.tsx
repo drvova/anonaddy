@@ -16,9 +16,9 @@ window.dayjs = dayjs
 window.route = ziggyRoute
 
 const filters = {
-  formatDate: (value: string) => value ? dayjs(value).format('Do MMM YYYY') : '',
-  formatDateTime: (value: string) => value ? dayjs(value).format('Do MMM YYYY h:mm A') : '',
-  timeAgo: (value: string) => value ? dayjs(value).fromNow() : '',
+  formatDate: (value: string) => (value ? dayjs(value).format('Do MMM YYYY') : ''),
+  formatDateTime: (value: string) => (value ? dayjs(value).format('Do MMM YYYY h:mm A') : ''),
+  timeAgo: (value: string) => (value ? dayjs(value).fromNow() : ''),
   dateTimeNow: () => dayjs().utc().toISOString(),
   truncate: (value: string, length = 70) => {
     if (!value) return ''
@@ -33,7 +33,7 @@ createInertiaApp({
     color: '#66ffb0',
     delay: 50,
   },
-  resolve: (name) => {
+  resolve: name => {
     const pages = import.meta.glob('./Pages/**/*.tsx', { eager: true })
     const page = pages[`./Pages/${name}.tsx`]
 

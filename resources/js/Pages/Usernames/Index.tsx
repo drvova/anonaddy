@@ -71,7 +71,8 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
   const [defaultRecipientModalOpen, setDefaultRecipientModalOpen] = createSignal(false)
   const [defaultRecipientLoading, setDefaultRecipientLoading] = createSignal(false)
-  const [defaultRecipientUsernameToEdit, setDefaultRecipientUsernameToEdit] = createSignal<UsernameRow | null>(null)
+  const [defaultRecipientUsernameToEdit, setDefaultRecipientUsernameToEdit] =
+    createSignal<UsernameRow | null>(null)
   const [defaultRecipientId, setDefaultRecipientId] = createSignal<string | null>(null)
 
   const [makeDefaultModalOpen, setMakeDefaultModalOpen] = createSignal(false)
@@ -113,7 +114,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
     http
       .post('/api/v1/usernames', { username: val })
       .then((data: any) => {
-        setRows((prev) => [...prev, data.data])
+        setRows(prev => [...prev, data.data])
         setNewUsername('')
         setAddUsernameModalOpen(false)
         successMessage('Username added')
@@ -149,8 +150,8 @@ export default function UsernamesIndex(props: UsernamesProps) {
     http
       .patch(`/api/v1/usernames/${row.id}`, { description: descriptionToEdit() })
       .then(() => {
-        setRows((prev) =>
-          prev.map((r) => (r.id === row.id ? { ...r, description: descriptionToEdit() } : r)),
+        setRows(prev =>
+          prev.map(r => (r.id === row.id ? { ...r, description: descriptionToEdit() } : r)),
         )
         setUsernameIdToEdit('')
         setDescriptionToEdit('')
@@ -184,9 +185,9 @@ export default function UsernamesIndex(props: UsernamesProps) {
         default_recipient: defaultRecipientId(),
       })
       .then(() => {
-        const recipient = props.recipientOptions.find((r) => r.id === defaultRecipientId()) ?? null
-        setRows((prev) =>
-          prev.map((r) =>
+        const recipient = props.recipientOptions.find(r => r.id === defaultRecipientId()) ?? null
+        setRows(prev =>
+          prev.map(r =>
             r.id === username.id
               ? { ...r, default_recipient: recipient, default_recipient_id: defaultRecipientId() }
               : r,
@@ -253,7 +254,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
     http
       .delete(`/api/v1/usernames/${id}`)
       .then(() => {
-        setRows((prev) => prev.filter((r) => r.id !== id))
+        setRows(prev => prev.filter(r => r.id !== id))
         closeDeleteModal()
       })
       .catch(() => {
@@ -272,27 +273,23 @@ export default function UsernamesIndex(props: UsernamesProps) {
   }
 
   const enableCatchAll = (id: string) => {
-    http
-      .post('/api/v1/catch-all-usernames', { id })
-      .catch((error: any) => {
-        if (error.response?.data !== undefined) {
-          errorMessage(error.response?.data ?? error.message)
-        } else {
-          errorMessage()
-        }
-      })
+    http.post('/api/v1/catch-all-usernames', { id }).catch((error: any) => {
+      if (error.response?.data !== undefined) {
+        errorMessage(error.response?.data ?? error.message)
+      } else {
+        errorMessage()
+      }
+    })
   }
 
   const disableCatchAll = (id: string) => {
-    http
-      .delete(`/api/v1/catch-all-usernames/${id}`)
-      .catch((error: any) => {
-        if (error.response?.data !== undefined) {
-          errorMessage(error.response?.data ?? error.message)
-        } else {
-          errorMessage()
-        }
-      })
+    http.delete(`/api/v1/catch-all-usernames/${id}`).catch((error: any) => {
+      if (error.response?.data !== undefined) {
+        errorMessage(error.response?.data ?? error.message)
+      } else {
+        errorMessage()
+      }
+    })
   }
 
   return (
@@ -304,14 +301,13 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-grey-900 dark:text-white">Usernames</h1>
-          <p class="mt-2 text-sm text-grey-700 dark:text-grey-200">
-            A list of all the usernames{' '}
-            {props.search ? 'found for your search' : 'in your account'}
+          <h1 class="text-2xl font-semibold text-white">Usernames</h1>
+          <p class="mt-2 text-sm text-grey-700 text-grey-200">
+            A list of all the usernames {props.search ? 'found for your search' : 'in your account'}
             <button type="button" onClick={() => setMoreInfoOpen(true)}>
               <Icon
                 name="info"
-                class="inline-block w-6 h-6 cursor-pointer text-grey-500 dark:text-grey-200 ml-1"
+                class="inline-block w-6 h-6 cursor-pointer text-grey-500 text-grey-200 ml-1"
               />
             </button>
           </p>
@@ -321,7 +317,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             <button
               type="button"
               onClick={openAddUsernameModal}
-              class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
+              class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
             >
               Add Username
             </button>
@@ -336,28 +332,26 @@ export default function UsernamesIndex(props: UsernamesProps) {
             when={props.search}
             fallback={
               <div class="text-center py-12">
-                <Icon name="users" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">
-                  No usernames yet
-                </h3>
-                <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+                <Icon name="users" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+                <h3 class="mt-2 text-lg font-medium text-white">No usernames yet</h3>
+                <p class="mt-1 text-md text-grey-500 text-grey-200">
                   Add a username to get started.
                 </p>
               </div>
             }
           >
             <div class="text-center py-12">
-              <Icon name="users" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">
+              <Icon name="users" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+              <h3 class="mt-2 text-lg font-medium text-white">
                 No Usernames found for that search
               </h3>
-              <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+              <p class="mt-1 text-md text-grey-500 text-grey-200">
                 Try entering a different search term.
               </p>
               <div class="mt-6">
                 <Link
                   href={(window as any).route('usernames.index')}
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium shadow-sm focus:outline-none"
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
                 >
                   View All Usernames
                 </Link>
@@ -368,13 +362,13 @@ export default function UsernamesIndex(props: UsernamesProps) {
       >
         <div class="space-y-4">
           <For each={rows()}>
-            {(row) => (
-              <div class="bg-white dark:bg-grey-900 rounded-lg shadow p-4">
+            {row => (
+              <div class="bg-surface rounded-lg p-4">
                 <div class="flex flex-wrap items-start justify-between gap-2">
                   <div class="flex items-center flex-wrap gap-2">
                     <button
                       type="button"
-                      class="font-medium text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500"
+                      class="font-medium text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300"
                       onClick={() => clipboard(row.username)}
                       title="Click to copy"
                     >
@@ -388,7 +382,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
                     <Show when={!isDefault(row.id) && !usesExternalAuth()}>
                       <button
                         type="button"
-                        class="text-sm text-grey-400 hover:text-grey-600 dark:text-grey-300 dark:hover:text-grey-100"
+                        class="text-sm text-grey-400 hover:text-grey-600 text-grey-300 hover:text-white"
                         onClick={() => openMakeDefaultModal(row)}
                       >
                         Make Default
@@ -396,7 +390,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
                     </Show>
                   </div>
                   <span
-                    class="text-sm text-grey-500 dark:text-grey-300 cursor-default"
+                    class="text-sm text-grey-500 text-grey-300 cursor-default"
                     title={filters.formatDate(row.created_at)}
                   >
                     {filters.timeAgo(row.created_at)}
@@ -405,7 +399,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
                 <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <div>
-                    <span class="text-xs font-medium text-grey-400 dark:text-grey-400 uppercase tracking-wide">
+                    <span class="text-xs font-medium text-grey-400 text-grey-400 uppercase tracking-wide">
                       Description
                     </span>
                     <Show
@@ -427,7 +421,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
                               </button>
                             }
                           >
-                            <span class="text-sm text-grey-500 dark:text-grey-300">
+                            <span class="text-sm text-grey-500 text-grey-300">
                               {filters.truncate(row.description!, 60)}
                             </span>
                             <button
@@ -445,12 +439,12 @@ export default function UsernamesIndex(props: UsernamesProps) {
                         <input
                           type="text"
                           value={descriptionToEdit()}
-                          onInput={(e) => setDescriptionToEdit(e.currentTarget.value)}
-                          onKeyDown={(e) => {
+                          onInput={e => setDescriptionToEdit(e.currentTarget.value)}
+                          onKeyDown={e => {
                             if (e.key === 'Enter') saveDescription(row)
                             if (e.key === 'Escape') cancelEditDescription()
                           }}
-                          class="grow appearance-none bg-grey-50 border text-grey-700 focus:outline-none rounded px-2 py-1 text-sm dark:text-white dark:bg-white/5"
+                          class="grow appearance-none bg-white/5 border text-grey-700 focus:outline-none rounded px-2 py-1 text-sm text-white bg-white/5"
                           classList={{
                             'border-red-500': descriptionToEdit().length > 200,
                             'border-transparent': descriptionToEdit().length <= 200,
@@ -460,7 +454,11 @@ export default function UsernamesIndex(props: UsernamesProps) {
                         <button type="button" onClick={cancelEditDescription} aria-label="Cancel">
                           <Icon name="close" class="w-5 h-5 text-red-300 fill-current" />
                         </button>
-                        <button type="button" onClick={() => saveDescription(row)} aria-label="Save">
+                        <button
+                          type="button"
+                          onClick={() => saveDescription(row)}
+                          aria-label="Save"
+                        >
                           <Icon name="save" class="w-5 h-5 text-primary fill-current" />
                         </button>
                       </div>
@@ -468,7 +466,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
                   </div>
 
                   <div>
-                    <span class="text-xs font-medium text-grey-400 dark:text-grey-400 uppercase tracking-wide">
+                    <span class="text-xs font-medium text-grey-400 text-grey-400 uppercase tracking-wide">
                       Default Recipient
                     </span>
                     <Show
@@ -487,7 +485,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
                     >
                       <div class="mt-1 flex items-center gap-2">
                         <span
-                          class="text-sm font-medium text-grey-500 cursor-pointer dark:text-grey-300"
+                          class="text-sm font-medium text-grey-500 cursor-pointer text-grey-300"
                           onClick={() => clipboard(row.default_recipient!.email)}
                           title="Click to copy"
                         >
@@ -505,21 +503,21 @@ export default function UsernamesIndex(props: UsernamesProps) {
                   </div>
 
                   <div>
-                    <span class="text-xs font-medium text-grey-400 dark:text-grey-400 uppercase tracking-wide">
+                    <span class="text-xs font-medium text-grey-400 text-grey-400 uppercase tracking-wide">
                       Aliases
                     </span>
                     <div class="mt-1">
                       <Show
                         when={row.aliases_count > 0}
                         fallback={
-                          <span class="text-sm text-grey-500 dark:text-grey-300">
+                          <span class="text-sm text-grey-500 text-grey-300">
                             {row.aliases_count}
                           </span>
                         }
                       >
                         <Link
                           href={(window as any).route('aliases.index', { username: row.id })}
-                          class="text-sm text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                          class="text-sm text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                           title="Click to view the aliases using this username"
                         >
                           {row.aliases_count.toLocaleString()}
@@ -530,14 +528,14 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
                   <div class="flex items-center gap-6">
                     <div class="flex items-center gap-2">
-                      <span class="text-xs font-medium text-grey-400 dark:text-grey-400 uppercase tracking-wide">
+                      <span class="text-xs font-medium text-grey-400 text-grey-400 uppercase tracking-wide">
                         Active
                       </span>
                       <Toggle
                         checked={row.active}
-                        onChange={(checked) => {
-                          setRows((prev) =>
-                            prev.map((r) => (r.id === row.id ? { ...r, active: checked } : r)),
+                        onChange={checked => {
+                          setRows(prev =>
+                            prev.map(r => (r.id === row.id ? { ...r, active: checked } : r)),
                           )
                           if (checked) activateUsername(row.id)
                           else deactivateUsername(row.id)
@@ -545,14 +543,14 @@ export default function UsernamesIndex(props: UsernamesProps) {
                       />
                     </div>
                     <div class="flex items-center gap-2">
-                      <span class="text-xs font-medium text-grey-400 dark:text-grey-400 uppercase tracking-wide">
+                      <span class="text-xs font-medium text-grey-400 text-grey-400 uppercase tracking-wide">
                         Catch-All
                       </span>
                       <Toggle
                         checked={row.catch_all}
-                        onChange={(checked) => {
-                          setRows((prev) =>
-                            prev.map((r) => (r.id === row.id ? { ...r, catch_all: checked } : r)),
+                        onChange={checked => {
+                          setRows(prev =>
+                            prev.map(r => (r.id === row.id ? { ...r, catch_all: checked } : r)),
                           )
                           if (checked) enableCatchAll(row.id)
                           else disableCatchAll(row.id)
@@ -562,17 +560,17 @@ export default function UsernamesIndex(props: UsernamesProps) {
                   </div>
                 </div>
 
-                <div class="mt-3 pt-3 border-t border-grey-100 dark:border-grey-700 flex items-center gap-4">
+                <div class="mt-3 pt-3 border-t border-grey-100 border-border-subtle flex items-center gap-4">
                   <Link
                     href={(window as any).route('usernames.edit', row.id)}
-                    class="text-sm text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                    class="text-sm text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                   >
                     Edit
                   </Link>
                   <Show when={!isDefault(row.id)}>
                     <button
                       type="button"
-                      class="text-sm text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                      class="text-sm text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                       onClick={() => openDeleteModal(row.id)}
                     >
                       Delete
@@ -587,16 +585,16 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
       <Modal
         open={addUsernameModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) setAddUsernameModalOpen(false)
         }}
         title="Add new username"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Please choose usernames carefully as you can only add a{' '}
           <b>maximum of {props.usernameCount}</b>. You can login with <b>any of your usernames</b>.
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           You can prevent a username from being used to login by toggling the "can login" option.
         </p>
         <div class="mt-6">
@@ -605,12 +603,12 @@ export default function UsernamesIndex(props: UsernamesProps) {
           </Show>
           <input
             value={newUsername()}
-            onInput={(e) => setNewUsername(e.currentTarget.value)}
+            onInput={e => setNewUsername(e.currentTarget.value)}
             type="text"
-            class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 dark:text-white dark:bg-white/5"
+            class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5"
             classList={{
               'ring-red-500': !!addUsernameError(),
-              'ring-grey-300 dark:ring-grey-600': !addUsernameError(),
+              'ring-grey-300 ring-border-subtle': !addUsernameError(),
             }}
             placeholder="johndoe"
           />
@@ -629,7 +627,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             <button
               type="button"
               onClick={() => setAddUsernameModalOpen(false)}
-              class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Cancel
             </button>
@@ -639,27 +637,27 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
       <Modal
         open={defaultRecipientModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) closeDefaultRecipientModal()
         }}
         title="Update Default Recipient"
       >
-        <p class="my-4 text-grey-700 dark:text-grey-200">
+        <p class="my-4 text-grey-700 text-grey-200">
           Select the default recipient for this username. This overrides the default recipient in
           your account settings. Leave it empty if you would like to use the default recipient in
           your account settings.
         </p>
         <select
           value={defaultRecipientId() ?? ''}
-          onChange={(e) => setDefaultRecipientId(e.currentTarget.value || null)}
-          class="block w-full rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+          onChange={e => setDefaultRecipientId(e.currentTarget.value || null)}
+          class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
         >
-          <option value="" class="dark:bg-grey-900">
+          <option value="" class="bg-surface">
             Select recipient
           </option>
           <For each={props.recipientOptions}>
-            {(opt) => (
-              <option value={opt.id} class="dark:bg-grey-900">
+            {opt => (
+              <option value={opt.id} class="bg-surface">
                 {opt.email}
               </option>
             )}
@@ -680,7 +678,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeDefaultRecipientModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
@@ -689,12 +687,12 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
       <Modal
         open={deleteModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) closeDeleteModal()
         }}
         title="Delete username"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Are you sure you want to permanently delete this username? This will also{' '}
           <b>permanently remove all aliases associated with this username</b>. You will no longer be
           able to receive any emails at this username subdomain.{' '}
@@ -715,7 +713,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeDeleteModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
@@ -724,15 +722,15 @@ export default function UsernamesIndex(props: UsernamesProps) {
 
       <Modal
         open={makeDefaultModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) closeMakeDefaultModal()
         }}
         title="Make default username"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           The default username for your account is used in the username reminder notification.
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           You will always be able to use your default username to login to your account.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
@@ -750,35 +748,31 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeMakeDefaultModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
         </div>
       </Modal>
 
-      <Modal
-        open={moreInfoOpen()}
-        onOpenChange={setMoreInfoOpen}
-        title="More information"
-      >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+      <Modal open={moreInfoOpen()} onOpenChange={setMoreInfoOpen} title="More information">
+        <p class="mt-4 text-grey-700 text-grey-200">
           When you add a username here you will be able to use it exactly like the username you
           signed up with!
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           You can then separate aliases under your different usernames to reduce the chance of
           anyone linking ownership of them together. Great for compartmentalisation e.g. for work
           and personal emails.
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           You can add a maximum of <b>{props.usernameCount}</b> usernames.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row">
           <button
             type="button"
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Close
           </button>

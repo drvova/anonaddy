@@ -46,7 +46,10 @@ type InfiniteScrollProps<T extends ValidComponent = 'div'> = DynamicProps<
   }
 >
 
-function resolveHTMLElement(value: InfiniteScrollRef, fallback: HTMLElement | null): HTMLElement | null {
+function resolveHTMLElement(
+  value: InfiniteScrollRef,
+  fallback: HTMLElement | null,
+): HTMLElement | null {
   if (!value) {
     return fallback
   }
@@ -62,7 +65,9 @@ function resolveHTMLElement(value: InfiniteScrollRef, fallback: HTMLElement | nu
   return fallback
 }
 
-export default function InfiniteScroll<T extends ValidComponent = 'div'>(_props: InfiniteScrollProps<T>) {
+export default function InfiniteScroll<T extends ValidComponent = 'div'>(
+  _props: InfiniteScrollProps<T>,
+) {
   const [props, attributes] = splitProps(
     mergeProps(
       {
@@ -105,9 +110,15 @@ export default function InfiniteScroll<T extends ValidComponent = 'div'>(_props:
   let startElementRef: HTMLElement
   let endElementRef: HTMLElement
 
-  const resolvedItemsElement = createLazyMemo(() => resolveHTMLElement(props.itemsElement, itemsElementRef))
-  const resolvedStartElement = createLazyMemo(() => resolveHTMLElement(props.startElement, startElementRef))
-  const resolvedEndElement = createLazyMemo(() => resolveHTMLElement(props.endElement, endElementRef))
+  const resolvedItemsElement = createLazyMemo(() =>
+    resolveHTMLElement(props.itemsElement, itemsElementRef),
+  )
+  const resolvedStartElement = createLazyMemo(() =>
+    resolveHTMLElement(props.startElement, startElementRef),
+  )
+  const resolvedEndElement = createLazyMemo(() =>
+    resolveHTMLElement(props.endElement, endElementRef),
+  )
 
   const scrollableParent = createLazyMemo(() => getScrollableParent(resolvedItemsElement()))
 
@@ -158,7 +169,9 @@ export default function InfiniteScroll<T extends ValidComponent = 'div'>(_props:
   const [hasPrevious, setHasPrevious] = createSignal(dataManager.hasPrevious())
   const [hasNext, setHasNext] = createSignal(dataManager.hasNext())
 
-  const manualMode = createMemo(() => props.manual || (props.manualAfter > 0 && requestCount() >= props.manualAfter))
+  const manualMode = createMemo(
+    () => props.manual || (props.manualAfter > 0 && requestCount() >= props.manualAfter),
+  )
   const autoLoad = createMemo(() => !manualMode())
 
   function scrollToBottom() {
@@ -237,7 +250,9 @@ export default function InfiniteScroll<T extends ValidComponent = 'div'>(_props:
             return !props.startElement
           },
           get component() {
-            return props.previous || (props.loading && loadingPrevious()) ? props.loading : undefined
+            return props.previous || (props.loading && loadingPrevious())
+              ? props.loading
+              : undefined
           },
           ref(el: HTMLElement) {
             startElementRef = el

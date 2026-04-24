@@ -12,8 +12,8 @@
     <link rel="alternate icon" href="/svg/icon-logo.svg">
     <link rel="manifest" href="/site.webmanifest">
     <link rel="mask-icon" href="/svg/icon-logo.svg" color="#66ffb0">
-    <meta name="msapplication-TileColor" content="#da532c">
-    <meta name="theme-color" content="#000000">
+    <meta name="msapplication-TileColor" content="#121212">
+    <meta name="theme-color" content="#121212">
 
     <!-- Scripts -->
     @vite('resources/js/app.tsx')

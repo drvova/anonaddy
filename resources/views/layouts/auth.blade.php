@@ -27,10 +27,8 @@
     @vite('resources/css/app.css')
     @yield('webauthn')
 </head>
-<body class="min-h-screen overflow-x-hidden bg-black font-sans antialiased text-white">
-    <div class="fixed inset-0 -z-20 bg-black"></div>
-    <div class="fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top_left,_rgba(102,255,176,0.08),transparent_28%),radial-gradient(circle_at_85%_15%,_rgba(116,121,234,0.08),transparent_24%)]"></div>
-    <div class="fixed inset-0 -z-10 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:44px_44px] opacity-[0.06] [mask-image:linear-gradient(to_bottom,black,transparent_85%)]"></div>
+<body class="min-h-screen overflow-x-hidden bg-charcoal font-sans antialiased text-white">
+    <div class="fixed inset-0 -z-20 bg-charcoal"></div>
     @yield('content')
 </body>
 </html>

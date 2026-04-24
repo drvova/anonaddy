@@ -25,7 +25,7 @@ const humanize = (value: string): string =>
   value
     .replace(/([a-z])([A-Z])/g, '$1 $2')
     .replace(/[-_]/g, ' ')
-    .replace(/\b\w/g, (character) => character.toUpperCase())
+    .replace(/\b\w/g, character => character.toUpperCase())
 
 export const resolvePageTitle = (component: string): string => {
   const knownTitle = pageTitles[component]
@@ -36,10 +36,11 @@ export const resolvePageTitle = (component: string): string => {
 
   const segments = component
     .split('/')
-    .filter((segment) => segment !== 'Index')
+    .filter(segment => segment !== 'Index')
     .map(humanize)
 
   return segments.join(' — ') || APP_NAME
 }
 
-export const formatPageTitle = (title?: string | null): string => title ? `${title} — ${APP_NAME}` : APP_NAME
+export const formatPageTitle = (title?: string | null): string =>
+  title ? `${title} — ${APP_NAME}` : APP_NAME

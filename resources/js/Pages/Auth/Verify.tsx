@@ -27,8 +27,8 @@ function Verify() {
           <div class="auth-aside">
             <p class="auth-display">Protect the inbox you actually use.</p>
             <p class="auth-copy">
-              Confirm your real inbox before mail starts flowing through aliases,
-              custom domains, and reply-safe forwarding.
+              Confirm your real inbox before mail starts flowing through aliases, custom domains,
+              and reply-safe forwarding.
             </p>
 
             <div class="auth-points">
@@ -59,8 +59,8 @@ function Verify() {
             <div class="auth-panel-header">
               <h1 class="auth-title">Verify your email</h1>
               <p class="auth-subtitle">
-                Check <strong class="font-medium text-white">{page.props.user.email}</strong>{' '}
-                for your verification link. It expires after one hour.
+                Check <strong class="font-medium text-white">{page.props.user.email}</strong> for
+                your verification link. It expires after one hour.
               </p>
             </div>
 
@@ -78,9 +78,7 @@ function Verify() {
               .
             </p>
 
-            <p class="mb-6 text-sm leading-7 text-grey-400">
-              You can resend once per minute.
-            </p>
+            <p class="mb-6 text-sm leading-7 text-grey-400">You can resend once per minute.</p>
 
             <form onSubmit={handleSubmit}>
               <button type="submit" disabled={form.processing} class="auth-button">

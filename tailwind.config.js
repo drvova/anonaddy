@@ -98,6 +98,9 @@ export default {
         900: '#1F2933',
         950: '#191919',
       },
+      surface: '#1e1e1e',
+      charcoal: '#121212',
+      'border-subtle': '#2a2a2a',
       pink: {
         50: '#FFE3EC',
         100: '#FFB8D2',

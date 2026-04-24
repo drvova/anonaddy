@@ -38,19 +38,19 @@ export default function DataSettings() {
       <div class="divide-y divide-grey-200">
         <div class="py-10">
           <div>
-            <div class="mb-6 text-base text-grey-700 dark:text-grey-200">
-              <h3 class="text-lg font-medium leading-6 text-grey-900 dark:text-white">
-                Import Aliases
-              </h3>
+            <div class="mb-6 text-base text-grey-700 text-grey-200">
+              <h3 class="text-lg font-medium leading-6 text-white">Import Aliases</h3>
 
               <div class="mt-4 w-24 border-b-2 border-grey-200"></div>
 
               <p class="mt-6">
-                You can import aliases for <b>your custom domains</b> by uploading a CSV file. Please
-                note this is <b>only available for custom domains</b>.
+                You can import aliases for <b>your custom domains</b> by uploading a CSV file.
+                Please note this is <b>only available for custom domains</b>.
               </p>
 
-              <p class="mt-4">Aliases that <b>already exist</b> will not be imported.</p>
+              <p class="mt-4">
+                Aliases that <b>already exist</b> will not be imported.
+              </p>
               <p class="mt-4">
                 The import is <b>limited to 1,000 rows (aliases)</b>. Please ensure you use multiple
                 CSV files if you need to import more than this.
@@ -66,7 +66,7 @@ export default function DataSettings() {
                 <a
                   href="/import-aliases-template.csv"
                   rel="nofollow noopener noreferrer"
-                  class="text-secondary cursor-pointer dark:text-indigo-400"
+                  class="text-secondary cursor-pointer text-indigo-400"
                 >
                   Click here to download the CSV import template
                 </a>
@@ -107,19 +107,17 @@ export default function DataSettings() {
             </form>
 
             <div class="my-6">
-              <h3 class="text-lg font-medium leading-6 text-grey-900 dark:text-white">
-                Export Aliases
-              </h3>
+              <h3 class="text-lg font-medium leading-6 text-white">Export Aliases</h3>
 
               <div class="mt-4 w-24 border-b-2 border-grey-200"></div>
 
               {totalAliasesCount() ? (
-                <p class="mt-6 text-base text-grey-700 dark:text-grey-200">
+                <p class="mt-6 text-base text-grey-700 text-grey-200">
                   You can click the button below to export all the data for your{' '}
                   <b>{totalAliasesCount()}</b> aliases as a .csv file.
                 </p>
               ) : (
-                <p class="mt-6 text-base text-grey-700 dark:text-grey-200">
+                <p class="mt-6 text-base text-grey-700 text-grey-200">
                   You don't have any aliases to export.
                 </p>
               )}

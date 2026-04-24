@@ -64,7 +64,8 @@ export default function DomainsIndex(props: DomainsProps) {
   const [checkRecordsLoading, setCheckRecordsLoading] = createSignal(false)
   const [domainDefaultRecipientModalOpen, setDomainDefaultRecipientModalOpen] = createSignal(false)
   const [moreInfoOpen, setMoreInfoOpen] = createSignal(false)
-  const [defaultRecipientDomainToEdit, setDefaultRecipientDomainToEdit] = createSignal<Domain | null>(null)
+  const [defaultRecipientDomainToEdit, setDefaultRecipientDomainToEdit] =
+    createSignal<Domain | null>(null)
   const [defaultRecipientId, setDefaultRecipientId] = createSignal<string | null>(null)
   const [editDefaultRecipientLoading, setEditDefaultRecipientLoading] = createSignal(false)
   const [errors, setErrors] = createSignal<Record<string, string>>({})
@@ -97,7 +98,7 @@ export default function DomainsIndex(props: DomainsProps) {
 
   const toggleSort = (field: string) => {
     if (sortField() === field) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+      setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
     } else {
       setSortField(field)
       setSortDir('desc')
@@ -146,7 +147,9 @@ export default function DomainsIndex(props: DomainsProps) {
         } else if (error.response?.status === 429) {
           errorMessage('You are making too many requests, please try again in a couple of minutes')
         } else if (error.response?.status === 404) {
-          warnMessage('Verification TXT record not found, this could be due to DNS caching, please try again shortly.')
+          warnMessage(
+            'Verification TXT record not found, this could be due to DNS caching, please try again shortly.',
+          )
         } else {
           errorMessage()
         }
@@ -161,8 +164,10 @@ export default function DomainsIndex(props: DomainsProps) {
     http
       .patch(`/api/v1/domains/${domain.id}`, { description: domainDescriptionToEdit() })
       .then(() => {
-        setRows((prev) =>
-          prev.map((r) => (r.id === domain.id ? { ...r, description: domainDescriptionToEdit() } : r)),
+        setRows(prev =>
+          prev.map(r =>
+            r.id === domain.id ? { ...r, description: domainDescriptionToEdit() } : r,
+          ),
         )
         setDomainIdToEdit(null)
         setDomainDescriptionToEdit('')
@@ -185,9 +190,9 @@ export default function DomainsIndex(props: DomainsProps) {
         default_recipient: defaultRecipientId(),
       })
       .then(() => {
-        const recipient = props.recipientOptions.find((r) => r.id === defaultRecipientId()) || null
-        setRows((prev) =>
-          prev.map((r) =>
+        const recipient = props.recipientOptions.find(r => r.id === defaultRecipientId()) || null
+        setRows(prev =>
+          prev.map(r =>
             r.id === domain.id
               ? { ...r, default_recipient: recipient, default_recipient_id: defaultRecipientId() }
               : r,
@@ -215,8 +220,8 @@ export default function DomainsIndex(props: DomainsProps) {
         if (data.success === true) {
           closeCheckRecordsModal()
           successMessage(data.message)
-          setRows((prev) =>
-            prev.map((r) =>
+          setRows(prev =>
+            prev.map(r =>
               r.id === domain.id
                 ? {
                     ...r,
@@ -249,27 +254,23 @@ export default function DomainsIndex(props: DomainsProps) {
   }
 
   const enableCatchAll = (id: string) => {
-    http
-      .post('/api/v1/catch-all-domains', { id })
-      .catch((error: any) => {
-        if (error.response?.data !== undefined) {
-          errorMessage(error.response?.data ?? error.message)
-        } else {
-          errorMessage()
-        }
-      })
+    http.post('/api/v1/catch-all-domains', { id }).catch((error: any) => {
+      if (error.response?.data !== undefined) {
+        errorMessage(error.response?.data ?? error.message)
+      } else {
+        errorMessage()
+      }
+    })
   }
 
   const disableCatchAll = (id: string) => {
-    http
-      .delete(`/api/v1/catch-all-domains/${id}`)
-      .catch((error: any) => {
-        if (error.response?.data !== undefined) {
-          errorMessage(error.response?.data ?? error.message)
-        } else {
-          errorMessage()
-        }
-      })
+    http.delete(`/api/v1/catch-all-domains/${id}`).catch((error: any) => {
+      if (error.response?.data !== undefined) {
+        errorMessage(error.response?.data ?? error.message)
+      } else {
+        errorMessage()
+      }
+    })
   }
 
   const deleteDomain = (id: string) => {
@@ -365,12 +366,28 @@ export default function DomainsIndex(props: DomainsProps) {
         <Show
           when={!props.domain.domain_mx_validated_at}
           fallback={
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" class="h-5 w-5 inline-block">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 20 20"
+              class="h-5 w-5 inline-block"
+            >
               <title>DNS records for sending invalid</title>
               <g fill="none" fill-rule="evenodd">
                 <circle cx="10" cy="10" r="10" fill="#FF9B9B" />
-                <polyline stroke="#AB091E" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="14 6 6 14" />
-                <polyline stroke="#AB091E" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="6 6 14 14" />
+                <polyline
+                  stroke="#AB091E"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  points="14 6 6 14"
+                />
+                <polyline
+                  stroke="#AB091E"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  points="6 6 14 14"
+                />
               </g>
             </svg>
           }
@@ -379,8 +396,20 @@ export default function DomainsIndex(props: DomainsProps) {
             <title>MX records invalid</title>
             <g fill="none" fill-rule="evenodd">
               <circle cx="10" cy="10" r="10" fill="#FF9B9B" />
-              <polyline stroke="#AB091E" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="14 6 6 14" />
-              <polyline stroke="#AB091E" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="6 6 14 14" />
+              <polyline
+                stroke="#AB091E"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                points="14 6 6 14"
+              />
+              <polyline
+                stroke="#AB091E"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                points="6 6 14 14"
+              />
             </g>
           </svg>
         </Show>
@@ -390,7 +419,13 @@ export default function DomainsIndex(props: DomainsProps) {
         <title>Domain fully verified</title>
         <g fill="none" fill-rule="evenodd">
           <circle class="text-green-100 fill-current" cx="10" cy="10" r="10" />
-          <polyline class="text-green-800 stroke-current" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" points="6 10 8.667 12.667 14 7.333" />
+          <polyline
+            class="text-green-800 stroke-current"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            points="6 10 8.667 12.667 14 7.333"
+          />
         </g>
       </svg>
     </Show>
@@ -399,15 +434,20 @@ export default function DomainsIndex(props: DomainsProps) {
   return (
     <div>
       <Title>Domains</Title>
-      <h1 id="primary-heading" class="sr-only">Domains</h1>
+      <h1 id="primary-heading" class="sr-only">
+        Domains
+      </h1>
 
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-grey-900 dark:text-white">Domains</h1>
-          <p class="mt-2 text-sm text-grey-700 dark:text-grey-200">
+          <h1 class="text-2xl font-semibold text-white">Domains</h1>
+          <p class="mt-2 text-sm text-grey-700 text-grey-200">
             A list of all the domains {props.search ? 'found for your search' : 'in your account'}
             <button onClick={() => setMoreInfoOpen(!moreInfoOpen())}>
-              <Icon name="info" class="inline-block w-6 h-6 cursor-pointer text-grey-500 dark:text-grey-200" />
+              <Icon
+                name="info"
+                class="inline-block w-6 h-6 cursor-pointer text-grey-500 text-grey-200"
+              />
             </button>
           </p>
         </div>
@@ -415,7 +455,7 @@ export default function DomainsIndex(props: DomainsProps) {
           <button
             type="button"
             onClick={openAddDomainModal}
-            class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold shadow-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
+            class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 font-bold-sm focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
           >
             Add Domain
           </button>
@@ -429,16 +469,16 @@ export default function DomainsIndex(props: DomainsProps) {
             when={props.search}
             fallback={
               <div class="text-center">
-                <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">No Domains</h3>
-                <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+                <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+                <h3 class="mt-2 text-lg font-medium text-white">No Domains</h3>
+                <p class="mt-1 text-md text-grey-500 text-grey-200">
                   Get started by creating a new domain.
                 </p>
                 <div class="mt-6">
                   <button
                     onClick={openAddDomainModal}
                     type="button"
-                    class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium shadow-sm focus:outline-none"
+                    class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
                   >
                     <Icon name="plus" class="-ml-1 mr-2 h-5 w-5" />
                     Add a Domain
@@ -448,17 +488,15 @@ export default function DomainsIndex(props: DomainsProps) {
             }
           >
             <div class="text-center">
-              <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">
-                No Domains found for that search
-              </h3>
-              <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+              <Icon name="globe" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+              <h3 class="mt-2 text-lg font-medium text-white">No Domains found for that search</h3>
+              <p class="mt-1 text-md text-grey-500 text-grey-200">
                 Try entering a different search term.
               </p>
               <div class="mt-6">
                 <Link
                   href={(window as any).route('domains.index')}
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium shadow-sm focus:outline-none"
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
                 >
                   View All Domains
                 </Link>
@@ -469,12 +507,20 @@ export default function DomainsIndex(props: DomainsProps) {
       >
         <div class="overflow-x-auto">
           <table class="min-w-full">
-            <thead class="border-b border-grey-100 text-grey-400 dark:text-grey-200 dark:border-grey-300">
+            <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
               <tr>
-                <th scope="col" class="p-3 text-left cursor-pointer select-none" onClick={() => toggleSort('created_at')}>
+                <th
+                  scope="col"
+                  class="p-3 text-left cursor-pointer select-none"
+                  onClick={() => toggleSort('created_at')}
+                >
                   Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
                 </th>
-                <th scope="col" class="p-3 text-left cursor-pointer select-none" onClick={() => toggleSort('domain')}>
+                <th
+                  scope="col"
+                  class="p-3 text-left cursor-pointer select-none"
+                  onClick={() => toggleSort('domain')}
+                >
                   Domain {sortField() === 'domain' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
                 </th>
                 <th scope="col" class="p-3 text-left">
@@ -483,16 +529,31 @@ export default function DomainsIndex(props: DomainsProps) {
                 <th scope="col" class="p-3 text-left">
                   Default Recipient
                 </th>
-                <th scope="col" class="p-3 text-left cursor-pointer select-none" onClick={() => toggleSort('aliases_count')}>
-                  Alias Count {sortField() === 'aliases_count' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+                <th
+                  scope="col"
+                  class="p-3 text-left cursor-pointer select-none"
+                  onClick={() => toggleSort('aliases_count')}
+                >
+                  Alias Count{' '}
+                  {sortField() === 'aliases_count' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
                 </th>
                 <th scope="col" class="p-3 text-left">
                   Active
-                  <span title="When a domain is deactivated, any messages sent to its aliases will be silently discarded."><Icon name="info" class="inline-block w-4 h-4 text-grey-300 fill-current ml-1" /></span>
+                  <span title="When a domain is deactivated, any messages sent to its aliases will be silently discarded.">
+                    <Icon
+                      name="info"
+                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
+                    />
+                  </span>
                 </th>
                 <th scope="col" class="p-3 text-left">
                   Catch-All
-                  <span title="When catch-all is disabled, only aliases that already exist for the domain will forward messages."><Icon name="info" class="inline-block w-4 h-4 text-grey-300 fill-current ml-1" /></span>
+                  <span title="When catch-all is disabled, only aliases that already exist for the domain will forward messages.">
+                    <Icon
+                      name="info"
+                      class="inline-block w-4 h-4 text-grey-300 fill-current ml-1"
+                    />
+                  </span>
                 </th>
                 <th scope="col" class="p-3 text-left">
                   Verified Records
@@ -502,11 +563,11 @@ export default function DomainsIndex(props: DomainsProps) {
             </thead>
             <tbody>
               <For each={sortedRows()}>
-                {(row) => (
-                  <tr class="border-b border-grey-100 dark:border-grey-300">
+                {row => (
+                  <tr class="border-b border-grey-100 border-border-subtle">
                     <td class="p-3">
                       <span
-                        class="cursor-default text-sm text-grey-500 dark:text-grey-300"
+                        class="cursor-default text-sm text-grey-500 text-grey-300"
                         title={filters.formatDate(row.created_at)}
                       >
                         {filters.timeAgo(row.created_at)}
@@ -514,7 +575,7 @@ export default function DomainsIndex(props: DomainsProps) {
                     </td>
                     <td class="p-3">
                       <button
-                        class="cursor-pointer font-medium text-grey-700 dark:text-grey-200"
+                        class="cursor-pointer font-medium text-grey-700 text-grey-200"
                         title="Click to copy"
                         onClick={() => clipboard(row.domain)}
                       >
@@ -536,13 +597,16 @@ export default function DomainsIndex(props: DomainsProps) {
                                   }}
                                   aria-label="Add description"
                                 >
-                                  <Icon name="plus" class="block w-6 h-6 text-grey-300 fill-current" />
+                                  <Icon
+                                    name="plus"
+                                    class="block w-6 h-6 text-grey-300 fill-current"
+                                  />
                                 </button>
                               </div>
                             }
                           >
                             <div class="flex items-center">
-                              <span class="text-grey-500 dark:text-grey-300 mr-2">
+                              <span class="text-grey-500 text-grey-300 mr-2">
                                 {filters.truncate(row.description!, 60)}
                               </span>
                               <button
@@ -552,7 +616,10 @@ export default function DomainsIndex(props: DomainsProps) {
                                 }}
                                 aria-label="Edit"
                               >
-                                <Icon name="edit" class="inline-block w-6 h-6 text-grey-300 fill-current" />
+                                <Icon
+                                  name="edit"
+                                  class="inline-block w-6 h-6 text-grey-300 fill-current"
+                                />
                               </button>
                             </div>
                           </Show>
@@ -560,7 +627,7 @@ export default function DomainsIndex(props: DomainsProps) {
                       >
                         <div class="flex items-center">
                           <input
-                            onKeyDown={(e) => {
+                            onKeyDown={e => {
                               if (e.key === 'Enter') editDomain(row)
                               if (e.key === 'Escape') {
                                 setDomainIdToEdit(null)
@@ -568,18 +635,32 @@ export default function DomainsIndex(props: DomainsProps) {
                               }
                             }}
                             value={domainDescriptionToEdit()}
-                            onInput={(e) => setDomainDescriptionToEdit(e.currentTarget.value)}
+                            onInput={e => setDomainDescriptionToEdit(e.currentTarget.value)}
                             type="text"
-                            class={`grow appearance-none bg-grey-50 border text-grey-700 focus:outline-none rounded px-2 py-1 dark:text-white dark:bg-white/5 ${
-                              domainDescriptionToEdit().length > 200 ? 'border-red-500' : 'border-transparent'
+                            class={`grow appearance-none bg-white/5 border text-grey-700 focus:outline-none rounded px-2 py-1 text-white bg-white/5 ${
+                              domainDescriptionToEdit().length > 200
+                                ? 'border-red-500'
+                                : 'border-transparent'
                             }`}
                             placeholder="Add description"
                           />
-                          <button onClick={() => { setDomainIdToEdit(null); setDomainDescriptionToEdit('') }} aria-label="Cancel">
-                            <Icon name="close" class="inline-block w-6 h-6 text-red-300 fill-current" />
+                          <button
+                            onClick={() => {
+                              setDomainIdToEdit(null)
+                              setDomainDescriptionToEdit('')
+                            }}
+                            aria-label="Cancel"
+                          >
+                            <Icon
+                              name="close"
+                              class="inline-block w-6 h-6 text-red-300 fill-current"
+                            />
                           </button>
                           <button onClick={() => editDomain(row)} aria-label="Save">
-                            <Icon name="save" class="inline-block w-6 h-6 text-cyan-500 fill-current" />
+                            <Icon
+                              name="save"
+                              class="inline-block w-6 h-6 text-cyan-500 fill-current"
+                            />
                           </button>
                         </div>
                       </Show>
@@ -589,7 +670,10 @@ export default function DomainsIndex(props: DomainsProps) {
                         when={row.default_recipient}
                         fallback={
                           <div class="flex justify-center">
-                            <button onClick={() => openDomainDefaultRecipientModal(row)} aria-label="Add Default Recipient">
+                            <button
+                              onClick={() => openDomainDefaultRecipientModal(row)}
+                              aria-label="Add Default Recipient"
+                            >
                               <Icon name="plus" class="block w-6 h-6 text-grey-300 fill-current" />
                             </button>
                           </div>
@@ -597,14 +681,20 @@ export default function DomainsIndex(props: DomainsProps) {
                       >
                         <div class="flex items-center">
                           <span
-                            class="cursor-pointer font-medium text-grey-500 dark:text-grey-300 mr-2"
+                            class="cursor-pointer font-medium text-grey-500 text-grey-300 mr-2"
                             title="Click to copy"
                             onClick={() => clipboard(row.default_recipient!.email)}
                           >
                             {filters.truncate(row.default_recipient!.email, 30)}
                           </span>
-                          <button onClick={() => openDomainDefaultRecipientModal(row)} aria-label="Edit Default Recipient">
-                            <Icon name="edit" class="inline-block w-6 h-6 text-grey-300 fill-current" />
+                          <button
+                            onClick={() => openDomainDefaultRecipientModal(row)}
+                            aria-label="Edit Default Recipient"
+                          >
+                            <Icon
+                              name="edit"
+                              class="inline-block w-6 h-6 text-grey-300 fill-current"
+                            />
                           </button>
                         </div>
                       </Show>
@@ -612,11 +702,13 @@ export default function DomainsIndex(props: DomainsProps) {
                     <td class="p-3">
                       <Show
                         when={row.aliases_count}
-                        fallback={<span class="text-grey-500 dark:text-grey-300">{row.aliases_count}</span>}
+                        fallback={
+                          <span class="text-grey-500 text-grey-300">{row.aliases_count}</span>
+                        }
                       >
                         <Link
                           href={(window as any).route('aliases.index', { domain: row.id })}
-                          class="text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                           title="Click to view the aliases using this domain"
                         >
                           {row.aliases_count.toLocaleString()}
@@ -628,8 +720,8 @@ export default function DomainsIndex(props: DomainsProps) {
                         <Toggle
                           checked={row.active}
                           onChange={(checked: boolean) => {
-                            setRows((prev) =>
-                              prev.map((r) => (r.id === row.id ? { ...r, active: checked } : r)),
+                            setRows(prev =>
+                              prev.map(r => (r.id === row.id ? { ...r, active: checked } : r)),
                             )
                             if (checked) activateDomain(row.id)
                             else deactivateDomain(row.id)
@@ -642,8 +734,8 @@ export default function DomainsIndex(props: DomainsProps) {
                         <Toggle
                           checked={row.catch_all}
                           onChange={(checked: boolean) => {
-                            setRows((prev) =>
-                              prev.map((r) => (r.id === row.id ? { ...r, catch_all: checked } : r)),
+                            setRows(prev =>
+                              prev.map(r => (r.id === row.id ? { ...r, catch_all: checked } : r)),
                             )
                             if (checked) enableCatchAll(row.id)
                             else disableCatchAll(row.id)
@@ -659,7 +751,7 @@ export default function DomainsIndex(props: DomainsProps) {
                           fallback={
                             <button
                               onClick={() => openCheckRecordsModal(row)}
-                              class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 dark:text-grey-300 rounded-sm"
+                              class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 text-grey-300 rounded-sm"
                             >
                               Check Records
                             </button>
@@ -667,7 +759,7 @@ export default function DomainsIndex(props: DomainsProps) {
                         >
                           <button
                             onClick={() => openCheckRecordsModal(row)}
-                            class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 dark:text-grey-300 rounded-sm"
+                            class="focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary text-sm ml-2 text-grey-500 text-grey-300 rounded-sm"
                           >
                             Recheck
                           </button>
@@ -678,13 +770,13 @@ export default function DomainsIndex(props: DomainsProps) {
                       <div class="flex items-center justify-center whitespace-nowrap">
                         <Link
                           href={(window as any).route('domains.edit', row.id)}
-                          class="text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                         >
                           Edit<span class="sr-only">, {row.domain}</span>
                         </Link>
                         <button
                           onClick={() => openDeleteModal(row.id)}
-                          class="text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium ml-4"
+                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium ml-4"
                         >
                           Delete<span class="sr-only">, {row.domain}</span>
                         </button>
@@ -700,7 +792,9 @@ export default function DomainsIndex(props: DomainsProps) {
 
       <Modal
         open={addDomainModalOpen()}
-        onOpenChange={(open) => { if (!open) closeCheckRecordsModal() }}
+        onOpenChange={open => {
+          if (!open) closeCheckRecordsModal()
+        }}
         maxWidth="md:max-w-2xl"
         title={domainToCheck() ? 'Check DNS records' : 'Add new domain'}
       >
@@ -708,59 +802,110 @@ export default function DomainsIndex(props: DomainsProps) {
           when={!domainToCheck()}
           fallback={
             <>
-              <p class="mt-4 mb-2 text-grey-700 dark:text-grey-200">
+              <p class="mt-4 mb-2 text-grey-700 text-grey-200">
                 Please set the following DNS records for your custom domain. <b>Note</b>: if you are
-                already using your custom domain for emails elsewhere e.g. with ProtonMail, NameCheap etc.
-                please{' '}
+                already using your custom domain for emails elsewhere e.g. with ProtonMail,
+                NameCheap etc. please{' '}
                 <a
                   href="https://vovamail.xyz/faq/#can-i-add-a-domain-if-im-already-using-it-for-email-somewhere-else"
-                  class="text-secondary dark:text-indigo-400 font-bold"
+                  class="text-secondary text-indigo-400 font-bold"
                   target="_blank"
                   rel="nofollow noreferrer noopener"
                 >
                   read this
-                </a>.
+                </a>
+                .
               </p>
               <div class="table w-full">
                 <div class="table-row">
-                  <div class="table-cell py-2 font-semibold dark:text-grey-100">Type</div>
-                  <div class="table-cell py-2 px-4 font-semibold dark:text-grey-100">Host</div>
-                  <div class="table-cell py-2 font-semibold dark:text-grey-100">Value/Points to</div>
+                  <div class="table-cell py-2 font-semibold text-grey-100">Type</div>
+                  <div class="table-cell py-2 px-4 font-semibold text-grey-100">Host</div>
+                  <div class="table-cell py-2 font-semibold text-grey-100">Value/Points to</div>
                 </div>
                 <div class="table-row">
-                  <div class="table-cell py-2 dark:text-grey-100">MX 10</div>
-                  <div class="table-cell py-2 px-4 dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
+                  <div class="table-cell py-2 text-grey-100">MX 10</div>
+                  <div class="table-cell py-2 px-4 text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard('@')}
+                      class="focus-visible:outline-primary"
+                    >
+                      @
+                    </button>
                   </div>
-                  <div class="table-cell py-2 break-words dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard(props.hostname)} class="focus-visible:outline-primary">{props.hostname}.</button>
-                  </div>
-                </div>
-                <div class="table-row">
-                  <div class="table-cell py-2 dark:text-grey-100">TXT</div>
-                  <div class="table-cell py-2 px-4 dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard('@')} class="focus-visible:outline-primary">@</button>
-                  </div>
-                  <div class="table-cell py-2 break-words dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard('v=spf1 mx -all')} class="focus-visible:outline-primary">v=spf1 mx -all</button>
-                  </div>
-                </div>
-                <div class="table-row">
-                  <div class="table-cell py-2 dark:text-grey-100">CNAME</div>
-                  <div class="table-cell py-2 px-4 dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey</button>
-                  </div>
-                  <div class="table-cell py-2 break-words dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard(`${props.dkimSelector}._domainkey.${props.domainName}.`)} class="focus-visible:outline-primary">{props.dkimSelector}._domainkey.{props.domainName}.</button>
+                  <div class="table-cell py-2 break-words text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard(props.hostname)}
+                      class="focus-visible:outline-primary"
+                    >
+                      {props.hostname}.
+                    </button>
                   </div>
                 </div>
                 <div class="table-row">
-                  <div class="table-cell py-2 dark:text-grey-100">TXT</div>
-                  <div class="table-cell py-2 px-4 dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard('_dmarc')} class="focus-visible:outline-primary">_dmarc</button>
+                  <div class="table-cell py-2 text-grey-100">TXT</div>
+                  <div class="table-cell py-2 px-4 text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard('@')}
+                      class="focus-visible:outline-primary"
+                    >
+                      @
+                    </button>
                   </div>
-                  <div class="table-cell py-2 break-words dark:text-grey-100">
-                    <button title="Copy" onClick={() => clipboard('v=DMARC1; p=quarantine; adkim=s')} class="focus-visible:outline-primary">v=DMARC1; p=quarantine; adkim=s</button>
+                  <div class="table-cell py-2 break-words text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard('v=spf1 mx -all')}
+                      class="focus-visible:outline-primary"
+                    >
+                      v=spf1 mx -all
+                    </button>
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell py-2 text-grey-100">CNAME</div>
+                  <div class="table-cell py-2 px-4 text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard(`${props.dkimSelector}._domainkey`)}
+                      class="focus-visible:outline-primary"
+                    >
+                      {props.dkimSelector}._domainkey
+                    </button>
+                  </div>
+                  <div class="table-cell py-2 break-words text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() =>
+                        clipboard(`${props.dkimSelector}._domainkey.${props.domainName}.`)
+                      }
+                      class="focus-visible:outline-primary"
+                    >
+                      {props.dkimSelector}._domainkey.{props.domainName}.
+                    </button>
+                  </div>
+                </div>
+                <div class="table-row">
+                  <div class="table-cell py-2 text-grey-100">TXT</div>
+                  <div class="table-cell py-2 px-4 text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard('_dmarc')}
+                      class="focus-visible:outline-primary"
+                    >
+                      _dmarc
+                    </button>
+                  </div>
+                  <div class="table-cell py-2 break-words text-grey-100">
+                    <button
+                      title="Copy"
+                      onClick={() => clipboard('v=DMARC1; p=quarantine; adkim=s')}
+                      class="focus-visible:outline-primary"
+                    >
+                      v=DMARC1; p=quarantine; adkim=s
+                    </button>
                   </div>
                 </div>
               </div>
@@ -771,20 +916,22 @@ export default function DomainsIndex(props: DomainsProps) {
                   disabled={checkRecordsLoading()}
                 >
                   Check Records
-                  <Show when={checkRecordsLoading()}><Loader /></Show>
+                  <Show when={checkRecordsLoading()}>
+                    <Loader />
+                  </Show>
                 </button>
                 <button
                   onClick={closeCheckRecordsModal}
-                  class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+                  class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
                 >
                   Cancel
                 </button>
               </div>
-              <div class="mt-2 text-sm dark:text-grey-200">
+              <div class="mt-2 text-sm text-grey-200">
                 For more information or if you are adding a <b>subdomain</b> please read{' '}
                 <a
                   href="https://vovamail.xyz/help/adding-a-custom-domain/"
-                  class="text-secondary dark:text-indigo-400 font-bold"
+                  class="text-secondary text-indigo-400 font-bold"
                   target="_blank"
                   rel="nofollow noreferrer noopener"
                 >
@@ -794,20 +941,20 @@ export default function DomainsIndex(props: DomainsProps) {
             </>
           }
         >
-          <p class="mt-4 mb-2 text-grey-700 dark:text-grey-200">
-            To verify ownership of the domain, please add the following TXT record and then click Add
-            Domain below. Once you've added the domain you can safely remove this TXT record.
+          <p class="mt-4 mb-2 text-grey-700 text-grey-200">
+            To verify ownership of the domain, please add the following TXT record and then click
+            Add Domain below. Once you've added the domain you can safely remove this TXT record.
           </p>
           <div class="table w-full">
             <div class="table-row">
-              <div class="table-cell py-2 font-semibold dark:text-grey-100">Type</div>
-              <div class="table-cell p-2 font-semibold dark:text-grey-100">Host</div>
-              <div class="table-cell py-2 font-semibold dark:text-grey-100">Value/Points to</div>
+              <div class="table-cell py-2 font-semibold text-grey-100">Type</div>
+              <div class="table-cell p-2 font-semibold text-grey-100">Host</div>
+              <div class="table-cell py-2 font-semibold text-grey-100">Value/Points to</div>
             </div>
             <div class="table-row">
-              <div class="table-cell py-2 dark:text-grey-100">TXT</div>
-              <div class="table-cell p-2 dark:text-grey-100">@</div>
-              <div class="table-cell py-2 dark:text-grey-100">
+              <div class="table-cell py-2 text-grey-100">TXT</div>
+              <div class="table-cell p-2 text-grey-100">@</div>
+              <div class="table-cell py-2 text-grey-100">
                 <button
                   onClick={() => clipboard(`aa-verify=${aaVerify()}`)}
                   class="break-all focus-visible:outline-primary"
@@ -824,9 +971,9 @@ export default function DomainsIndex(props: DomainsProps) {
             </Show>
             <input
               value={newDomain()}
-              onInput={(e) => setNewDomain(e.currentTarget.value)}
+              onInput={e => setNewDomain(e.currentTarget.value)}
               type="text"
-              class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 dark:bg-white/5 dark:text-white ${errors().newDomain ? 'ring-red-500' : ''}`}
+              class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newDomain ? 'ring-red-500' : ''}`}
               placeholder="example.com"
             />
             <button
@@ -835,20 +982,22 @@ export default function DomainsIndex(props: DomainsProps) {
               disabled={addDomainLoading()}
             >
               Add Domain
-              <Show when={addDomainLoading()}><Loader /></Show>
+              <Show when={addDomainLoading()}>
+                <Loader />
+              </Show>
             </button>
             <button
               onClick={() => setAddDomainModalOpen(false)}
-              class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+              class="ml-4 px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               Cancel
             </button>
           </div>
-          <div class="mt-2 text-sm dark:text-grey-200">
+          <div class="mt-2 text-sm text-grey-200">
             For <b>subdomains</b> you will need to change the host value, please read{' '}
             <a
               href="https://vovamail.xyz/help/adding-a-custom-domain/"
-              class="text-secondary dark:text-indigo-400 font-bold"
+              class="text-secondary text-indigo-400 font-bold"
               target="_blank"
               rel="nofollow noreferrer noopener"
             >
@@ -860,27 +1009,33 @@ export default function DomainsIndex(props: DomainsProps) {
 
       <Modal
         open={domainDefaultRecipientModalOpen()}
-        onOpenChange={(open) => { if (!open) closeDomainDefaultRecipientModal() }}
+        onOpenChange={open => {
+          if (!open) closeDomainDefaultRecipientModal()
+        }}
         title="Update Default Recipient"
       >
-        <p class="my-4 text-grey-700 dark:text-grey-200">
+        <p class="my-4 text-grey-700 text-grey-200">
           Select the default recipient for this domain. This overrides the default recipient in your
           account settings. Leave it empty if you would like to use the default recipient in your
           account settings.
         </p>
         <select
           value={defaultRecipientId() ?? ''}
-          onChange={(e) => setDefaultRecipientId(e.currentTarget.value || null)}
-          class="block w-full rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+          onChange={e => setDefaultRecipientId(e.currentTarget.value || null)}
+          class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
         >
-          <option value="" class="dark:bg-grey-900">Select recipient</option>
+          <option value="" class="bg-surface">
+            Select recipient
+          </option>
           <For each={props.recipientOptions}>
-            {(opt) => (
-              <option value={opt.id} class="dark:bg-grey-900">{opt.email}</option>
+            {opt => (
+              <option value={opt.id} class="bg-surface">
+                {opt.email}
+              </option>
             )}
           </For>
         </select>
-        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 dark:text-grey-200">
+        <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 text-grey-200">
           <button
             type="button"
             onClick={editDefaultRecipient}
@@ -888,11 +1043,13 @@ export default function DomainsIndex(props: DomainsProps) {
             disabled={editDefaultRecipientLoading()}
           >
             Update Default Recipient
-            <Show when={editDefaultRecipientLoading()}><Loader /></Show>
+            <Show when={editDefaultRecipientLoading()}>
+              <Loader />
+            </Show>
           </button>
           <button
             onClick={closeDomainDefaultRecipientModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
@@ -901,10 +1058,12 @@ export default function DomainsIndex(props: DomainsProps) {
 
       <Modal
         open={deleteDomainModalOpen()}
-        onOpenChange={(open) => { if (!open) closeDeleteModal() }}
+        onOpenChange={open => {
+          if (!open) closeDeleteModal()
+        }}
         title="Delete domain"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Are you sure you want to delete this domain? This will also{' '}
           <b>remove all aliases associated with this domain</b>. You will no longer be able to
           receive any emails at this domain.
@@ -917,37 +1076,37 @@ export default function DomainsIndex(props: DomainsProps) {
             disabled={deleteDomainLoading()}
           >
             Delete domain
-            <Show when={deleteDomainLoading()}><Loader /></Show>
+            <Show when={deleteDomainLoading()}>
+              <Loader />
+            </Show>
           </button>
           <button
             onClick={closeDeleteModal}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Cancel
           </button>
         </div>
       </Modal>
 
-      <Modal
-        open={moreInfoOpen()}
-        onOpenChange={setMoreInfoOpen}
-        title="More information"
-      >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+      <Modal open={moreInfoOpen()} onOpenChange={setMoreInfoOpen} title="More information">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Adding a custom domain such as <b>example.com</b> will allow you to create unlimited
-          aliases e.g. xyz@example.com. You can also add a subdomain such as{' '}
-          <b>mail.example.com</b>.
+          aliases e.g. xyz@example.com. You can also add a subdomain such as <b>mail.example.com</b>
+          .
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           To get started all you have to do is add a TXT record to your domain to verify ownership
           and then add the domain here by clicking the button above.
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           The TXT record needs to have the following values:
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
-          Type: <b>TXT</b><br />
-          Host: <b>@</b><br />
+        <p class="mt-4 text-grey-700 text-grey-200">
+          Type: <b>TXT</b>
+          <br />
+          Host: <b>@</b>
+          <br />
           Value:{' '}
           <b
             class="break-words cursor-pointer"
@@ -955,16 +1114,17 @@ export default function DomainsIndex(props: DomainsProps) {
             onClick={() => clipboard(`aa-verify=${aaVerify()}`)}
           >
             aa-verify={aaVerify()}
-          </b><br />
+          </b>
+          <br />
         </p>
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Once the DNS changes propagate and you have verified ownership of the domain you will need
           to add a few more records to be able to receive emails at your own domain.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row">
           <button
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
           >
             Close
           </button>

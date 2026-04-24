@@ -8,16 +8,20 @@ import http from '../../lib/http'
 import { filters } from '../../app'
 
 const successMessage = (text = '') => {
-  window.dispatchEvent(new CustomEvent('notify', { detail: { title: 'Success', text, type: 'success' } }))
+  window.dispatchEvent(
+    new CustomEvent('notify', { detail: { title: 'Success', text, type: 'success' } }),
+  )
 }
 const errorMessage = (text = 'An error has occurred, please try again later') => {
-  window.dispatchEvent(new CustomEvent('notify', { detail: { title: 'Error', text, type: 'error' } }))
+  window.dispatchEvent(
+    new CustomEvent('notify', { detail: { title: 'Error', text, type: 'error' } }),
+  )
 }
 
 const clipboard = (str: string) => {
   navigator.clipboard.writeText(str).then(
     () => successMessage('Copied to clipboard'),
-    () => errorMessage('Could not copy to clipboard')
+    () => errorMessage('Could not copy to clipboard'),
   )
 }
 
@@ -74,7 +78,8 @@ export default function EditUsername(props: UsernameProps) {
       return
     }
     setFromNameLoading(true)
-    http.patch(`/api/v1/usernames/${u().id}`, { from_name: fromName() })
+    http
+      .patch(`/api/v1/usernames/${u().id}`, { from_name: fromName() })
       .then(() => {
         setFromNameLoading(false)
         successMessage("Username 'From Name' updated")
@@ -86,13 +91,15 @@ export default function EditUsername(props: UsernameProps) {
   }
 
   const allowLogin = () => {
-    http.post('/api/v1/loginable-usernames', { id: u().id })
+    http
+      .post('/api/v1/loginable-usernames', { id: u().id })
       .then(() => successMessage('Username allowed to login'))
       .catch(() => errorMessage())
   }
 
   const disallowLogin = () => {
-    http.delete(`/api/v1/loginable-usernames/${u().id}`)
+    http
+      .delete(`/api/v1/loginable-usernames/${u().id}`)
       .then(() => successMessage('Username disallowed to login'))
       .catch(() => errorMessage())
   }
@@ -106,7 +113,8 @@ export default function EditUsername(props: UsernameProps) {
       return
     }
     setAutoCreateRegexLoading(true)
-    http.patch(`/api/v1/usernames/${u().id}`, { auto_create_regex: autoCreateRegex() })
+    http
+      .patch(`/api/v1/usernames/${u().id}`, { auto_create_regex: autoCreateRegex() })
       .then(() => {
         setAutoCreateRegexLoading(false)
         successMessage("Username 'Auto Create Regex' updated")
@@ -136,11 +144,12 @@ export default function EditUsername(props: UsernameProps) {
       return
     }
     setTestLoading(true)
-    http.post('/test-auto-create-regex', {
-      resource: 'username',
-      local_part: testLocalPart(),
-      id: u().id,
-    })
+    http
+      .post('/test-auto-create-regex', {
+        resource: 'username',
+        local_part: testLocalPart(),
+        id: u().id,
+      })
       .then((data: any) => {
         setTestLoading(false)
         setTestSuccess(data.success ? true : false)
@@ -159,69 +168,80 @@ export default function EditUsername(props: UsernameProps) {
   return (
     <div>
       <Title>Edit Username</Title>
-      <h1 id="primary-heading" class="sr-only">Edit Username</h1>
+      <h1 id="primary-heading" class="sr-only">
+        Edit Username
+      </h1>
 
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-grey-900 dark:text-white">Edit Username</h1>
-          <p class="mt-2 text-sm text-grey-700 dark:text-grey-200">Make changes to your username</p>
+          <h1 class="text-2xl font-semibold text-white">Edit Username</h1>
+          <p class="mt-2 text-sm text-grey-700 text-grey-200">Make changes to your username</p>
         </div>
       </div>
 
-      <div class="bg-white rounded-lg shadow p-4 dark:bg-grey-900">
-        <div class="space-y-8 divide-y divide-grey-200 dark:divide-grey-400">
+      <div class="bg-surface rounded-lg p-4">
+        <div class="space-y-8 divide-y divide-grey-200 divide-border-subtle">
           <div>
             <div class="flex items-center">
               <h3
-                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer dark:text-grey-100"
+                class="text-xl font-medium leading-6 text-grey-900 cursor-pointer text-grey-100"
                 onClick={() => clipboard(u().username)}
                 title="Click to copy"
               >
                 {u().username}
               </h3>
               <Show when={defaultUsernameId() === u().id}>
-                <span class="ml-2 py-1 px-2 text-xs bg-yellow-200 text-yellow-900 rounded-full" title="This is your account's default username">
+                <span
+                  class="ml-2 py-1 px-2 text-xs bg-yellow-200 text-yellow-900 rounded-full"
+                  title="This is your account's default username"
+                >
                   default
                 </span>
               </Show>
             </div>
             <Show when={u().description}>
-              <div class="mt-2 text-sm text-grey-500 dark:text-grey-300">{u().description}</div>
+              <div class="mt-2 text-sm text-grey-500 text-grey-300">{u().description}</div>
             </Show>
           </div>
 
           <div class="pt-8">
-            <div class="block text-lg font-medium text-grey-700 dark:text-grey-200">
+            <div class="block text-lg font-medium text-grey-700 text-grey-200">
               Username 'From Name'
             </div>
-            <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
-              The 'From Name' is shown when you send an email from an alias or reply anonymously to a
-              forwarded email. If left blank, then the email alias itself will be used as the 'From
-              Name' e.g. "example@{u().username}.vovamail.xyz".
+            <p class="mt-1 text-base text-grey-700 text-grey-200">
+              The 'From Name' is shown when you send an email from an alias or reply anonymously to
+              a forwarded email. If left blank, then the email alias itself will be used as the
+              'From Name' e.g. "example@{u().username}.vovamail.xyz".
             </p>
-            <div class="mt-2 text-base text-grey-700 dark:text-grey-200">
-              The 'From Name' that is used for an alias is determined by the following <b>priority</b>:
-              <ul class="list-decimal list-inside text-grey-700 text-base mt-2 dark:text-grey-200">
+            <div class="mt-2 text-base text-grey-700 text-grey-200">
+              The 'From Name' that is used for an alias is determined by the following{' '}
+              <b>priority</b>:
+              <ul class="list-decimal list-inside text-grey-700 text-base mt-2 text-grey-200">
                 <li>Alias 'From Name'</li>
-                <li><b>Username</b> or Custom Domain <b>'From Name'</b></li>
+                <li>
+                  <b>Username</b> or Custom Domain <b>'From Name'</b>
+                </li>
                 <li>Global 'From Name' from the settings page</li>
               </ul>
             </div>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
-              If you set the 'From Name' for this username, it will override the global 'From Name' setting.
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
+              If you set the 'From Name' for this username, it will override the global 'From Name'
+              setting.
             </p>
 
             <div class="mb-6">
               <div class="mt-6 grid grid-cols-1 mb-4">
-                <label for="from_name" class="block text-sm font-medium leading-6 text-grey-900 dark:text-white">From Name</label>
+                <label for="from_name" class="block text-sm font-medium leading-6 text-white">
+                  From Name
+                </label>
                 <div class="relative mt-2">
                   <input
                     type="text"
                     name="from_name"
                     id="from_name"
                     value={fromName()}
-                    onInput={(e) => setFromName(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 dark:text-white dark:bg-white/5 ${errors().from_name ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    onInput={e => setFromName(e.currentTarget.value)}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="John Doe"
                   />
                   <Show when={errors().from_name}>
@@ -250,13 +270,13 @@ export default function EditUsername(props: UsernameProps) {
 
           <Show when={!usesExternalAuthentication()}>
             <div class="pt-8">
-              <label class="block font-medium text-grey-700 dark:text-grey-200 text-lg pointer-events-none cursor-default">
+              <label class="block font-medium text-grey-700 text-grey-200 text-lg pointer-events-none cursor-default">
                 Can Be Used To Login
               </label>
-              <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
+              <p class="mt-1 text-base text-grey-700 text-grey-200">
                 Toggle this option to determine whether this username can be used to login to your
-                account or not. When set to off you will not be able to use this username to login to
-                your account.
+                account or not. When set to off you will not be able to use this username to login
+                to your account.
               </p>
               <Show
                 when={defaultUsernameId() !== u().id}
@@ -275,7 +295,7 @@ export default function EditUsername(props: UsernameProps) {
                   id="can_login"
                   class="mt-4"
                   checked={canLogin()}
-                  onChange={(checked) => {
+                  onChange={checked => {
                     setCanLogin(checked)
                     if (checked) allowLogin()
                     else disallowLogin()
@@ -286,47 +306,62 @@ export default function EditUsername(props: UsernameProps) {
           </Show>
 
           <div class="pt-8">
-            <div class="block text-lg font-medium text-grey-700 dark:text-grey-200">
+            <div class="block text-lg font-medium text-grey-700 text-grey-200">
               Alias Auto Create Regex
             </div>
-            <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
-              If you wish to create aliases on-the-fly but don't want to enable catch-all then you can
-              enter a regular expression pattern below. If a new alias' local part matches the pattern
-              then it will still be created on-the-fly even though catch-all is disabled.
+            <p class="mt-1 text-base text-grey-700 text-grey-200">
+              If you wish to create aliases on-the-fly but don't want to enable catch-all then you
+              can enter a regular expression pattern below. If a new alias' local part matches the
+              pattern then it will still be created on-the-fly even though catch-all is disabled.
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
               Note: <b>Catch-All must be disabled</b> to use alias automatic creation with regex.
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
               For example, if you only want aliases that start with "prefix" to be automatically
-              created, use the regex <span class="bg-primary/30 px-1 rounded-md dark:text-grey-900">^prefix</span>
+              created, use the regex{' '}
+              <span class="bg-primary/30 px-1 rounded-md text-black">^prefix</span>
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
               If you only want aliases that end with "suffix" to be automatically created, use the
-              regex <span class="bg-primary/30 px-1 rounded-md dark:text-grey-900">suffix$</span>
+              regex <span class="bg-primary/30 px-1 rounded-md text-black">suffix$</span>
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
               If you want to make sure the local part is fully matched you can start your regex with
-              <span class="bg-primary/30 px-1 rounded-md dark:text-grey-900">^</span> and end it with
-              <span class="bg-primary/30 px-1 rounded-md dark:text-grey-900">$</span> e.g.
-              <span class="bg-primary/30 px-1 rounded-md dark:text-grey-900">^prefix.*suffix$</span>
+              <span class="bg-primary/30 px-1 rounded-md text-black">^</span> and end it with
+              <span class="bg-primary/30 px-1 rounded-md text-black">$</span> e.g.
+              <span class="bg-primary/30 px-1 rounded-md text-black">^prefix.*suffix$</span>
               which would match "prefix-anything-here-suffix"
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
-              You can use <a href="https://regex101.com/" class="text-primary" target="_blank" rel="nofollow noreferrer noopener">regex101.com</a> to help you write your regular expressions.
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
+              You can use{' '}
+              <a
+                href="https://regex101.com/"
+                class="text-primary"
+                target="_blank"
+                rel="nofollow noreferrer noopener"
+              >
+                regex101.com
+              </a>{' '}
+              to help you write your regular expressions.
             </p>
 
             <div class="mb-6">
               <div class="mt-6 grid grid-cols-1 mb-4">
-                <label for="auto_create_regex" class="block text-sm font-medium leading-6 text-grey-900 dark:text-white">Auto Create Regex</label>
+                <label
+                  for="auto_create_regex"
+                  class="block text-sm font-medium leading-6 text-white"
+                >
+                  Auto Create Regex
+                </label>
                 <div class="relative mt-2">
                   <input
                     type="text"
                     name="auto_create_regex"
                     id="auto_create_regex"
                     value={autoCreateRegex()}
-                    onInput={(e) => setAutoCreateRegex(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 dark:text-white dark:bg-white/5 ${errors().auto_create_regex ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    onInput={e => setAutoCreateRegex(e.currentTarget.value)}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().auto_create_regex ? 'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="^prefix"
                   />
                   <Show when={errors().auto_create_regex}>
@@ -352,19 +387,24 @@ export default function EditUsername(props: UsernameProps) {
               </Show>
             </button>
 
-            <div class="block text-lg font-medium text-grey-700 pt-8 dark:text-grey-200">
+            <div class="block text-lg font-medium text-grey-700 pt-8 text-grey-200">
               Test Alias Auto Create Regex
             </div>
-            <p class="mt-1 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-1 text-base text-grey-700 text-grey-200">
               You can test whether an alias local part will match the above regex pattern and be
               automatically created by entering the local part (left of @ symbol) below.
             </p>
-            <p class="mt-2 text-base text-grey-700 dark:text-grey-200">
+            <p class="mt-2 text-base text-grey-700 text-grey-200">
               No aliases will be created when testing.
             </p>
             <div class="mb-6">
               <div class="mt-6 grid grid-cols-1 mb-4">
-                <label for="test_auto_create_regex_local_part" class="block text-sm font-medium leading-6 text-grey-900 dark:text-white">Alias Local Part</label>
+                <label
+                  for="test_auto_create_regex_local_part"
+                  class="block text-sm font-medium leading-6 text-white"
+                >
+                  Alias Local Part
+                </label>
                 <div class="mt-2">
                   <div class="flex">
                     <div class="relative w-full">
@@ -373,11 +413,13 @@ export default function EditUsername(props: UsernameProps) {
                         name="test_auto_create_regex_local_part"
                         id="test_auto_create_regex_local_part"
                         value={testLocalPart()}
-                        onInput={(e) => setTestLocalPart(e.currentTarget.value)}
-                        class={`block w-full min-w-0 flex-1 rounded-none rounded-l-md border-0 py-2 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 dark:text-white dark:bg-white/5 ${testInputClass()}`}
+                        onInput={e => setTestLocalPart(e.currentTarget.value)}
+                        class={`block w-full min-w-0 flex-1 rounded-none rounded-l-md border-0 py-2 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 text-white bg-white/5 ${testInputClass()}`}
                         placeholder="local-part"
                       />
-                      <Show when={errors().test_auto_create_regex_local_part || testSuccess() === false}>
+                      <Show
+                        when={errors().test_auto_create_regex_local_part || testSuccess() === false}
+                      >
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
                           <Icon name="close-circle" class="h-5 w-5 text-red-500" />
                         </div>
@@ -388,17 +430,26 @@ export default function EditUsername(props: UsernameProps) {
                         </div>
                       </Show>
                     </div>
-                    <span class="inline-flex items-center rounded-r-md border border-l-0 border-grey-300 px-3 text-grey-500 sm:text-sm dark:text-grey-300">@{u().username}.vovamail.xyz</span>
+                    <span class="inline-flex items-center rounded-r-md border border-l-0 border-grey-300 px-3 text-grey-500 sm:text-sm text-grey-300">
+                      @{u().username}.vovamail.xyz
+                    </span>
                   </div>
                 </div>
                 <Show when={errors().test_auto_create_regex_local_part}>
-                  <p class="mt-2 text-sm text-red-600">{errors().test_auto_create_regex_local_part}</p>
+                  <p class="mt-2 text-sm text-red-600">
+                    {errors().test_auto_create_regex_local_part}
+                  </p>
                 </Show>
                 <Show when={testSuccess() === false}>
-                  <p class="mt-2 text-sm text-red-600">The alias local part does not match the regular expression and would not be created</p>
+                  <p class="mt-2 text-sm text-red-600">
+                    The alias local part does not match the regular expression and would not be
+                    created
+                  </p>
                 </Show>
                 <Show when={testSuccess() === true}>
-                  <p class="mt-2 text-sm text-green-600">The alias local part matches the regular expression and would be created</p>
+                  <p class="mt-2 text-sm text-green-600">
+                    The alias local part matches the regular expression and would be created
+                  </p>
                 </Show>
               </div>
             </div>
@@ -416,7 +467,10 @@ export default function EditUsername(props: UsernameProps) {
           </div>
 
           <div class="pt-5">
-            <span class="mt-2 text-sm text-grey-500 dark:text-grey-300" title={filters.formatDate(u().updated_at)}>
+            <span
+              class="mt-2 text-sm text-grey-500 text-grey-300"
+              title={filters.formatDate(u().updated_at)}
+            >
               Last updated {filters.timeAgo(u().updated_at)}.
             </span>
           </div>

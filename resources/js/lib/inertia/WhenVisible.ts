@@ -58,7 +58,7 @@ export default function WhenVisible<T extends ValidComponent = 'div'>(_props: Wh
 
   onMount(() => {
     observer = new IntersectionObserver(
-      (entries) => {
+      entries => {
         if (!entries[0].isIntersecting) return
 
         if (!props.always) {
@@ -75,11 +75,11 @@ export default function WhenVisible<T extends ValidComponent = 'div'>(_props: Wh
 
         router.reload({
           ...reloadParams,
-          onStart: (e) => {
+          onStart: e => {
             setFetching(true)
             reloadParams.onStart?.(e)
           },
-          onFinish: (e) => {
+          onFinish: e => {
             setLoaded(true)
             setFetching(false)
             reloadParams.onFinish?.(e)

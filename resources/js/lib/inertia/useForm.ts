@@ -17,7 +17,14 @@ import { trackStore } from '@solid-primitives/deep'
 import { cloneDeep, isEqual, omit, toMerged } from 'es-toolkit'
 import { get, set } from 'es-toolkit/compat'
 import { batch, createMemo, createSignal } from 'solid-js'
-import { type SetStoreFunction, type Store, createStore, produce, reconcile, unwrap } from 'solid-js/store'
+import {
+  type SetStoreFunction,
+  type Store,
+  createStore,
+  produce,
+  reconcile,
+  unwrap,
+} from 'solid-js/store'
 import { isServer } from 'solid-js/web'
 import useRemember from './useRemember'
 
@@ -60,7 +67,9 @@ export interface InertiaFormProps<TForm extends Record<string, FormDataConvertib
   cancel(): void
 }
 
-function cloneStore<TStore extends Store<Record<string, FormDataConvertible>>>(store: TStore): TStore {
+function cloneStore<TStore extends Store<Record<string, FormDataConvertible>>>(
+  store: TStore,
+): TStore {
   return cloneDeep(unwrap(store))
 }
 
@@ -79,7 +88,9 @@ function createRememberStore<TValue extends object>(
   const [store, setStore] = createStore<TValue>(restored ?? value)
 
   // @ts-ignore - We know this is safe, but TS can't infer the complex overloads
-  const setStoreTrap: SetStoreFunction<TValue> = (...args: Parameters<SetStoreFunction<TValue>>) => {
+  const setStoreTrap: SetStoreFunction<TValue> = (
+    ...args: Parameters<SetStoreFunction<TValue>>
+  ) => {
     // @ts-ignore - We know this is safe, but TS can't infer the complex overloads
     setStore(...args)
 
@@ -91,7 +102,9 @@ function createRememberStore<TValue extends object>(
   return [store, setStoreTrap]
 }
 
-export default function useForm<TForm extends FormDataType<TForm>>(initialValues?: TForm): InertiaFormProps<TForm>
+export default function useForm<TForm extends FormDataType<TForm>>(
+  initialValues?: TForm,
+): InertiaFormProps<TForm>
 export default function useForm<TForm extends FormDataType<TForm>>(
   rememberKey: string,
   initialValues?: TForm,
@@ -100,10 +113,13 @@ export default function useForm<TForm extends FormDataType<TForm>>(
   rememberKeyOrInitialValues?: string | TForm,
   maybeInitialValues?: TForm,
 ): InertiaFormProps<TForm> {
-  const rememberKey = typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : undefined
+  const rememberKey =
+    typeof rememberKeyOrInitialValues === 'string' ? rememberKeyOrInitialValues : undefined
 
   const [defaults, setDefaults] = createStore<TForm>(
-    typeof rememberKeyOrInitialValues === 'string' ? maybeInitialValues : rememberKeyOrInitialValues,
+    typeof rememberKeyOrInitialValues === 'string'
+      ? maybeInitialValues
+      : rememberKeyOrInitialValues,
   )
 
   const [data, setData] = createRememberStore<TForm>(cloneStore(defaults), rememberKey, 'data')
@@ -123,14 +139,15 @@ export default function useForm<TForm extends FormDataType<TForm>>(
 
   let cancelToken = null
   let recentlySuccessfulTimeoutId = null
-  let transform: TransformCallback<TForm> = (data) => data
+  let transform: TransformCallback<TForm> = data => data
 
   // Track if defaults was called manually during onSuccess to avoid
   // overriding user's custom defaults with automatic behavior.
   let defaultsCalledInOnSuccess = false
 
   const [processing, setProcessing] = createSignal<boolean>(false)
-  const [progress, setProgress] = createSignal<GlobalEventsMap['progress']['parameters'][0]>(undefined)
+  const [progress, setProgress] =
+    createSignal<GlobalEventsMap['progress']['parameters'][0]>(undefined)
   const [wasSuccessful, setWasSuccessful] = createSignal<boolean>(false)
   const [recentlySuccessful, setRecentlySuccessful] = createSignal<boolean>(false)
 
@@ -150,7 +167,7 @@ export default function useForm<TForm extends FormDataType<TForm>>(
         setDefaults(reconcile(cloneStore(data)))
       } else {
         setDefaults(
-          produce((defaults) => {
+          produce(defaults => {
             if (typeof fieldOrFields === 'string') {
               // Allows for dot-notation key assignment
               set(defaults, fieldOrFields, maybeValue)
@@ -171,7 +188,7 @@ export default function useForm<TForm extends FormDataType<TForm>>(
         setData(reconcile(_defaults))
       } else {
         setData(
-          produce((data) => {
+          produce(data => {
             for (const field of fields) {
               set(data, field, get(_defaults, field, undefined))
             }
@@ -190,7 +207,7 @@ export default function useForm<TForm extends FormDataType<TForm>>(
     },
     setError(fieldOrFields: FormDataKeys<TForm> | FormDataErrors<TForm>, maybeValue?: ErrorValue) {
       setErrors(
-        (errors) =>
+        errors =>
           toMerged(
             errors,
             typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : fieldOrFields,
@@ -204,7 +221,7 @@ export default function useForm<TForm extends FormDataType<TForm>>(
         setErrors(() => ({}) as FormDataErrors<TForm>)
       } else {
         // @ts-ignore TypeScript complains that the expected return type is wrapped with an Omit<> 🤦‍♂️
-        setErrors((errors) => omit(errors, fields) as FormDataErrors<TForm>)
+        setErrors(errors => omit(errors, fields) as FormDataErrors<TForm>)
       }
 
       return this

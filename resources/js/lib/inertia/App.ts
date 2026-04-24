@@ -99,9 +99,10 @@ export default function App(props: ParentProps<InertiaAppProps>) {
   if (!isServer) {
     createEffect(() => {
       const title = current.component?.title
-      const pageTitle = typeof title === 'function'
-        ? title(current.page.props)
-        : title || resolvePageTitle(current.page.component)
+      const pageTitle =
+        typeof title === 'function'
+          ? title(current.page.props)
+          : title || resolvePageTitle(current.page.component)
 
       document.title = formatPageTitle(pageTitle)
     })

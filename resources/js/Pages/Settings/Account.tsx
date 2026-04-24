@@ -35,18 +35,18 @@ export default function AccountSettings() {
       <div class="divide-y divide-grey-200">
         <div class="py-10">
           <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-grey-900 dark:text-white">Danger Zone</h3>
-            <p class="text-base text-grey-700 dark:text-grey-200">
+            <h3 class="text-lg font-medium leading-6 text-white">Danger Zone</h3>
+            <p class="text-base text-grey-700 text-grey-200">
               Once you delete your account, there is no going back.
               <b>This username will not be able to be used again</b>. Please make sure you are
-              certain. Before deleting your account, please export any alias data or information that
-              you wish to retain. For more information on what happens when you delete your account
-              please see this{' '}
+              certain. Before deleting your account, please export any alias data or information
+              that you wish to retain. For more information on what happens when you delete your
+              account please see this{' '}
               <a
                 href="https://vovamail.xyz/faq/#what-happens-when-i-delete-my-account"
                 rel="nofollow noopener noreferrer"
                 target="_blank"
-                class="text-secondary cursor-pointer dark:text-indigo-400"
+                class="text-secondary cursor-pointer text-indigo-400"
               >
                 FAQ item
               </a>
@@ -59,25 +59,31 @@ export default function AccountSettings() {
                 <div>
                   <label
                     for="current-password-delete"
-                    class="block text-sm font-medium leading-6 text-grey-600 dark:text-white"
+                    class="block text-sm font-medium leading-6 text-grey-600 text-white"
                   >
                     Enter your password to confirm
                   </label>
                   <div class="relative mt-2">
                     <input
                       value={deleteAccountForm.data.password}
-                      onInput={(e) => deleteAccountForm.setData('password', e.currentTarget.value)}
+                      onInput={e => deleteAccountForm.setData('password', e.currentTarget.value)}
                       type="password"
                       name="password"
                       id="current-password-delete"
-                      class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 dark:bg-white/5 dark:text-white"
+                      class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white"
                       classList={{
-                        'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500': !!deleteAccountForm.errors.password,
-                        'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary': !deleteAccountForm.errors.password,
+                        'text-red-900 ring-red-300 placeholder:text-red-300 focus:ring-red-500':
+                          !!deleteAccountForm.errors.password,
+                        'text-grey-900 ring-grey-300 placeholder:text-grey-400 focus:ring-primary':
+                          !deleteAccountForm.errors.password,
                       }}
                       placeholder="********"
                       aria-invalid={deleteAccountForm.errors.password ? 'true' : undefined}
-                      aria-describedby={deleteAccountForm.errors.password ? 'current-password-delete-error' : undefined}
+                      aria-describedby={
+                        deleteAccountForm.errors.password
+                          ? 'current-password-delete-error'
+                          : undefined
+                      }
                     />
                   </div>
                   {deleteAccountForm.errors.password && (
@@ -104,7 +110,7 @@ export default function AccountSettings() {
         onOpenChange={setDeleteAccountModalOpen}
         title="Delete Account"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Are you sure you want to <b>permanently</b> delete your account and any aliases you've
           created?
         </p>
@@ -120,7 +126,7 @@ export default function AccountSettings() {
           </button>
           <button
             onClick={() => setDeleteAccountModalOpen(false)}
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded"
           >
             Cancel
           </button>

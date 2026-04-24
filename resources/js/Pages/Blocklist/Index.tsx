@@ -49,9 +49,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
   const [bulkAddText, setBulkAddText] = createSignal('')
   const [bulkAddError, setBulkAddError] = createSignal<string | null>(null)
 
-  const selectedRows = createMemo(() =>
-    rows().filter((row) => selectedRowIds().includes(row.id)),
-  )
+  const selectedRows = createMemo(() => rows().filter(row => selectedRowIds().includes(row.id)))
 
   const indeterminate = createMemo(
     () => selectedRowIds().length > 0 && selectedRowIds().length < rows().length,
@@ -62,7 +60,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
     if (!text) return []
     return text
       .split(/\r?\n/)
-      .map((line) => line.trim())
+      .map(line => line.trim())
       .filter(Boolean)
       .slice(0, 50)
   })
@@ -87,7 +85,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
 
   const toggleSort = (field: string) => {
     if (sortField() === field) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
+      setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
     } else {
       setSortField(field)
       setSortDir('desc')
@@ -98,9 +96,13 @@ export default function BlocklistIndex(props: BlocklistProps) {
     setAddFormErrors({})
     setAddFormLoading(true)
     http
-      .post('/api/v1/blocklist', { type: addFormType(), value: addFormValue() }, { withCredentials: true })
+      .post(
+        '/api/v1/blocklist',
+        { type: addFormType(), value: addFormValue() },
+        { withCredentials: true },
+      )
       .then((data: any) => {
-        setRows((prev) => [...prev, data.data])
+        setRows(prev => [...prev, data.data])
         setAddFormValue('')
         successMessage('New entry added')
       })
@@ -135,8 +137,8 @@ export default function BlocklistIndex(props: BlocklistProps) {
     http
       .delete(`/api/v1/blocklist/${id}`, { withCredentials: true })
       .then(() => {
-        setRows((prev) => prev.filter((row) => row.id !== id))
-        setSelectedRowIds((prev) => prev.filter((sid) => sid !== id))
+        setRows(prev => prev.filter(row => row.id !== id))
+        setSelectedRowIds(prev => prev.filter(sid => sid !== id))
         closeDeleteModal()
       })
       .catch(() => {
@@ -153,7 +155,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
     http
       .post('/api/v1/blocklist/delete/bulk', { ids }, { withCredentials: true })
       .then((data: any) => {
-        setRows((prev) => prev.filter((row) => !ids.includes(row.id)))
+        setRows(prev => prev.filter(row => !ids.includes(row.id)))
         setSelectedRowIds([])
         setBulkDeleteModalOpen(false)
         successMessage(data.message)
@@ -194,7 +196,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
       )
       .then((data: any) => {
         const created = data.data || []
-        setRows((prev) => [...created, ...prev])
+        setRows(prev => [...created, ...prev])
         closeBulkAddModal()
         successMessage(data.message)
       })
@@ -204,9 +206,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
         } else if (error.response?.status === 422 && error.response?.data?.errors) {
           const errors = error.response?.data?.errors ?? {}
           setBulkAddError(
-            (Object.values(errors) as string[][])
-              .flat()
-              .filter(Boolean)[0] ?? 'Validation failed.',
+            (Object.values(errors) as string[][]).flat().filter(Boolean)[0] ?? 'Validation failed.',
           )
         } else {
           setBulkAddError('An error occurred. Please try again.')
@@ -243,17 +243,17 @@ export default function BlocklistIndex(props: BlocklistProps) {
 
       <div class="sm:flex sm:items-center mb-6">
         <div class="sm:flex-auto">
-          <h1 class="text-2xl font-semibold text-grey-900 dark:text-white">Blocklist</h1>
-          <p class="mt-2 text-sm text-grey-700 dark:text-grey-200">
+          <h1 class="text-2xl font-semibold text-white">Blocklist</h1>
+          <p class="mt-2 text-sm text-grey-700 text-grey-200">
             Blocked senders and domains
             {props.search ? ' found for your search' : ' - these entries cannot reach your aliases'}
           </p>
         </div>
       </div>
 
-      <div class="mb-6 p-4 bg-white dark:bg-grey-900 rounded-lg shadow">
+      <div class="mb-6 p-4 bg-surface rounded-lg">
         <div class="flex items-center justify-between mb-3">
-          <h2 class="text-sm font-medium text-grey-900 dark:text-white">Add to blocklist</h2>
+          <h2 class="text-sm font-medium text-white">Add to blocklist</h2>
           <button
             type="button"
             class="text-sm font-medium text-secondary hover:text-secondary/80 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-secondary"
@@ -264,7 +264,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
         </div>
         <form
           class="flex flex-wrap items-end gap-4"
-          onSubmit={(e) => {
+          onSubmit={e => {
             e.preventDefault()
             submitAddForm()
           }}
@@ -272,20 +272,20 @@ export default function BlocklistIndex(props: BlocklistProps) {
           <div class="flex-shrink-0">
             <label
               for="blocklist-type"
-              class="block text-sm font-medium text-grey-700 dark:text-grey-200 mb-1"
+              class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
             >
               Type
             </label>
             <select
               id="blocklist-type"
               value={addFormType()}
-              onChange={(e) => setAddFormType(e.currentTarget.value)}
-              class="rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+              onChange={e => setAddFormType(e.currentTarget.value)}
+              class="rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
             >
-              <option value="email" class="dark:bg-grey-900">
+              <option value="email" class="bg-surface">
                 Email
               </option>
-              <option value="domain" class="dark:bg-grey-900">
+              <option value="domain" class="bg-surface">
                 Domain
               </option>
             </select>
@@ -298,19 +298,19 @@ export default function BlocklistIndex(props: BlocklistProps) {
           <div class="min-w-[200px] flex-1">
             <label
               for="blocklist-value"
-              class="block text-sm font-medium text-grey-700 dark:text-grey-200 mb-1"
+              class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
             >
               {addFormType() === 'email' ? 'Email address' : 'Domain'}
             </label>
             <input
               id="blocklist-value"
               value={addFormValue()}
-              onInput={(e) => setAddFormValue(e.currentTarget.value)}
+              onInput={e => setAddFormValue(e.currentTarget.value)}
               type="text"
               placeholder={
                 addFormType() === 'email' ? 'e.g. sender@example.com' : 'e.g. example.com'
               }
-              class="block w-full rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+              class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
             />
             <div class="mt-1 min-h-[1.25rem]">
               <Show when={addFormErrors().value}>
@@ -344,28 +344,26 @@ export default function BlocklistIndex(props: BlocklistProps) {
             when={props.search}
             fallback={
               <div class="text-center py-12">
-                <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-                <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">
-                  No blocklist entries
-                </h3>
-                <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+                <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+                <h3 class="mt-2 text-lg font-medium text-white">No blocklist entries</h3>
+                <p class="mt-1 text-md text-grey-500 text-grey-200">
                   Add an email address or domain above to block it from reaching your aliases.
                 </p>
               </div>
             }
           >
             <div class="text-center py-12">
-              <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 dark:text-grey-200" />
-              <h3 class="mt-2 text-lg font-medium text-grey-900 dark:text-white">
+              <Icon name="no-symbol" class="mx-auto h-16 w-16 text-grey-400 text-grey-200" />
+              <h3 class="mt-2 text-lg font-medium text-white">
                 No blocklist entries found for that search
               </h3>
-              <p class="mt-1 text-md text-grey-500 dark:text-grey-200">
+              <p class="mt-1 text-md text-grey-500 text-grey-200">
                 Try entering a different search term.
               </p>
               <div class="mt-6">
                 <Link
                   href={(window as any).route('blocklist.index')}
-                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium shadow-sm focus:outline-none"
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-cyan-900 px-4 py-2 text-sm font-medium-sm focus:outline-none"
                 >
                   View all blocklist entries
                 </Link>
@@ -378,12 +376,12 @@ export default function BlocklistIndex(props: BlocklistProps) {
           <Show when={selectedRowIds().length > 0}>
             <div
               id="bulk-actions"
-              class="absolute px-0.5 top-0 left-12 flex flex-nowrap h-12 items-center space-x-3 bg-gradient-to-r from-white dark:from-grey-900 z-10 overflow-x-auto"
+              class="absolute px-0.5 top-0 left-12 flex flex-nowrap h-12 items-center space-x-3 bg-gradient-to-r from-white from-surface z-10 overflow-x-auto"
               style={{ width: 'calc(100% - 3rem)' }}
             >
               <button
                 type="button"
-                class="ml-1 inline-flex items-center rounded border border-grey-300 bg-white px-2.5 py-1.5 text-xs font-medium text-grey-700 shadow-sm hover:bg-grey-50 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 dark:border-grey-600 dark:bg-grey-800 dark:text-grey-200 dark:hover:bg-grey-700"
+                class="ml-1 inline-flex items-center rounded border border-grey-300 bg-surface px-2.5 py-1.5 text-xs font-medium text-grey-700-sm hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-30 border-border-subtle bg-surface text-grey-200 hover:bg-white/5"
                 disabled={bulkDeleteLoading()}
                 onClick={() => {
                   if (selectedRowIds().length === 1) {
@@ -398,30 +396,26 @@ export default function BlocklistIndex(props: BlocklistProps) {
                   <Loader />
                 </Show>
               </button>
-              <span class="font-semibold text-secondary hidden md:inline-block dark:text-indigo-400">
-                {selectedRowIds().length === 1
-                  ? '1 entry'
-                  : `${selectedRowIds().length} entries`}
+              <span class="font-semibold text-secondary hidden md:inline-block text-indigo-400">
+                {selectedRowIds().length === 1 ? '1 entry' : `${selectedRowIds().length} entries`}
               </span>
             </div>
           </Show>
 
           <div class="overflow-x-auto">
             <table class="min-w-full">
-              <thead class="border-b border-grey-100 text-grey-400 dark:text-grey-200 dark:border-grey-300">
+              <thead class="border-b border-grey-100 text-grey-400 text-grey-200 border-border-subtle">
                 <tr>
                   <th scope="col" class="p-3 w-10">
                     <input
                       type="checkbox"
-                      class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary dark:text-indigo-400 dark:bg-grey-950"
+                      class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary text-indigo-400 bg-surface"
                       checked={indeterminate() || selectedRowIds().length === rows().length}
-                      ref={(el) => {
+                      ref={el => {
                         ;(el as any).indeterminate = indeterminate()
                       }}
-                      onChange={(e) => {
-                        setSelectedRowIds(
-                          e.currentTarget.checked ? rows().map((r) => r.id) : [],
-                        )
+                      onChange={e => {
+                        setSelectedRowIds(e.currentTarget.checked ? rows().map(r => r.id) : [])
                       }}
                     />
                   </th>
@@ -431,9 +425,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
                     onClick={() => toggleSort('value')}
                   >
                     Value {sortField() === 'value' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                    <span
-                      class={selectedRowIds().length > 0 ? 'blur-sm' : ''}
-                    />
+                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''} />
                   </th>
                   <th
                     scope="col"
@@ -441,9 +433,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
                     onClick={() => toggleSort('type')}
                   >
                     Type {sortField() === 'type' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
-                    <span
-                      class={selectedRowIds().length > 0 ? 'blur-sm' : ''}
-                    />
+                    <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''} />
                   </th>
                   <th scope="col" class="p-3 text-left">
                     <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''}>
@@ -460,7 +450,8 @@ export default function BlocklistIndex(props: BlocklistProps) {
                     onClick={() => toggleSort('created_at')}
                   >
                     <span class={selectedRowIds().length > 0 ? 'blur-sm' : ''}>
-                      Created {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
+                      Created{' '}
+                      {sortField() === 'created_at' ? (sortDir() === 'asc' ? '↑' : '↓') : ''}
                     </span>
                   </th>
                   <th scope="col" class="p-3" />
@@ -468,12 +459,10 @@ export default function BlocklistIndex(props: BlocklistProps) {
               </thead>
               <tbody>
                 <For each={sortedRows()}>
-                  {(row) => (
+                  {row => (
                     <tr
-                      class={`border-b border-grey-100 dark:border-grey-300 ${
-                        selectedRowIds().includes(row.id)
-                          ? 'bg-grey-50 dark:bg-grey-950'
-                          : ''
+                      class={`border-b border-grey-100 border-border-subtle ${
+                        selectedRowIds().includes(row.id) ? 'bg-white/5 bg-surface' : ''
                       }`}
                     >
                       <td class="p-3 relative">
@@ -482,20 +471,20 @@ export default function BlocklistIndex(props: BlocklistProps) {
                         </Show>
                         <input
                           type="checkbox"
-                          class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary dark:text-indigo-400 dark:bg-grey-950"
+                          class="h-4 w-4 rounded border-grey-300 text-secondary focus:ring-primary text-indigo-400 bg-surface"
                           checked={selectedRowIds().includes(row.id)}
-                          onChange={(e) => {
+                          onChange={e => {
                             if (e.currentTarget.checked) {
-                              setSelectedRowIds((prev) => [...prev, row.id])
+                              setSelectedRowIds(prev => [...prev, row.id])
                             } else {
-                              setSelectedRowIds((prev) => prev.filter((id) => id !== row.id))
+                              setSelectedRowIds(prev => prev.filter(id => id !== row.id))
                             }
                           }}
                         />
                       </td>
                       <td class="p-3">
                         <span
-                          class="cursor-pointer text-sm font-medium text-grey-700 dark:text-grey-200"
+                          class="cursor-pointer text-sm font-medium text-grey-700 text-grey-200"
                           onClick={() => clipboard(row.value)}
                           title="Click to copy"
                         >
@@ -503,7 +492,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
                         </span>
                       </td>
                       <td class="p-3">
-                        <span class="text-sm text-grey-500 dark:text-grey-300">
+                        <span class="text-sm text-grey-500 text-grey-300">
                           {row.type === 'email' ? 'Email' : 'Domain'}
                         </span>
                       </td>
@@ -511,13 +500,11 @@ export default function BlocklistIndex(props: BlocklistProps) {
                         <Show
                           when={row.last_blocked}
                           fallback={
-                            <span class="dark:text-grey-300">
-                              {row.blocked.toLocaleString()}{' '}
-                            </span>
+                            <span class="text-grey-300">{row.blocked.toLocaleString()} </span>
                           }
                         >
                           <span
-                            class="font-semibold text-secondary dark:text-indigo-400"
+                            class="font-semibold text-secondary text-indigo-400"
                             title={`${filters.timeAgo(row.last_blocked!)} (${filters.formatDate(row.last_blocked!)})`}
                           >
                             {row.blocked.toLocaleString()}
@@ -526,7 +513,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
                       </td>
                       <td class="p-3">
                         <span
-                          class="cursor-default text-sm text-grey-500 dark:text-grey-300"
+                          class="cursor-default text-sm text-grey-500 text-grey-300"
                           title={filters.formatDate(row.created_at)}
                         >
                           {filters.timeAgo(row.created_at)}
@@ -535,7 +522,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
                       <td class="p-3 text-right">
                         <button
                           type="button"
-                          class="text-secondary hover:text-secondary/80 dark:text-indigo-400 dark:hover:text-indigo-500 font-medium"
+                          class="text-secondary hover:text-secondary/80 text-indigo-400 hover:text-indigo-300 font-medium"
                           onClick={() => openDeleteModal(row.id)}
                         >
                           Delete
@@ -552,12 +539,12 @@ export default function BlocklistIndex(props: BlocklistProps) {
 
       <Modal
         open={deleteModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) closeDeleteModal()
         }}
         title="Remove from blocklist"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
+        <p class="mt-4 text-grey-700 text-grey-200">
           Are you sure you want to remove this entry from your blocklist? The sender or domain will
           be able to reach your aliases again.
         </p>
@@ -574,7 +561,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </Show>
           </button>
           <button
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             onClick={closeDeleteModal}
           >
             Cancel
@@ -587,10 +574,9 @@ export default function BlocklistIndex(props: BlocklistProps) {
         onOpenChange={setBulkDeleteModalOpen}
         title="Remove from blocklist"
       >
-        <p class="mt-4 text-grey-700 dark:text-grey-200">
-          Are you sure you want to remove these{' '}
-          <b>{selectedRows().length}</b> entries from your blocklist? The senders or domains will be
-          able to reach your aliases again.
+        <p class="mt-4 text-grey-700 text-grey-200">
+          Are you sure you want to remove these <b>{selectedRows().length}</b> entries from your
+          blocklist? The senders or domains will be able to reach your aliases again.
         </p>
         <div class="mt-6 flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
           <button
@@ -605,7 +591,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
             </Show>
           </button>
           <button
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             onClick={() => setBulkDeleteModalOpen(false)}
           >
             Cancel
@@ -615,33 +601,32 @@ export default function BlocklistIndex(props: BlocklistProps) {
 
       <Modal
         open={bulkAddModalOpen()}
-        onOpenChange={(open) => {
+        onOpenChange={open => {
           if (!open) closeBulkAddModal()
         }}
         title="Bulk add to blocklist"
       >
-        <p class="mt-2 text-sm text-grey-600 dark:text-grey-300">
-          Enter one{' '}
-          {bulkAddType() === 'email' ? 'email address' : 'domain'} per line. Duplicates and entries
-          already on your blocklist will be skipped. Maximum 50 entries.
+        <p class="mt-2 text-sm text-grey-600 text-grey-300">
+          Enter one {bulkAddType() === 'email' ? 'email address' : 'domain'} per line. Duplicates
+          and entries already on your blocklist will be skipped. Maximum 50 entries.
         </p>
         <div class="mt-4">
           <label
             for="bulk-add-type"
-            class="block text-sm font-medium text-grey-700 dark:text-grey-200 mb-1"
+            class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
           >
             Type
           </label>
           <select
             id="bulk-add-type"
             value={bulkAddType()}
-            onChange={(e) => setBulkAddType(e.currentTarget.value)}
-            class="rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm"
+            onChange={e => setBulkAddType(e.currentTarget.value)}
+            class="rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm"
           >
-            <option value="email" class="dark:bg-grey-900">
+            <option value="email" class="bg-surface">
               Email
             </option>
-            <option value="domain" class="dark:bg-grey-900">
+            <option value="domain" class="bg-surface">
               Domain
             </option>
           </select>
@@ -649,16 +634,16 @@ export default function BlocklistIndex(props: BlocklistProps) {
         <div class="mt-4">
           <label
             for="bulk-add-values"
-            class="block text-sm font-medium text-grey-700 dark:text-grey-200 mb-1"
+            class="block text-sm font-medium text-grey-700 text-grey-200 mb-1"
           >
             Entries
           </label>
           <textarea
             id="bulk-add-values"
             value={bulkAddText()}
-            onInput={(e) => setBulkAddText(e.currentTarget.value)}
+            onInput={e => setBulkAddText(e.currentTarget.value)}
             rows={8}
-            class="block w-full rounded-md border-grey-300 dark:border-grey-600 dark:bg-white/5 dark:text-white shadow-sm focus:border-secondary focus:ring-secondary sm:text-sm font-mono"
+            class="block w-full rounded-md border-border-subtle bg-white/5 text-white-sm focus:border-secondary focus:ring-secondary sm:text-sm font-mono"
             placeholder={
               bulkAddType() === 'email'
                 ? 'spam@example.com\nnewsletter@company.com'
@@ -683,7 +668,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
           </button>
           <button
             type="button"
-            class="px-4 py-3 text-grey-800 font-semibold bg-white hover:bg-grey-50 dark:text-grey-100 dark:hover:bg-grey-700 dark:bg-grey-600 dark:border-grey-700 border border-grey-100 rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+            class="px-4 py-3 text-grey-800 font-semibold bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             onClick={closeBulkAddModal}
           >
             Cancel

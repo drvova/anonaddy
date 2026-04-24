@@ -138,12 +138,12 @@ export default function Link<T extends ValidComponent = 'a'>(_props: InertiaLink
     onCancelToken: props.onCancelToken ?? noop,
     onBefore: props.onBefore ?? noop,
     onStart(visit: PendingVisit) {
-      setInFlightCount((count) => count + 1)
+      setInFlightCount(count => count + 1)
       props.onStart?.(visit)
     },
     onProgress: props.onProgress ?? noop,
     onFinish(visit: ActiveVisit) {
-      setInFlightCount((count) => count - 1)
+      setInFlightCount(count => count - 1)
       props.onFinish?.(visit)
     },
     onCancel: props.onCancel ?? noop,

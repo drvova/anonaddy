@@ -101,7 +101,9 @@ export default function Form(_props: FormProps) {
     return formDataToObject(getFormData())
   }
 
-  const method = createMemo(() => (isUrlMethodPair(props.action) ? props.action.method : (props.method as Method)))
+  const method = createMemo(() =>
+    isUrlMethodPair(props.action) ? props.action.method : (props.method as Method),
+  )
 
   // Can't use computed because FormData is not reactive
   const [isDirty, setIsDirty] = createSignal(false)
@@ -119,16 +121,18 @@ export default function Form(_props: FormProps) {
     // If the form is reset, we set isDirty to false as we already know it's back
     // to defaults. Also, the fields are updated after the reset event, so the
     // comparison will be incorrect unless we use the nextTick / setTimeout.
-    setIsDirty(event.type === 'reset' ? false : !isEqual(getData(), formDataToObject(defaultData())))
+    setIsDirty(
+      event.type === 'reset' ? false : !isEqual(getData(), formDataToObject(defaultData())),
+    )
   }
 
   onMount(() => {
     setDefaultData(getFormData())
-    formEvents.forEach((e) => formElement.addEventListener(e, onFormUpdate))
+    formEvents.forEach(e => formElement.addEventListener(e, onFormUpdate))
   })
 
   onCleanup(() => {
-    formEvents.forEach((e) => formElement?.removeEventListener(e, onFormUpdate))
+    formEvents.forEach(e => formElement?.removeEventListener(e, onFormUpdate))
   })
 
   function reset(...fields: string[]) {
@@ -212,7 +216,9 @@ export default function Form(_props: FormProps) {
     clearErrors: (...fields: string[]) => form.clearErrors(...fields),
     resetAndClearErrors,
     setError: (fieldOrFields: string | Errors, maybeValue?: ErrorValue) =>
-      form.setError(typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : fieldOrFields),
+      form.setError(
+        typeof fieldOrFields === 'string' ? { [fieldOrFields]: maybeValue } : fieldOrFields,
+      ),
     get isDirty() {
       return isDirty()
     },

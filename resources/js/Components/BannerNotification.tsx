@@ -7,9 +7,21 @@ interface BannerNotificationProps {
 }
 
 const colourMap = {
-  info: { bg: 'bg-yellow-900/80 border-yellow-600', icon: 'info' as const, iconColour: 'text-yellow-400' },
-  error: { bg: 'bg-red-900/80 border-red-600', icon: 'close-circle' as const, iconColour: 'text-red-400' },
-  success: { bg: 'bg-green-900/80 border-green-600', icon: 'check-circle' as const, iconColour: 'text-green-400' },
+  info: {
+    bg: 'bg-yellow-900/80 border-yellow-600',
+    icon: 'info' as const,
+    iconColour: 'text-yellow-400',
+  },
+  error: {
+    bg: 'bg-red-900/80 border-red-600',
+    icon: 'close-circle' as const,
+    iconColour: 'text-red-400',
+  },
+  success: {
+    bg: 'bg-green-900/80 border-green-600',
+    icon: 'check-circle' as const,
+    iconColour: 'text-green-400',
+  },
 }
 
 export default function BannerNotification(props: BannerNotificationProps) {

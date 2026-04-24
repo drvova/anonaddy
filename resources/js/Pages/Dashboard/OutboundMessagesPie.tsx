@@ -39,5 +39,5 @@ export default function OutboundMessagesPie(props: OutboundMessagesPieProps) {
     onCleanup(() => chart.destroy())
   })
 
-  return <canvas ref={canvasRef} style={{ "max-height": '350px' }} />
+  return <canvas ref={canvasRef} style={{ 'max-height': '350px' }} />
 }

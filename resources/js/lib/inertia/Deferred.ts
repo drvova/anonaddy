@@ -22,7 +22,7 @@ export default function Deferred(props: DeferredProps) {
   return createComponent(Show, {
     keyed: undefined,
     get when() {
-      return keys().every((key) => page.props[key] !== undefined)
+      return keys().every(key => page.props[key] !== undefined)
     },
     get children() {
       return props.children

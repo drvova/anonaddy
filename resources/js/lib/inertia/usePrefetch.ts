@@ -10,24 +10,28 @@ interface InertiaUsePrefetchProps {
 }
 
 export default function usePrefetch(options: VisitOptions = {}): InertiaUsePrefetchProps {
-  const cached = typeof window === 'undefined' ? null : router.getCached(window.location.pathname, options)
-  const inFlight = typeof window === 'undefined' ? null : router.getPrefetching(window.location.pathname, options)
+  const cached =
+    typeof window === 'undefined' ? null : router.getCached(window.location.pathname, options)
+  const inFlight =
+    typeof window === 'undefined' ? null : router.getPrefetching(window.location.pathname, options)
 
   const [isPrefetching, setPrefetching] = createSignal<boolean>(inFlight !== null)
   const [isPrefetched, setPrefetched] = createSignal<boolean>(cached !== null)
-  const [lastUpdatedAt, setLastUpdatedAt] = createSignal<number | null>(cached?.staleTimestamp || null)
+  const [lastUpdatedAt, setLastUpdatedAt] = createSignal<number | null>(
+    cached?.staleTimestamp || null,
+  )
 
   let cleanupPrefetchingListener: () => void
   let cleanupPrefetchedListener: () => void
 
   onMount(() => {
-    cleanupPrefetchingListener = router.on('prefetching', (e) => {
+    cleanupPrefetchingListener = router.on('prefetching', e => {
       if (e.detail.visit.url.pathname === window.location.pathname) {
         setPrefetching(true)
       }
     })
 
-    cleanupPrefetchedListener = router.on('prefetched', (e) => {
+    cleanupPrefetchedListener = router.on('prefetched', e => {
       if (e.detail.visit.url.pathname === window.location.pathname) {
         batch(() => {
           setPrefetching(false)

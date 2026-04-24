@@ -1,6 +1,12 @@
 import { type Page, type PageResolver, config, router, setupProgress } from '@inertiajs/core'
 import { createComponent } from 'solid-js'
-import { createDynamic, generateHydrationScript, getAssets, isServer, renderToString } from 'solid-js/web'
+import {
+  createDynamic,
+  generateHydrationScript,
+  getAssets,
+  isServer,
+  renderToString,
+} from 'solid-js/web'
 import App, { type InertiaAppProps } from './App'
 
 type CreateInertiaBaseOptions = {
@@ -29,8 +35,12 @@ type CreateInertiaSSROptions = CreateInertiaBaseOptions & {
 }
 export type CreateInertiaSSRReturnType = { head: string[]; body: string }
 
-export default async function createInertiaApp(options: CreateInertiaCSROptions): Promise<CreateInertiaCSRReturnType>
-export default async function createInertiaApp(options: CreateInertiaSSROptions): Promise<CreateInertiaSSRReturnType>
+export default async function createInertiaApp(
+  options: CreateInertiaCSROptions,
+): Promise<CreateInertiaCSRReturnType>
+export default async function createInertiaApp(
+  options: CreateInertiaSSROptions,
+): Promise<CreateInertiaSSRReturnType>
 export default async function createInertiaApp({
   id = 'app',
   page = undefined,
@@ -46,7 +56,8 @@ export default async function createInertiaApp({
   const el = isServer ? null : document.getElementById(id)
   const initialPage = page || getInitialPage(id, el)
   // @ts-expect-error
-  const resolveComponent = (name) => Promise.resolve(resolve(name)).then((module) => module.default || module)
+  const resolveComponent = name =>
+    Promise.resolve(resolve(name)).then(module => module.default || module)
 
   const props: InertiaAppProps = {
     initialPage,
@@ -94,9 +105,7 @@ function getInitialPage(id: string, el: HTMLElement | null): Page {
     return JSON.parse(elementPayload)
   }
 
-  const scriptPayload = document
-    .querySelector(`script[data-page="${id}"]`)
-    ?.textContent?.trim()
+  const scriptPayload = document.querySelector(`script[data-page="${id}"]`)?.textContent?.trim()
 
   if (scriptPayload) {
     return JSON.parse(scriptPayload)

@@ -15,7 +15,7 @@ export default function FlashNotification() {
 
   return (
     <Show when={show() && page.props.flash}>
-      <div class="fixed bottom-4 right-4 z-50 bg-green-900/90 border border-green-600 rounded-lg shadow-lg px-4 py-3 max-w-sm">
+      <div class="fixed bottom-4 right-4 z-50 bg-green-900/90 border border-green-600 rounded-lg-lg px-4 py-3 max-w-sm">
         <div class="flex items-start gap-3">
           <Icon name="check-circle" class="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
           <div class="flex-1">
