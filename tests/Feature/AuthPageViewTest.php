@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use Illuminate\Support\Facades\URL;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
@@ -41,5 +42,15 @@ class AuthPageViewTest extends TestCase
             ->assertSee('<title>VovaMail — Encrypted email aliases</title>', false)
             ->assertSee('/svg/logo.svg')
             ->assertSee('Email aliases with a real kill switch.');
+    }
+
+    #[Test]
+    public function generated_asset_urls_use_https_when_the_app_url_is_secure(): void
+    {
+        $this->get('/')->assertOk();
+
+        $assetUrl = URL::asset('build/assets/app.css');
+
+        $this->assertSame('https', parse_url($assetUrl, PHP_URL_SCHEME));
     }
 }
