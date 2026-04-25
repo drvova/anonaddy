@@ -111,7 +111,7 @@ class CreateUser extends Command
             return 1;
         }
 
-        $this->info('Created user: "'.$user->username.'" with user_id: "'.$user->id.'"');
+        $this->info('Created user: "'.$user->username.'"');
         $this->info('A password reset link has been sent to the user.');
 
         return 0;

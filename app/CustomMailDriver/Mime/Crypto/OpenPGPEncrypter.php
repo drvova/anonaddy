@@ -211,12 +211,8 @@ class OpenPGPEncrypter
             throw new RuntimeException('PHPMailerPGP requires the GnuPG class');
         }
 
-        if (! $this->gnupgHome && isset($_SERVER['HOME'])) {
-            $this->gnupgHome = $_SERVER['HOME'].'/.gnupg';
-        }
-
-        if (! $this->gnupgHome && getenv('HOME')) {
-            $this->gnupgHome = getenv('HOME').'/.gnupg';
+        if (! $this->gnupgHome) {
+            $this->gnupgHome = config('vovamail.gnupg_home', '~/.gnupg');
         }
 
         $this->gnupgHome = $this->normalizeGnuPgHome($this->gnupgHome);
@@ -242,7 +238,7 @@ class OpenPGPEncrypter
         $home = $_SERVER['HOME'] ?? getenv('HOME') ?: null;
 
         if (! $home) {
-            return $path;
+            throw new RuntimeException('GnuPG home directory uses "~/" prefix but HOME environment variable is not set. Please set an absolute path in VOVAMAIL_GNUPG_HOME.');
         }
 
         return $home.substr($path, 1);

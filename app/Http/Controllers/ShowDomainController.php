@@ -38,7 +38,7 @@ class ShowDomainController extends Controller
             'dkimSelector' => config('vovamail.dkim_selector'),
             'mailProvider' => config('mail.mailers.'.config('mail.default').'.transport') === 'zeabur' ? 'zeabur' : 'self-hosted',
             'recipientOptions' => user()->verifiedRecipients()->select(['id', 'email'])->get(),
-            'initialAaVerify' => sha1(config('vovamail.secret').user()->id.user()->domains->count()),
+            'initialAaVerify' => hash('sha256', config('vovamail.secret').user()->id.user()->domains->count()),
             'search' => $validated['search'] ?? null,
         ]);
     }

@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Domain;
 use App\Notifications\DomainMxRecordsInvalid;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class CheckDomainsMxValidation extends Command
 {
@@ -53,7 +54,7 @@ class CheckDomainsMxValidation extends Command
                         $domain->save();
                     }
                 } catch (\Exception $e) {
-                    //
+                    Log::error('MX validation check failed for domain: '.$domain->domain, ['exception' => $e]);
                 }
             });
     }

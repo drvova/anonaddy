@@ -200,7 +200,7 @@ class Domain extends Model
         try {
             return collect(dns_get_record($this->domain.'.', DNS_TXT))
                 ->contains(function ($r) {
-                    return trim($r['txt']) === 'aa-verify='.sha1(config('vovamail.secret').user()->id.user()->domains->count());
+                    return trim($r['txt']) === 'aa-verify='.hash('sha256', config('vovamail.secret').user()->id.user()->domains->count());
                 });
         } catch (Exception $e) {
             Log::info('DNS Get TXT Error:', ['domain' => $this->domain, 'user' => $this->user?->username, 'error' => $e->getMessage()]);

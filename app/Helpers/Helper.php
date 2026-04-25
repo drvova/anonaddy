@@ -75,7 +75,7 @@ function createUser(string $username, string $email, ?string $password = null, b
 
     $twoFactor = app('pragmarx.google2fa');
 
-    $passwordHash = $password === null ? '' : Hash::make($password);
+    $passwordHash = Hash::make($password ?? Str::password(32));
 
     return User::create([
         'id' => $userId,
