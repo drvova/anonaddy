@@ -6,6 +6,8 @@ import Modal from '../../Components/Modal'
 import Loader from '../../Components/Loader'
 import Icon from '../../Components/Icon'
 import Toggle from '../../Components/Toggle'
+import Button from '../../Components/Button'
+import EmptyState from '../../Components/EmptyState'
 import { filters } from '../../app'
 
 interface Recipient {
@@ -411,32 +413,25 @@ export default function RecipientsIndex(props: RecipientsProps) {
             </button>
           </p>
         </div>
-        <button
-          type="button"
-          onClick={openAddRecipientModal}
-          class="inline-flex items-center gap-2 rounded-md bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
-        >
+        <Button onClick={openAddRecipientModal} size="md">
           <Icon name="plus" class="w-4 h-4" />
           Add Recipient
-        </button>
+        </Button>
       </div>
 
       <Show
         when={rows().length > 0}
         fallback={
-          <div class="text-center py-16">
-            <Icon name="inbox" class="mx-auto h-12 w-12 text-grey-500" />
-            <h3 class="mt-4 text-lg font-medium text-white">No recipients found</h3>
-            <p class="mt-1 text-sm text-grey-400">Try a different search or add a new recipient.</p>
-            <div class="mt-6">
-              <Link
-                href={(window as any).route('recipients.index')}
-                class="inline-flex items-center rounded-md bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
-              >
+          <EmptyState
+            icon={<Icon name="inbox" class="h-6 w-6" />}
+            title="No recipients found"
+            description="Try a different search or add a new recipient."
+            action={
+              <Button href={(window as any).route('recipients.index')} variant="secondary" size="sm">
                 View All
-              </Link>
-            </div>
-          </div>
+              </Button>
+            }
+          />
         }
       >
         {/* Column headers */}

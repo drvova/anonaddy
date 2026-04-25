@@ -2,7 +2,9 @@ import { createSignal, createMemo, onMount, Show } from 'solid-js'
 import { Title } from '@solidjs/meta'
 import { Link } from '../../lib/inertia'
 import http from '../../lib/http'
-import Loader from '../../Components/Loader'
+import Card from '../../Components/Card'
+import Badge from '../../Components/Badge'
+import Skeleton from '../../Components/Skeleton'
 import OutboundMessagesGraph from './OutboundMessagesGraph'
 import OutboundMessagesPie from './OutboundMessagesPie'
 
@@ -87,122 +89,130 @@ export default function DashboardIndex(props: DashboardProps) {
     {
       name: 'Deleted',
       stat: parseInt(String(props.totals.deleted)),
-      url: route('aliases.index', { deleted: 'only' }),
+      url: route('aliases.index', { deleted: 'with' }),
     },
   ]
 
-  const emailCounts = [
-    { name: 'Forwarded', stat: parseInt(String(props.totals.forwarded)) },
-    { name: 'Blocked', stat: parseInt(String(props.totals.blocked)) },
-    { name: 'Replies', stat: parseInt(String(props.totals.replies)) },
-    { name: 'Sent', stat: props.totals.sent },
-  ]
-
   return (
-    <div>
+    <>
       <Title>Dashboard</Title>
-      <h1 id="primary-heading" class="sr-only">
-        Dashboard
-      </h1>
 
-      {Number(bandwidthPercentage()) === 100 && (
-        <div class="mb-6 rounded-md bg-yellow-500/10 border border-yellow-500/20 px-4 py-3 text-sm text-yellow-400">
-          Bandwidth limit exceeded for <span class="font-semibold">{props.month}</span>.
-        </div>
-      )}
-
-      {/* Top resource row */}
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border-subtle rounded-md overflow-hidden">
-        {resources.map(item => (
-          <Link
-            href={item.url}
-            class="bg-surface hover:bg-white/[0.03] transition-colors px-4 py-5 text-center group"
-          >
-            <p class="text-2xl font-semibold text-white group-hover:text-primary transition-colors">
-              {item.stat.toLocaleString()}
-            </p>
-            <p class="text-xs text-grey-400 mt-1">{item.name}</p>
-          </Link>
-        ))}
-      </div>
-
-      {/* Bandwidth */}
-      <div class="mt-8">
-        <div class="flex items-center justify-between mb-2">
-          <h2 class="text-sm font-medium text-grey-300">Bandwidth ({props.month})</h2>
-          <span class="text-xs text-grey-400">
-            {props.bandwidthMb} MB / {props.bandwidthLimit} MB
-          </span>
-        </div>
-        <div class="h-2 bg-white/5 rounded-full overflow-hidden">
-          <div
-            class={`h-full rounded-full ${bandwidthColor()} transition-all`}
-            style={{ width: `${bandwidthPercentage()}%` }}
-          />
-        </div>
-      </div>
-
-      {/* Alias & email stats */}
-      <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Alias breakdown */}
-        <div>
-          <h2 class="text-sm font-medium text-grey-300 mb-3">Aliases</h2>
-          <div class="bg-surface rounded-md divide-y divide-border-subtle">
-            {aliasCounts.map(item => (
+      <div class="space-y-6">
+        {/* Top resource row */}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 divide-x divide-border-subtle/30 border border-border-subtle/30 bg-surface">
+          <For each={resources}>
+            {resource => (
               <Link
-                href={item.url}
-                class="flex items-center justify-between px-4 py-3 hover:bg-white/[0.03] transition-colors group"
+                href={resource.url}
+                class="flex flex-col items-center justify-center py-5 px-2 hover:bg-white/[0.02] transition-colors"
               >
-                <span class="text-sm text-grey-400 group-hover:text-white transition-colors">
-                  {item.name}
-                </span>
-                <span class="text-sm font-medium text-white">{item.stat.toLocaleString()}</span>
+                <span class="text-2xl font-semibold text-white">{resource.stat}</span>
+                <span class="text-xs text-grey-500 mt-0.5">{resource.name}</span>
               </Link>
-            ))}
-          </div>
+            )}
+          </For>
         </div>
 
-        {/* Email stats */}
-        <div>
-          <h2 class="text-sm font-medium text-grey-300 mb-3">Activity</h2>
-          <div class="bg-surface rounded-md divide-y divide-border-subtle">
-            {emailCounts.map(item => (
-              <div class="flex items-center justify-between px-4 py-3">
-                <span class="text-sm text-grey-400">{item.name}</span>
-                <span class="text-sm font-medium text-white">{item.stat.toLocaleString()}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
-      {/* Charts */}
-      <div class="mt-8">
-        <h2 class="text-sm font-medium text-grey-300 mb-3 flex items-center gap-2">
-          Outbound Messages (Last 7 Days)
-          <Show when={chartsLoading()}>
-            <Loader />
-          </Show>
-        </h2>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2 bg-surface rounded-md p-4">
-            <OutboundMessagesGraph
-              forwardsData={forwardsData()}
-              repliesData={repliesData()}
-              sendsData={sendsData()}
-              labels={labels()}
+        {/* Bandwidth */}
+        <div class="flex items-center gap-3 text-sm">
+          <span class="text-grey-400 whitespace-nowrap">
+            Bandwidth {props.bandwidthMb.toFixed(2)} / {props.bandwidthLimit} MB
+          </span>
+          <div class="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
+            <div
+              class={`h-full ${bandwidthColor()} transition-all duration-500`}
+              style={{ width: `${bandwidthPercentage()}%` }}
             />
           </div>
-          <div class="bg-surface rounded-md p-4 flex items-center justify-center">
-            <Show
-              when={outboundMessageTotals()}
-              fallback={<span class="text-sm text-grey-400">No data</span>}
-            >
-              {totals => <OutboundMessagesPie totals={totals()} />}
-            </Show>
+          <span class="text-grey-500 text-xs">{bandwidthPercentage()}%</span>
+        </div>
+
+        {/* Two column layout */}
+        <div class="grid lg:grid-cols-3 gap-6">
+          {/* Alias breakdown + Activity stats */}
+          <div class="lg:col-span-1 space-y-6">
+            <Card>
+              <Card.Header title="Aliases" subtitle={props.month} />
+              <Card.Body class="divide-y divide-border-subtle/30">
+                <For each={aliasCounts}>
+                  {item => (
+                    <Link href={item.url} class="flex items-center justify-between py-3 hover:bg-white/[0.02] transition-colors -mx-4 px-4 first:pt-0 last:pb-0">
+                      <span class="text-sm text-grey-400">{item.name}</span>
+                      <span class="text-sm font-medium text-white">{item.stat}</span>
+                    </Link>
+                  )}
+                </For>
+              </Card.Body>
+            </Card>
+
+            <Card>
+              <Card.Header title="Activity" subtitle={props.month} />
+              <Card.Body class="space-y-3">
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-grey-400">Forwarded</span>
+                  <Badge variant="success" size="sm">{props.totals.forwarded}</Badge>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-grey-400">Blocked</span>
+                  <Badge variant="error" size="sm">{props.totals.blocked}</Badge>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-grey-400">Replies</span>
+                  <Badge variant="info" size="sm">{props.totals.replies}</Badge>
+                </div>
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-grey-400">Sent</span>
+                  <Badge variant="primary" size="sm">{props.totals.sent}</Badge>
+                </div>
+              </Card.Body>
+            </Card>
+          </div>
+
+          {/* Charts */}
+          <div class="lg:col-span-2 space-y-6">
+            <Card>
+              <Card.Header title="Email Activity" subtitle={props.month} />
+              <Card.Body>
+                <Show when={chartsLoading()}>
+                  <Skeleton class="h-64 w-full" />
+                </Show>
+                <Show when={!chartsLoading()}>
+                  <OutboundMessagesGraph
+                    forwardsData={forwardsData()}
+                    repliesData={repliesData()}
+                    sendsData={sendsData()}
+                    labels={labels()}
+                  />
+                </Show>
+              </Card.Body>
+            </Card>
+
+            <div class="grid sm:grid-cols-2 gap-6">
+              <Card>
+                <Card.Header title="Outbound Messages" subtitle={props.month} />
+                <Card.Body class="flex items-center justify-center min-h-[200px]">
+                  <Show when={chartsLoading()}>
+                    <Skeleton class="h-40 w-40 rounded-full" />
+                  </Show>
+                  <Show when={!chartsLoading()}>
+                    <OutboundMessagesPie data={outboundMessageTotals()} />
+                  </Show>
+                </Card.Body>
+              </Card>
+
+              <Card>
+                <Card.Header title="Quick Tips" />
+                <Card.Body class="space-y-3 text-sm text-grey-400">
+                  <p>Use aliases to protect your real email address when signing up for services.</p>
+                  <p>Custom domains let you create aliases on your own domain names.</p>
+                  <p>Add rules to automatically sort or block incoming emails.</p>
+                  <p>Enable two-factor authentication in Settings for extra security.</p>
+                </Card.Body>
+              </Card>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   )
 }
