@@ -37,7 +37,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        if (str_starts_with((string) config('app.url'), 'https://')) {
+        if (str_starts_with((string) config('app.url'), 'https://') && php_sapi_name() !== 'cli-server') {
             URL::forceScheme('https');
         }
 

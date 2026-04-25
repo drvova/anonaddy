@@ -390,9 +390,11 @@ export default function AppLayout(props: AppLayoutProps) {
         </header>
 
         {/* Page content with transition */}
-        <main class="flex-1 p-4 md:p-6 page-enter" key={pageKey()}>
-          {props.children}
-        </main>
+        <Show when={pageKey()} keyed>
+          <main class="flex-1 p-4 md:p-6 page-enter">
+            {props.children}
+          </main>
+        </Show>
       </div>
 
       <FlashNotification />
