@@ -4,3 +4,6 @@ compatibility_date = "2025-01-01"
 
 [vars]
 VOVAMAIL_INBOUND_ENDPOINT = "https://vovamail.xyz/api/inbound"
+
+# Secrets (set via wrangler secret put):
+# VOVAMAIL_WEBHOOK_SECRET - matches INBOUND_WEBHOOK_SECRET in Zeabur env
