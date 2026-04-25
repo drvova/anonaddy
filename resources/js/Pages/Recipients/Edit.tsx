@@ -181,7 +181,7 @@ export default function EditRecipient(props: RecipientProps) {
         </div>
       </div>
 
-      <div class="bg-surface rounded-lg p-4">
+      <div class="bg-surface rounded-md p-4">
         <div class="space-y-8 divide-y divide-border-subtle">
           <div>
             <div class="flex items-center">

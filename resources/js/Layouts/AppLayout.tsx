@@ -78,41 +78,37 @@ export default function AppLayout(props: AppLayoutProps) {
     http.post(route('logout')).then(() => router.visit('/'))
   }
 
-  const sidebarWidth = () => (collapsed() ? 'md:w-16' : 'md:w-56')
-  const contentPadding = () => (collapsed() ? 'md:pl-16' : 'md:pl-56')
-  const labelOpacity = () => (collapsed() ? 'opacity-0 w-0' : 'opacity-100 w-auto')
-
   return (
     <div class="min-h-screen bg-charcoal text-grey-100">
       {/* Sidebar - desktop */}
       <aside
-        class={`hidden md:flex md:flex-col md:fixed md:inset-y-0 ${sidebarWidth()} bg-charcoal transition-all duration-300 ease-in-out`}
+        class={`hidden md:flex md:flex-col md:fixed md:inset-y-0 ${collapsed() ? 'md:w-14' : 'md:w-52'} bg-charcoal border-r border-border-subtle/30 transition-all duration-200 ease-out`}
       >
-        <div class="flex items-center h-16 px-4 shrink-0">
-          <Link href="/" class="flex items-center">
+        <div class="flex items-center h-14 px-3 shrink-0">
+          <Link href="/" class="flex items-center justify-center w-full">
             <Show when={collapsed()}>
-              <img src="/svg/icon-logo.svg" alt="VovaMail" class="block h-7 w-7" />
+              <img src="/svg/icon-logo.svg" alt="VovaMail" class="block h-6 w-6" />
             </Show>
             <Show when={!collapsed()}>
-              <img src="/svg/logo.svg" alt="VovaMail" class="block h-7 w-auto" />
+              <img src="/svg/logo.svg" alt="VovaMail" class="block h-6 w-auto" />
             </Show>
           </Link>
         </div>
 
-        <nav class="flex-1 px-2 py-4 space-y-0.5 overflow-y-auto">
+        <nav class="flex-1 px-1.5 py-2 space-y-px overflow-y-auto">
           <For each={sidebarNavigation}>
             {item => (
               <Link
                 href={route(item.route)}
                 title={collapsed() ? item.name : undefined}
-                class={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
+                class={`flex items-center gap-2.5 px-2.5 py-2 text-sm transition-colors ${
                   isCurrentNav(item.route)
-                    ? 'text-primary bg-white/5'
-                    : 'text-grey-400 hover:text-white hover:bg-white/5'
-                }`}
+                    ? 'text-primary bg-white/[0.04]'
+                    : 'text-grey-400 hover:text-white hover:bg-white/[0.04]'
+                } ${collapsed() ? 'justify-center' : ''}`}
               >
                 <svg
-                  class="h-5 w-5 flex-shrink-0"
+                  class="h-[18px] w-[18px] flex-shrink-0"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -157,27 +153,27 @@ export default function AppLayout(props: AppLayoutProps) {
                   </Show>
                   <Show when={item.icon === 'cog'}>
                     <circle cx="12" cy="12" r="3" />
-                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                   </Show>
                 </svg>
-                <span
-                  class={`whitespace-nowrap overflow-hidden transition-all duration-300 ${labelOpacity()}`}
-                >
-                  {item.name}
-                </span>
+                <Show when={!collapsed()}>
+                  <span class="whitespace-nowrap overflow-hidden text-[13px]">
+                    {item.name}
+                  </span>
+                </Show>
               </Link>
             )}
           </For>
         </nav>
 
-        <div class="px-2 py-3 shrink-0">
+        <div class="px-1.5 py-2 shrink-0 border-t border-border-subtle/30">
           <button
             onClick={toggleSidebar}
-            class="flex items-center justify-center w-full h-9 rounded-lg text-grey-400 hover:text-white hover:bg-white/5 transition-colors"
-            title={collapsed() ? 'Expand sidebar' : 'Collapse sidebar'}
+            class="flex items-center justify-center w-full h-8 text-grey-500 hover:text-grey-300 hover:bg-white/[0.04] transition-colors"
+            title={collapsed() ? 'Expand' : 'Collapse'}
           >
             <svg
-              class={`h-5 w-5 transition-transform duration-300 ${collapsed() ? 'rotate-180' : ''}`}
+              class={`h-4 w-4 transition-transform duration-200 ${collapsed() ? 'rotate-180' : ''}`}
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -187,36 +183,21 @@ export default function AppLayout(props: AppLayoutProps) {
             </svg>
           </button>
         </div>
-
-        <Show when={page.props.version && !collapsed()}>
-          <div class="px-5 py-3 text-xs text-grey-500 shrink-0">
-            <span>v{page.props.version}</span>
-            <Show when={page.props.updateAvailable}>
-              <a
-                href="https://github.com/vovamail/vovamail/releases"
-                target="_blank"
-                class="block mt-1 text-primary hover:text-primary/80"
-              >
-                Update available
-              </a>
-            </Show>
-          </div>
-        </Show>
       </aside>
 
       {/* Mobile menu overlay */}
       <Show when={mobileMenuOpen()}>
         <div class="fixed inset-0 z-40 md:hidden">
           <div class="fixed inset-0 bg-black/60" onClick={() => setMobileMenuOpen(false)} />
-          <div class="fixed inset-y-0 left-0 w-64 bg-charcoal z-50">
-            <div class="flex items-center justify-between h-16 px-5">
-              <span class="text-primary font-bold text-lg">vovamail.xyz</span>
+          <div class="fixed inset-y-0 left-0 w-60 bg-charcoal border-r border-border-subtle/30 z-50">
+            <div class="flex items-center justify-between h-14 px-4">
+              <span class="text-primary font-semibold text-base">vovamail.xyz</span>
               <button
                 onClick={() => setMobileMenuOpen(false)}
                 class="text-grey-400 hover:text-white"
               >
                 <svg
-                  class="h-6 w-6"
+                  class="h-5 w-5"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"
@@ -227,20 +208,20 @@ export default function AppLayout(props: AppLayoutProps) {
                 </svg>
               </button>
             </div>
-            <nav class="px-3 py-4 space-y-0.5">
+            <nav class="px-1.5 py-2 space-y-px">
               <For each={sidebarNavigation}>
                 {item => (
                   <Link
                     href={route(item.route)}
                     onClick={() => setMobileMenuOpen(false)}
-                    class={`flex items-center gap-3 px-3 py-2.5 text-sm rounded-lg transition-colors ${
+                    class={`flex items-center gap-2.5 px-2.5 py-2 text-sm transition-colors ${
                       isCurrentNav(item.route)
-                        ? 'text-primary bg-white/5'
-                        : 'text-grey-400 hover:text-white hover:bg-white/5'
+                        ? 'text-primary bg-white/[0.04]'
+                        : 'text-grey-400 hover:text-white hover:bg-white/[0.04]'
                     }`}
                   >
                     <svg
-                      class="h-5 w-5 flex-shrink-0"
+                      class="h-[18px] w-[18px] flex-shrink-0"
                       viewBox="0 0 24 24"
                       fill="none"
                       stroke="currentColor"
@@ -288,7 +269,7 @@ export default function AppLayout(props: AppLayoutProps) {
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l-.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
                       </Show>
                     </svg>
-                    <span>{item.name}</span>
+                    <span class="text-[13px]">{item.name}</span>
                   </Link>
                 )}
               </For>
@@ -298,15 +279,15 @@ export default function AppLayout(props: AppLayoutProps) {
       </Show>
 
       {/* Main content area */}
-      <div class={`${contentPadding()} flex flex-col min-h-screen transition-all duration-300`}>
+      <div class={`${collapsed() ? 'md:pl-14' : 'md:pl-52'} flex flex-col min-h-screen transition-all duration-200 ease-out`}>
         {/* Header */}
-        <header class="sticky top-0 z-30 flex h-16 items-center gap-4 bg-charcoal/95 backdrop-blur-sm px-5 border-b border-border-subtle/50">
+        <header class="sticky top-0 z-30 flex h-14 items-center gap-4 bg-charcoal border-b border-border-subtle/30 px-4">
           <button
             class="md:hidden text-grey-400 hover:text-white"
             onClick={() => setMobileMenuOpen(true)}
           >
             <svg
-              class="h-6 w-6"
+              class="h-5 w-5"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -319,7 +300,7 @@ export default function AppLayout(props: AppLayoutProps) {
           </button>
 
           {/* Search */}
-          <div class="flex-1 max-w-md">
+          <div class="flex-1 max-w-sm">
             <div class="relative">
               <input
                 type="text"
@@ -327,10 +308,10 @@ export default function AppLayout(props: AppLayoutProps) {
                 onInput={e => setSearchQuery(e.currentTarget.value)}
                 onKeyDown={handleSearchKeydown}
                 placeholder="Search aliases..."
-                class="w-full bg-surface border border-border-subtle rounded-lg pl-9 pr-8 py-2 text-sm text-white placeholder:text-grey-500 focus:border-primary focus:ring-1 focus:ring-primary/50 outline-none transition-colors"
+                class="w-full bg-surface border border-border-subtle rounded-sm pl-8 pr-7 py-1.5 text-sm text-white placeholder:text-grey-500 focus:border-primary/60 focus:outline-none transition-colors"
               />
               <svg
-                class="absolute left-2.5 top-2.5 h-4 w-4 text-grey-500"
+                class="absolute left-2 top-1.5 h-4 w-4 text-grey-500"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
@@ -341,7 +322,7 @@ export default function AppLayout(props: AppLayoutProps) {
               </svg>
               <Show when={searchQuery()}>
                 <button
-                  class="absolute right-2.5 top-2.5 text-grey-500 hover:text-white"
+                  class="absolute right-2 top-1.5 text-grey-500 hover:text-white"
                   onClick={() => {
                     setSearchQuery('')
                     submitSearch()
@@ -365,21 +346,21 @@ export default function AppLayout(props: AppLayoutProps) {
           {/* User menu */}
           <div class="relative">
             <button
-              class="flex items-center justify-center h-8 w-8 rounded-full bg-grey-800 text-sm font-medium text-white hover:bg-grey-700 transition-colors"
+              class="flex items-center justify-center h-7 w-7 rounded-full bg-grey-800 text-xs font-medium text-white hover:bg-grey-700 transition-colors"
               onClick={() => setUserMenuOpen(!userMenuOpen())}
             >
               {userInitial()}
             </button>
             <Show when={userMenuOpen()}>
-              <div class="absolute right-0 top-full mt-2 w-48 bg-surface border border-border-subtle rounded-xl py-1 z-50">
-                <div class="px-4 py-2 border-b border-border-subtle">
+              <div class="absolute right-0 top-full mt-1.5 w-44 bg-surface border border-border-subtle rounded-sm py-1 z-50">
+                <div class="px-3 py-1.5 border-b border-border-subtle">
                   <p class="text-sm font-medium text-white truncate">
                     {page.props.user?.username as string}
                   </p>
                 </div>
                 <Show when={!page.props.usesExternalAuthentication}>
                   <button
-                    class="w-full text-left px-4 py-2 text-sm text-grey-400 hover:text-white hover:bg-white/5 transition-colors"
+                    class="w-full text-left px-3 py-1.5 text-sm text-grey-400 hover:text-white hover:bg-white/[0.04] transition-colors"
                     onClick={handleLogout}
                   >
                     Logout
@@ -391,7 +372,7 @@ export default function AppLayout(props: AppLayoutProps) {
         </header>
 
         {/* Page content */}
-        <main class="flex-1 p-5 md:p-8">{props.children}</main>
+        <main class="flex-1 p-4 md:p-6">{props.children}</main>
       </div>
 
       <FlashNotification />

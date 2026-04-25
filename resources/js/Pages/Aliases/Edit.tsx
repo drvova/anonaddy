@@ -116,7 +116,7 @@ export default function EditAlias(props: AliasProps) {
         </div>
       </div>
 
-      <div class="bg-surface rounded-lg p-4">
+      <div class="bg-surface rounded-md p-4">
         <div class="space-y-8 divide-y divide-border-subtle">
           <div>
             <div class="flex items-center">
@@ -175,7 +175,7 @@ export default function EditAlias(props: AliasProps) {
                     id="from_name"
                     value={fromName()}
                     onInput={e => setFromName(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 text-white bg-white/5 ${errors().from_name ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="John Doe"
                   />
                   <Show when={errors().from_name}>
@@ -193,7 +193,7 @@ export default function EditAlias(props: AliasProps) {
             <button
               onClick={editFromName}
               disabled={fromNameLoading()}
-              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded-sm w-full disabled:cursor-not-allowed"
             >
               Update Alias From Name
               <Show when={fromNameLoading()}>

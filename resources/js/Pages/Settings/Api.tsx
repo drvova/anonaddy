@@ -136,9 +136,9 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
       <Title>API Settings</Title>
       <div class="divide-y divide-grey-200">
         <div class="pt-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Manage your API Access Keys</h3>
-            <p class="text-base text-grey-200">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Manage your API Access Keys</h3>
+            <p class="text-sm text-grey-400">
               Your API access keys can be used with the browser extension on{' '}
               <a
                 href="https://addons.mozilla.org/en-GB/firefox/addon/addy_io/"
@@ -188,24 +188,24 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
           <div class="mt-4">
             <button
               onClick={openCreateTokenModal}
-              class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded w-full"
             >
               Create New API Key
             </button>
 
             <div class="mt-6">
-              <h3 class="text-lg font-medium leading-6 text-white">Personal Access Keys</h3>
+              <h3 class="text-base font-medium text-white">Personal Access Keys</h3>
 
               <div class="my-4 w-24 border-b-2 border-grey-200"></div>
 
-              <p class="my-6 text-base text-grey-200">
+              <p class="my-6 text-sm text-grey-400">
                 Keys you have created that can be used to access the API. To revoke an access key
                 simply click the delete button next to it.
               </p>
 
               <div>
                 <Show when={tokens().length === 0}>
-                  <p class="mb-0 text-base text-grey-200">
+                  <p class="mb-0 text-sm text-grey-400">
                     You have not created any personal access tokens.
                   </p>
                 </Show>
@@ -290,7 +290,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                 onInput={e => setFormName(e.currentTarget.value)}
                 type="text"
                 id="create-token-name"
-                class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white"
+                class="block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white"
                 classList={{ 'ring-red-500': !!formErrors().name }}
                 placeholder="e.g. Firefox extension"
                 required
@@ -306,7 +306,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                   value={formExpiration() ?? ''}
                   onChange={e => setFormExpiration(e.currentTarget.value || null)}
                   id="create-token-expiration"
-                  class="relative block w-full rounded border-0 bg-transparent py-2 text-white bg-white/5 ring-1 ring-inset focus:z-10 focus:ring-2 focus:ring-inset sm:text-base sm:leading-6"
+                  class="relative block w-full rounded border-0 bg-transparent py-2 text-white bg-white/5 ring-1 ring-inset  focus:outline-none sm:text-base sm:leading-6"
                   classList={{ 'ring-red-500': !!formErrors().expiration }}
                 >
                   <option class="bg-surface" value="day">
@@ -338,7 +338,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
                   onInput={e => setFormPassword(e.currentTarget.value)}
                   type="password"
                   id="create-token-password"
-                  class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white"
+                  class="block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 mb-6 bg-white/5 text-white"
                   classList={{ 'ring-red-500': !!formErrors().password }}
                   placeholder="********"
                   required
@@ -346,7 +346,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
               </Show>
               <button
                 onClick={store}
-                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
+                class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded disabled:cursor-not-allowed"
                 disabled={loading()}
               >
                 Create API Key
@@ -380,7 +380,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
             </p>
             <div class="mt-6">
               <button
-                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded"
+                class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded"
                 onClick={() => clipboard(accessToken()!)}
               >
                 Copy To Clipboard
@@ -408,7 +408,7 @@ export default function ApiSettings(props: { initialTokens: { data: Token[] } })
         <div class="mt-6">
           <button
             onClick={revoke}
-            class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
+            class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded disabled:cursor-not-allowed"
             disabled={revokeTokenLoading()}
           >
             Revoke API Key

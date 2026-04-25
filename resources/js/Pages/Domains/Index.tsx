@@ -451,7 +451,7 @@ export default function DomainsIndex(props: DomainsProps) {
         <button
           type="button"
           onClick={openAddDomainModal}
-          class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
+          class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
         >
           <Icon name="plus" class="w-4 h-4" />
           Add Domain
@@ -472,7 +472,7 @@ export default function DomainsIndex(props: DomainsProps) {
                   <button
                     onClick={openAddDomainModal}
                     type="button"
-                    class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
+                    class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
                   >
                     <Icon name="plus" class="w-4 h-4" />
                     Add a Domain
@@ -488,7 +488,7 @@ export default function DomainsIndex(props: DomainsProps) {
               <div class="mt-6">
                 <Link
                   href={(window as any).route('domains.index')}
-                  class="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
+                  class="inline-flex items-center gap-2 rounded-md bg-primary px-4 py-2 text-sm font-semibold text-grey-900 hover:bg-primary/90 transition-colors"
                 >
                   View All Domains
                 </Link>
@@ -518,7 +518,7 @@ export default function DomainsIndex(props: DomainsProps) {
         <div class="space-y-3">
           <For each={sortedRows()}>
             {row => (
-              <div class="bg-surface rounded-lg p-4">
+              <div class="bg-surface rounded-md p-4">
                 <div class="flex flex-wrap items-start justify-between gap-2">
                   <div class="flex items-center flex-wrap gap-2">
                     <button
@@ -937,7 +937,7 @@ export default function DomainsIndex(props: DomainsProps) {
               value={newDomain()}
               onInput={e => setNewDomain(e.currentTarget.value)}
               type="text"
-              class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newDomain ? 'ring-red-500' : 'ring-grey-700'}`}
+              class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${errors().newDomain ? 'ring-red-500' : 'ring-grey-700'}`}
               placeholder="example.com"
             />
             <button

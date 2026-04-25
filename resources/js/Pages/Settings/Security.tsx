@@ -62,7 +62,7 @@ export default function SecuritySettings(props: SecurityProps) {
   const regenerateTwoFactorForm = useForm({} as Record<string, never>)
 
   const inputClass = (hasError: boolean) =>
-    `block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white ${hasError ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`
+    `block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white ${hasError ? 'border-red-400 placeholder:text-red-300 focus:border-red-500' : 'border-border-subtle placeholder:text-grey-400 focus:border-primary/60'}`
 
   const clipboard = (str: string) => {
     navigator.clipboard.writeText(str).then(
@@ -101,10 +101,10 @@ export default function SecuritySettings(props: SecurityProps) {
           </div>
         )}
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Password</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Password</h3>
+            <p class="text-sm text-grey-400">
               Ensure your account is using a long, random, unique password to stay secure. It is
               recommended to use a password manager such as Bitwarden. Updating your password will
               also logout your active sessions on other browsers and devices.
@@ -190,7 +190,7 @@ export default function SecuritySettings(props: SecurityProps) {
                         type="password"
                         name="password_confirmation"
                         id="password-confirm"
-                        class="block w-full rounded-md border-0 py-1.5 text-white ring-1 ring-grey-300 placeholder:text-grey-400 focus:ring-2 focus:ring-inset focus:ring-primary sm:text-base sm:leading-6 bg-white/5"
+                        class="block w-full rounded-sm border-0 py-1.5 text-white ring-1 border-border-subtle placeholder:text-grey-400 focus:outline-none focus:border-primary/60 sm:text-base sm:leading-6 bg-white/5"
                         placeholder="********"
                         required
                       />
@@ -201,7 +201,7 @@ export default function SecuritySettings(props: SecurityProps) {
               <button
                 type="submit"
                 disabled={updatePasswordForm.processing}
-                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+                class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed"
               >
                 Update Password {updatePasswordForm.processing && <Loader />}
               </button>
@@ -209,10 +209,10 @@ export default function SecuritySettings(props: SecurityProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Browser Sessions</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Browser Sessions</h3>
+            <p class="text-sm text-grey-400">
               If necessary, you may logout of all of your other browser sessions across all of your
               devices. If you feel your account has been compromised, you should also update your
               password.
@@ -262,7 +262,7 @@ export default function SecuritySettings(props: SecurityProps) {
               <button
                 type="submit"
                 disabled={browserSessionsForm.processing}
-                class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+                class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed"
               >
                 Logout Other Browser Sessions {browserSessionsForm.processing && <Loader />}
               </button>
@@ -270,10 +270,10 @@ export default function SecuritySettings(props: SecurityProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
+        <div class="py-6">
+          <div class="space-y-0.5">
             <h2 class="text-xl font-medium leading-6 text-white">Two-Factor Authentication</h2>
-            <p class="text-base text-grey-200">
+            <p class="text-sm text-grey-400">
               Two-factor authentication, also known as 2FA or multi-factor, adds an extra layer of
               security to your account beyond your username and password. There are{' '}
               <b>multiple options for 2FA</b> - 1. Authentication App (e.g. Google Authenticator or
@@ -281,7 +281,7 @@ export default function SecuritySettings(props: SecurityProps) {
               3. Passkeys (which can be stored in a supported provider such as Bitwarden or
               1Password).
             </p>
-            <p class="text-base text-grey-200">
+            <p class="text-sm text-grey-400">
               When you login with 2FA enabled, you will be prompted to use a security key or enter a
               OTP (one time passcode) depending on which method you choose below. You can have both
               methods of 2nd factor authentication enabled at once if you wish.
@@ -290,10 +290,10 @@ export default function SecuritySettings(props: SecurityProps) {
         </div>
 
         <Show when={twoFactorEnabled() || webauthnEnabled()}>
-          <div class="py-10">
-            <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-white">Generate New Backup Code</h3>
-              <p class="text-base text-grey-200">
+          <div class="py-6">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-medium text-white">Generate New Backup Code</h3>
+              <p class="text-sm text-grey-400">
                 The backup code can be used in a situation where you have lost your 2FA device to
                 allow you to access your account. If you've forgotten or lost your backup code then
                 you can generate a new one by clicking the button below.
@@ -371,7 +371,7 @@ export default function SecuritySettings(props: SecurityProps) {
                 <button
                   type="submit"
                   disabled={newBackupCodeForm.processing}
-                  class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+                  class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed"
                 >
                   Generate New Backup Code {newBackupCodeForm.processing && <Loader />}
                 </button>
@@ -381,12 +381,12 @@ export default function SecuritySettings(props: SecurityProps) {
         </Show>
 
         <Show when={twoFactorEnabled()}>
-          <div class="py-10">
-            <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-white">
+          <div class="py-6">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-medium text-white">
                 Disable Authentication App (TOTP)
               </h3>
-              <p class="text-base text-grey-200">
+              <p class="text-sm text-grey-400">
                 To disable TOTP authentication enter your password below. You can always enable it
                 again later if you wish.
               </p>
@@ -442,7 +442,7 @@ export default function SecuritySettings(props: SecurityProps) {
                 <button
                   type="submit"
                   disabled={disableTwoFactorForm.processing}
-                  class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+                  class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed"
                 >
                   Disable TOTP Two-Factor Authentication{' '}
                   {disableTwoFactorForm.processing && <Loader />}
@@ -454,12 +454,12 @@ export default function SecuritySettings(props: SecurityProps) {
 
         <Show when={!twoFactorEnabled()}>
           <div class="divide-y divide-grey-200">
-            <div class="py-10">
-              <div class="space-y-1">
-                <h3 class="text-lg font-medium leading-6 text-white">
+            <div class="py-6">
+              <div class="space-y-0.5">
+                <h3 class="text-base font-medium text-white">
                   Enable Authentication App (TOTP)
                 </h3>
-                <p class="text-base text-grey-200">
+                <p class="text-sm text-grey-400">
                   TOTP two-factor authentication requires the use of Google Authenticator or another
                   compatible app such as Aegis or Ente Auth. Alternatively, you can use the code
                   below. Make sure that you write down your secret code in a safe place.
@@ -569,7 +569,7 @@ export default function SecuritySettings(props: SecurityProps) {
                   <button
                     type="submit"
                     disabled={enableTwoFactorForm.processing}
-                    class="bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+                    class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed"
                   >
                     Verify and Enable {enableTwoFactorForm.processing && <Loader />}
                   </button>
@@ -580,12 +580,12 @@ export default function SecuritySettings(props: SecurityProps) {
         </Show>
 
         <Show when={!keys().length}>
-          <div class="py-10">
-            <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-white">
+          <div class="py-6">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-medium text-white">
                 Enable Device/Passkey Authentication (WebAuthn)
               </h3>
-              <p class="text-base text-grey-200">
+              <p class="text-sm text-grey-400">
                 WebAuthn is a new W3C global standard for secure authentication. You can use any
                 hardware key such as a Yubikey, Solokey, NitroKey etc.
               </p>
@@ -593,7 +593,7 @@ export default function SecuritySettings(props: SecurityProps) {
             <div class="mt-4">
               <a
                 href={route('webauthn.create')!}
-                class="block bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded text-center w-full"
+                class="block bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded text-center w-full"
               >
                 Register New Key
               </a>
@@ -602,12 +602,12 @@ export default function SecuritySettings(props: SecurityProps) {
         </Show>
 
         <Show when={keys().length > 0}>
-          <div class="py-10">
-            <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-white">
+          <div class="py-6">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-medium text-white">
                 Device/Passkey Authentication (WebAuthn)
               </h3>
-              <p class="text-base text-grey-200">
+              <p class="text-sm text-grey-400">
                 Hardware security keys and Passkeys that you have registered for 2nd factor
                 authentication. To remove a key simply click the delete button next to it. Disabled
                 keys cannot be used to login. If you disable all keys{' '}
@@ -774,13 +774,13 @@ export default function SecuritySettings(props: SecurityProps) {
             onInput={e => setDisableKeyCurrentPassword(e.currentTarget.value)}
             type="password"
             id="disable-key-current-password"
-            class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${disableKeyError() ? 'ring-red-500' : ''}`}
+            class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${disableKeyError() ? 'ring-red-500' : ''}`}
             placeholder="********"
             autofocus
           />
           <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <button
-              class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
+              class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded disabled:cursor-not-allowed"
               disabled={disableKeyLoading()}
               onClick={() => {
                 setDisableKeyError('')
@@ -851,13 +851,13 @@ export default function SecuritySettings(props: SecurityProps) {
             onInput={e => setDeleteKeyCurrentPassword(e.currentTarget.value)}
             type="password"
             id="delete-key-current-password"
-            class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${deleteKeyError() ? 'ring-red-500' : ''}`}
+            class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 mb-6 bg-white/5 text-white ${deleteKeyError() ? 'ring-red-500' : ''}`}
             placeholder="********"
             autofocus
           />
           <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
             <button
-              class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded disabled:cursor-not-allowed"
+              class="bg-red-500 hover:bg-red-600 text-white font-medium py-2 px-4 rounded disabled:cursor-not-allowed"
               disabled={deleteKeyLoading()}
               onClick={() => {
                 setDeleteKeyError('')

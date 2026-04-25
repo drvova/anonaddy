@@ -2,6 +2,7 @@ import { Title } from '@solidjs/meta'
 import { useForm, usePage, Link } from '../../lib/inertia'
 import SettingsLayout from '../../Layouts/SettingsLayout'
 import Loader from '../../Components/Loader'
+import Toggle from '../../Components/Toggle'
 
 const displayFromFormatOptions = [
   { value: 0, label: "John Doe 'johndoe at example.com'" },
@@ -77,23 +78,23 @@ export default function GeneralSettings(props: GeneralProps) {
   const emailSubjectForm = useForm({ email_subject: props.emailSubject })
 
   const inputClass = (hasError: boolean) =>
-    `block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white ${hasError ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`
+    `block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white ${hasError ? 'border-red-400 placeholder:text-red-300 focus:border-red-500' : 'border-border-subtle placeholder:text-grey-400 focus:border-primary/60'}`
 
   const selectClass = (hasError: boolean) =>
-    `relative block w-full rounded border-0 bg-transparent py-2 text-white bg-white/5 ring-1 ring-inset focus:z-10 focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 ${hasError ? 'ring-red-300 focus:ring-red-500' : 'ring-grey-300 focus:ring-primary'}`
+    `relative block w-full rounded-sm border border-border-subtle py-2 text-sm bg-white/5 text-white focus:border-primary/60 focus:outline-none ${hasError ? 'border-red-400' : ''}`
 
   const btnClass = (processing: boolean) =>
-    `bg-primary hover:bg-primary/90 text-black font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed`
+    `bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-sm w-full disabled:cursor-not-allowed`
 
   return (
     <SettingsLayout>
       <Title>General Settings</Title>
       <div class="divide-y divide-grey-200">
         {!usesExternalAuth() && (
-          <div class="py-10">
-            <div class="space-y-1">
-              <h3 class="text-lg font-medium leading-6 text-white">Update Email</h3>
-              <p class="text-base text-grey-200">
+          <div class="py-6">
+            <div class="space-y-0.5">
+              <h3 class="text-base font-medium text-white">Update Email</h3>
+              <p class="text-sm text-grey-400">
                 This is your account's default recipient email address, it is used for all general
                 email notifications. You'll need to verify the new email address by clicking the
                 link in the email notification before it is updated.
@@ -125,7 +126,7 @@ export default function GeneralSettings(props: GeneralProps) {
                           id="current_email"
                           value={user()?.email ?? ''}
                           disabled
-                          class="block w-full rounded-md border-0 py-1.5 text-white ring-1 ring-grey-300 placeholder:text-grey-400 focus:ring-2 focus:ring-inset focus:ring-primary disabled:cursor-not-allowed disabled:bg-surface disabled:text-grey-500 disabled:ring-grey-200 sm:text-sm sm:leading-6"
+                          class="block w-full rounded-sm border-0 py-1.5 text-white ring-1 border-border-subtle placeholder:text-grey-400 focus:outline-none focus:border-primary/60 disabled:cursor-not-allowed disabled:bg-surface disabled:text-grey-500 disabled:ring-grey-200 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -197,74 +198,46 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         )}
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Dark Mode Theme</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Dark Mode Theme</h3>
+            <p class="text-sm text-grey-400">
               Choose your preferred theme for the web application.
             </p>
           </div>
           <div class="mt-4">
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                darkModeForm.post(route('settings.dark_mode')!, {
-                  preserveScroll: true,
-                  onSuccess: () => window.location.reload(),
-                })
-              }}
-            >
-              <div class="grid grid-cols-1 mb-6">
-                <div>
-                  <label for="dark-mode" class="block text-sm font-medium leading-6 text-white">
-                    Dark Mode
-                  </label>
-                  <div class="block relative w-full mt-2">
-                    <select
-                      id="dark-mode"
-                      value={String(darkModeForm.data.dark_mode)}
-                      onChange={e =>
-                        darkModeForm.setData('dark_mode', e.currentTarget.value === 'true')
-                      }
-                      name="format"
-                      required
-                      class={selectClass(!!darkModeForm.errors.dark_mode)}
-                      aria-invalid={darkModeForm.errors.dark_mode ? 'true' : undefined}
-                      aria-describedby={
-                        darkModeForm.errors.dark_mode ? 'dark-mode-error' : undefined
-                      }
-                    >
-                      <option value="false" class="bg-surface">
-                        Disabled
-                      </option>
-                      <option value="true" class="bg-surface">
-                        Enabled
-                      </option>
-                    </select>
-                  </div>
-                  {darkModeForm.errors.dark_mode && (
-                    <p class="mt-2 text-sm text-red-600" id="dark-mode-error">
-                      {darkModeForm.errors.dark_mode}
-                    </p>
-                  )}
-                </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-white">Dark Mode</p>
+                <p class="text-sm text-grey-400">
+                  {(page.props as any).darkMode ? 'Enabled' : 'Disabled'}
+                </p>
               </div>
-              <button
-                type="submit"
+              <Toggle
+                id="dark-mode"
+                checked={darkModeForm.data.dark_mode}
+                onChange={checked => {
+                  darkModeForm.setData('dark_mode', checked)
+                  darkModeForm.post(route('settings.dark_mode')!, {
+                    preserveScroll: true,
+                    onSuccess: () => window.location.reload(),
+                  })
+                }}
                 disabled={darkModeForm.processing}
-                class={btnClass(darkModeForm.processing)}
-              >
-                {(page.props as any).darkMode ? 'Disable' : 'Enable'} Dark Mode{' '}
-                {darkModeForm.processing && <Loader />}
-              </button>
-            </form>
+              />
+            </div>
+            {darkModeForm.errors.dark_mode && (
+              <p class="mt-2 text-sm text-red-600" id="dark-mode-error">
+                {darkModeForm.errors.dark_mode}
+              </p>
+            )}
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Default Alias Domain</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Default Alias Domain</h3>
+            <p class="text-sm text-grey-400">
               The default alias domain is the domain you'd like to be selected by default in the
               drop down options when generating a new alias on the site or the browser extension.
               This will save you needing to select your preferred domain from the dropdown each
@@ -334,10 +307,10 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Default Alias Format</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Default Alias Format</h3>
+            <p class="text-sm text-grey-400">
               The default alias format is the format you'd like to be selected by default in the
               drop down options when generating a new alias on the site or the browser extension.
               This will save you needing to select your preferred format from the dropdown each
@@ -447,10 +420,10 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Alias Separator</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Alias Separator</h3>
+            <p class="text-sm text-grey-400">
               The character used between words in aliases with the following formats: Random Words,
               Random Male/Female Name, Random Noun and Custom Shared Domain. For example, with
               period:{' '}
@@ -523,12 +496,12 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">
               Update Page to Display After Login
             </h3>
-            <p class="text-base text-grey-200">
+            <p class="text-sm text-grey-400">
               The login redirect determines which page you should be redirected to after logging in
               to your account. If you select "Aliases" then you will be shown the aliases page after
               you login to your account.
@@ -589,10 +562,10 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Display From Format</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Display From Format</h3>
+            <p class="text-sm text-grey-400">
               The display from format is used when forwarding message to you. If one of your aliases
               receives an email from <b>John Doe &lt;johndoe@example.com&gt;</b> then you can choose
               how this will be displayed in your inbox.
@@ -657,17 +630,17 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">
               Use Reply-To Header For Replying
             </h3>
-            <p class="text-base text-grey-200">
+            <p class="text-sm text-grey-400">
               This will determine if forwarded emails use the From header or the Reply-To header for
               sending replies. Some users may find it easier to set up inbox filters having the
               From: header set as just the alias.
             </p>
-            <p class="text-base text-grey-200">
+            <p class="text-sm text-grey-400">
               If enabled, then the <b>From:</b> header will be set as the alias email e.g.{' '}
               <b>
                 alias@{user()?.username}.{props.defaultAliasDomain}
@@ -680,62 +653,35 @@ export default function GeneralSettings(props: GeneralProps) {
             </p>
           </div>
           <div class="mt-4">
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                useReplyToForm.post(route('settings.use_reply_to')!, { preserveScroll: true })
-              }}
-            >
-              <div class="grid grid-cols-1 mb-6">
-                <div>
-                  <label for="use-reply-to" class="block text-sm font-medium leading-6 text-white">
-                    Use Reply-To
-                  </label>
-                  <div class="block relative w-full mt-2">
-                    <select
-                      id="use-reply-to"
-                      value={String(useReplyToForm.data.use_reply_to)}
-                      onChange={e =>
-                        useReplyToForm.setData('use_reply_to', e.currentTarget.value === 'true')
-                      }
-                      name="format"
-                      required
-                      class={selectClass(!!useReplyToForm.errors.use_reply_to)}
-                      aria-invalid={useReplyToForm.errors.use_reply_to ? 'true' : undefined}
-                      aria-describedby={
-                        useReplyToForm.errors.use_reply_to ? 'use-reply-to-error' : undefined
-                      }
-                    >
-                      <option value="true" class="bg-surface">
-                        Enabled
-                      </option>
-                      <option value="false" class="bg-surface">
-                        Disabled
-                      </option>
-                    </select>
-                  </div>
-                  {useReplyToForm.errors.use_reply_to && (
-                    <p class="mt-2 text-sm text-red-600" id="use-reply-to-error">
-                      {useReplyToForm.errors.use_reply_to}
-                    </p>
-                  )}
-                </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-white">Use Reply-To</p>
+                <p class="text-sm text-grey-400">
+                  {useReplyToForm.data.use_reply_to ? 'Enabled' : 'Disabled'}
+                </p>
               </div>
-              <button
-                type="submit"
+              <Toggle
+                id="use-reply-to"
+                checked={useReplyToForm.data.use_reply_to}
+                onChange={checked => {
+                  useReplyToForm.setData('use_reply_to', checked)
+                  useReplyToForm.post(route('settings.use_reply_to')!, { preserveScroll: true })
+                }}
                 disabled={useReplyToForm.processing}
-                class={btnClass(useReplyToForm.processing)}
-              >
-                Update Use Reply-To {useReplyToForm.processing && <Loader />}
-              </button>
-            </form>
+              />
+            </div>
+            {useReplyToForm.errors.use_reply_to && (
+              <p class="mt-2 text-sm text-red-600" id="use-reply-to-error">
+                {useReplyToForm.errors.use_reply_to}
+              </p>
+            )}
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Store Failed Deliveries</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Store Failed Deliveries</h3>
+            <p class="text-sm text-grey-400">
               This setting allows you to choose whether or not this instance should{' '}
               <b>temporarily store</b> failed delivery attempts, this ensures that{' '}
               <b>emails are not lost</b> if they are rejected by your recipients as they can be
@@ -744,78 +690,37 @@ export default function GeneralSettings(props: GeneralProps) {
             </p>
           </div>
           <div class="mt-4">
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                storeFailedDeliveriesForm.post(route('settings.store_failed_deliveries')!, {
-                  preserveScroll: true,
-                })
-              }}
-            >
-              <div class="grid grid-cols-1 mb-6">
-                <div>
-                  <label
-                    for="store-failed-deliveries"
-                    class="block text-sm font-medium leading-6 text-white"
-                  >
-                    Store Failed Deliveries
-                  </label>
-                  <div class="block relative w-full mt-2">
-                    <select
-                      id="store-failed-deliveries"
-                      value={String(storeFailedDeliveriesForm.data.store_failed_deliveries)}
-                      onChange={e =>
-                        storeFailedDeliveriesForm.setData(
-                          'store_failed_deliveries',
-                          e.currentTarget.value === 'true',
-                        )
-                      }
-                      name="format"
-                      required
-                      class={selectClass(
-                        !!storeFailedDeliveriesForm.errors.store_failed_deliveries,
-                      )}
-                      aria-invalid={
-                        storeFailedDeliveriesForm.errors.store_failed_deliveries
-                          ? 'true'
-                          : undefined
-                      }
-                      aria-describedby={
-                        storeFailedDeliveriesForm.errors.store_failed_deliveries
-                          ? 'store-failed-deliveries-error'
-                          : undefined
-                      }
-                    >
-                      <option value="true" class="bg-surface">
-                        Enabled
-                      </option>
-                      <option value="false" class="bg-surface">
-                        Disabled
-                      </option>
-                    </select>
-                  </div>
-                  {storeFailedDeliveriesForm.errors.store_failed_deliveries && (
-                    <p class="mt-2 text-sm text-red-600" id="store-failed-deliveries-error">
-                      {storeFailedDeliveriesForm.errors.store_failed_deliveries}
-                    </p>
-                  )}
-                </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-white">Store Failed Deliveries</p>
+                <p class="text-sm text-grey-400">
+                  {storeFailedDeliveriesForm.data.store_failed_deliveries ? 'Enabled' : 'Disabled'}
+                </p>
               </div>
-              <button
-                type="submit"
+              <Toggle
+                id="store-failed-deliveries"
+                checked={storeFailedDeliveriesForm.data.store_failed_deliveries}
+                onChange={checked => {
+                  storeFailedDeliveriesForm.setData('store_failed_deliveries', checked)
+                  storeFailedDeliveriesForm.post(route('settings.store_failed_deliveries')!, {
+                    preserveScroll: true,
+                  })
+                }}
                 disabled={storeFailedDeliveriesForm.processing}
-                class={btnClass(storeFailedDeliveriesForm.processing)}
-              >
-                Update Store Failed Deliveries {storeFailedDeliveriesForm.processing && <Loader />}
-              </button>
-            </form>
+              />
+            </div>
+            {storeFailedDeliveriesForm.errors.store_failed_deliveries && (
+              <p class="mt-2 text-sm text-red-600" id="store-failed-deliveries-error">
+                {storeFailedDeliveriesForm.errors.store_failed_deliveries}
+              </p>
+            )}
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Save Alias 'Last Used At'</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Save Alias 'Last Used At'</h3>
+            <p class="text-sm text-grey-400">
               This setting allows you to choose whether or not this instance should save the dates
               for <b>last forwarded at</b>, <b>last replied at</b> and <b>last sent at</b> for your
               aliases. You can view this information by hovering over the relevant count of each of
@@ -830,80 +735,43 @@ export default function GeneralSettings(props: GeneralProps) {
             </p>
           </div>
           <div class="mt-4">
-            <form
-              onSubmit={e => {
-                e.preventDefault()
-                saveAliasLastUsedForm.post(route('settings.save_alias_last_used')!, {
-                  preserveScroll: true,
-                })
-              }}
-            >
-              <div class="grid grid-cols-1 mb-6">
-                <div>
-                  <label
-                    for="save-alias-last-used"
-                    class="block text-sm font-medium leading-6 text-white"
-                  >
-                    Save Alias Last Used At
-                  </label>
-                  <div class="block relative w-full mt-2">
-                    <select
-                      id="save-alias-last-used"
-                      value={String(saveAliasLastUsedForm.data.save_alias_last_used)}
-                      onChange={e =>
-                        saveAliasLastUsedForm.setData(
-                          'save_alias_last_used',
-                          e.currentTarget.value === 'true',
-                        )
-                      }
-                      name="format"
-                      required
-                      class={selectClass(!!saveAliasLastUsedForm.errors.save_alias_last_used)}
-                      aria-invalid={
-                        saveAliasLastUsedForm.errors.save_alias_last_used ? 'true' : undefined
-                      }
-                      aria-describedby={
-                        saveAliasLastUsedForm.errors.save_alias_last_used
-                          ? 'save-alias-last-used-error'
-                          : undefined
-                      }
-                    >
-                      <option value="true" class="bg-surface">
-                        Enabled
-                      </option>
-                      <option value="false" class="bg-surface">
-                        Disabled
-                      </option>
-                    </select>
-                  </div>
-                  {saveAliasLastUsedForm.errors.save_alias_last_used && (
-                    <p class="mt-2 text-sm text-red-600" id="save-alias-last-used-error">
-                      {saveAliasLastUsedForm.errors.save_alias_last_used}
-                    </p>
-                  )}
-                </div>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-sm font-medium text-white">Save Alias Last Used At</p>
+                <p class="text-sm text-grey-400">
+                  {saveAliasLastUsedForm.data.save_alias_last_used ? 'Enabled' : 'Disabled'}
+                </p>
               </div>
-              <button
-                type="submit"
+              <Toggle
+                id="save-alias-last-used"
+                checked={saveAliasLastUsedForm.data.save_alias_last_used}
+                onChange={checked => {
+                  saveAliasLastUsedForm.setData('save_alias_last_used', checked)
+                  saveAliasLastUsedForm.post(route('settings.save_alias_last_used')!, {
+                    preserveScroll: true,
+                  })
+                }}
                 disabled={saveAliasLastUsedForm.processing}
-                class={btnClass(saveAliasLastUsedForm.processing)}
-              >
-                Update Save Alias Last Used At {saveAliasLastUsedForm.processing && <Loader />}
-              </button>
-            </form>
+              />
+            </div>
+            {saveAliasLastUsedForm.errors.save_alias_last_used && (
+              <p class="mt-2 text-sm text-red-600" id="save-alias-last-used-error">
+                {saveAliasLastUsedForm.errors.save_alias_last_used}
+              </p>
+            )}
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Global 'From Name'</h3>
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Global 'From Name'</h3>
             <div>
-              <p class="text-base text-grey-200">
+              <p class="text-sm text-grey-400">
                 The 'From Name' is shown when you send an email from an alias or reply anonymously
                 to a forwarded email. If left blank, then the email alias itself will be used as the
                 'From Name' e.g. "example@{user()?.username}.{props.defaultAliasDomain}".
               </p>
-              <div class="text-base text-grey-200 my-3">
+              <div class="text-sm text-grey-400 my-3">
                 The 'From Name' that is used for an alias is determined by the following{' '}
                 <b>priority</b>:
                 <ul class="list-decimal list-inside text-grey-200 text-base mt-2">
@@ -914,7 +782,7 @@ export default function GeneralSettings(props: GeneralProps) {
                   </li>
                 </ul>
               </div>
-              <p class="text-base text-grey-200">
+              <p class="text-sm text-grey-400">
                 If you set the 'From Name' for a specific alias, it will override the other
                 settings.
               </p>
@@ -965,10 +833,10 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Update Email Banner Location</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Update Email Banner Location</h3>
+            <p class="text-sm text-grey-400">
               This is the information displayed in forwarded emails letting you know who the email
               was from and which alias it was sent to. You can choose for it to be displayed at the
               top or bottom of the email or just turn if off altogether.
@@ -1049,16 +917,16 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Spam / DMARC Warning</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Spam / DMARC Warning</h3>
+            <p class="text-sm text-grey-400">
               When a forwarded email is flagged as spam or fails DMARC authentication, you can
               choose how you are notified: show a warning banner in the email body (default),
               prepend a warning tag to the subject line (e.g. [DMARC FAIL] or [SPAM]), or turn off
               the warning altogether.
             </p>
-            <p class="text-base text-grey-200 !mt-4">
+            <p class="text-sm text-grey-400 !mt-4">
               <b>Please note</b> that turning the warning off completely may increase your risk of
               falling for <b>phishing or spoofed</b> emails. If unsure, always check the "
               <b>X-VovaMail-Authentication-Results</b>" header.
@@ -1144,20 +1012,20 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">List-Unsubscribe Behaviour</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">List-Unsubscribe Behaviour</h3>
+            <p class="text-sm text-grey-400">
               Control how List-Unsubscribe and List-Unsubscribe-Post headers are set on forwarded
               emails. On email clients that support it, clicking on it will perform one of these
               actions.
             </p>
-            <p class="text-base text-grey-200 !mt-4">
+            <p class="text-sm text-grey-400 !mt-4">
               Where an original List-Unsubscribe header is present and contains a mailto: email
               address, vovamail.xyz will rewrite it so that the email is sent from your alias and
               not your real email address.
             </p>
-            <p class="text-base text-grey-200 !mt-4">
+            <p class="text-sm text-grey-400 !mt-4">
               One-click deactivate, delete, block sender email and block sender domain links in
               forwarded emails expire after 30 days for security.
             </p>
@@ -1235,17 +1103,17 @@ export default function GeneralSettings(props: GeneralProps) {
           </div>
         </div>
 
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Replace Email Subject</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Replace Email Subject</h3>
+            <p class="text-sm text-grey-400">
               This is useful if you are <b>using encryption</b>. After you add your public
               GPG/OpenPGP key for a recipient the body of forwarded emails will be encrypted (this
               includes email attachments). Unfortunately the email subject cannot be encrypted as it
               is one of the headers. To prevent revealing the contents of emails you can replace the
               subject with something generic below e.g. "The subject" or "Hello".
             </p>
-            <p class="text-base text-grey-200 !mt-4">
+            <p class="text-sm text-grey-400 !mt-4">
               If set to empty then the email's original subject will be used.
             </p>
           </div>

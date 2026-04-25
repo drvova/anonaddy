@@ -15,19 +15,19 @@ export default function Modal(props: ModalProps) {
       <Dialog.Portal>
         <div class="fixed inset-0 z-50 overflow-y-auto">
           <div class="flex min-h-full items-center justify-center p-4">
-            <Dialog.Overlay class="fixed inset-0 bg-black/60 transition-opacity" />
+            <Dialog.Overlay class="fixed inset-0 bg-black/70" />
             <Dialog.Content
-              class={`relative w-full transform rounded-xl bg-surface border border-border-subtle p-6 transition-all ${props.maxWidth ?? 'max-w-lg'}`}
+              class={`relative w-full transform rounded-sm bg-surface border border-border-subtle p-5 ${props.maxWidth ?? 'max-w-lg'}`}
             >
               {props.title && (
-                <Dialog.Title class="text-lg font-semibold text-white mb-4">
+                <Dialog.Title class="text-base font-semibold text-white mb-3">
                   {props.title}
                 </Dialog.Title>
               )}
               {props.children}
-              <Dialog.CloseButton class="absolute top-4 right-4 text-grey-400 hover:text-white transition-colors">
+              <Dialog.CloseButton class="absolute top-3 right-3 text-grey-400 hover:text-white transition-colors">
                 <svg
-                  class="h-5 w-5"
+                  class="h-4 w-4"
                   viewBox="0 0 24 24"
                   fill="none"
                   stroke="currentColor"

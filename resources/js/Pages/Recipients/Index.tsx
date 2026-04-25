@@ -414,7 +414,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
         <button
           type="button"
           onClick={openAddRecipientModal}
-          class="inline-flex items-center gap-2 rounded-lg bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
+          class="inline-flex items-center gap-2 rounded-md bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
         >
           <Icon name="plus" class="w-4 h-4" />
           Add Recipient
@@ -431,7 +431,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
             <div class="mt-6">
               <Link
                 href={(window as any).route('recipients.index')}
-                class="inline-flex items-center rounded-lg bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
+                class="inline-flex items-center rounded-md bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium transition-colors"
               >
                 View All
               </Link>
@@ -629,13 +629,13 @@ export default function RecipientsIndex(props: RecipientsProps) {
             value={newRecipient()}
             onInput={e => setNewRecipient(e.currentTarget.value)}
             type="email"
-            class={`block w-full rounded-lg border-0 py-2.5 px-3 ring-1 ring-inset focus:ring-2 focus:ring-inset text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().newRecipient ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
+            class={`block w-full rounded-md border-0 py-2.5 px-3 border border-border-subtle focus:border-primary/60 focus:outline-none text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().newRecipient ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
             placeholder="johndoe@example.com"
           />
           <div class="mt-4 flex gap-3">
             <button
               onClick={validateNewRecipient}
-              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-md transition-colors disabled:opacity-50"
               disabled={addRecipientLoading()}
             >
               Add Recipient
@@ -645,7 +645,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
             </button>
             <button
               onClick={() => setAddRecipientModalOpen(false)}
-              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
             >
               Cancel
             </button>
@@ -669,14 +669,14 @@ export default function RecipientsIndex(props: RecipientsProps) {
           <textarea
             value={recipientKey()}
             onInput={e => setRecipientKey(e.currentTarget.value)}
-            class={`block w-full rounded-lg border-0 py-2.5 px-3 ring-1 ring-inset focus:ring-2 focus:ring-inset text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().recipientKey ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
+            class={`block w-full rounded-md border-0 py-2.5 px-3 border border-border-subtle focus:border-primary/60 focus:outline-none text-sm bg-white/5 text-white placeholder:text-grey-500 outline-none transition-all ${errors().recipientKey ? 'ring-red-500' : 'ring-border-subtle focus:ring-primary'}`}
             placeholder="Begins with '-----BEGIN PGP PUBLIC KEY BLOCK-----'"
             rows={8}
           />
           <div class="mt-4 flex gap-3">
             <button
               onClick={validateRecipientKey}
-              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-md transition-colors disabled:opacity-50"
               disabled={addRecipientKeyLoading()}
             >
               Add Key
@@ -686,7 +686,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
             </button>
             <button
               onClick={closeRecipientKeyModal}
-              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+              class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
             >
               Cancel
             </button>
@@ -711,7 +711,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
               const r = recipientKeyToDelete()
               if (r) deleteRecipientKey(r)
             }}
-            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
+            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-md transition-colors disabled:opacity-50"
             disabled={deleteRecipientKeyLoading()}
           >
             Remove key
@@ -721,7 +721,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
           </button>
           <button
             onClick={closeDeleteRecipientKeyModal}
-            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
           >
             Cancel
           </button>
@@ -742,7 +742,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
               const r = recipientToDelete()
               if (r) deleteRecipient(r)
             }}
-            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-lg transition-colors disabled:opacity-50"
+            class="px-4 py-2.5 text-white font-medium bg-red-500 hover:bg-red-600 rounded-md transition-colors disabled:opacity-50"
             disabled={deleteRecipientLoading()}
           >
             Delete
@@ -752,7 +752,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
           </button>
           <button
             onClick={closeDeleteModal}
-            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
           >
             Cancel
           </button>
@@ -776,7 +776,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
               const r = recipientToMakeDefault()
               if (r) makeDefaultRecipient(r)
             }}
-            class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-lg transition-colors disabled:opacity-50"
+            class="bg-primary hover:bg-primary/90 text-black font-medium py-2.5 px-4 rounded-md transition-colors disabled:opacity-50"
             disabled={makeDefaultLoading()}
           >
             Make default
@@ -786,7 +786,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
           </button>
           <button
             onClick={closeMakeDefaultModal}
-            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
           >
             Cancel
           </button>
@@ -804,7 +804,7 @@ export default function RecipientsIndex(props: RecipientsProps) {
         <div class="mt-6">
           <button
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-lg transition-colors"
+            class="px-4 py-2.5 text-grey-300 bg-white/5 hover:bg-white/10 border border-border-subtle rounded-md transition-colors"
           >
             Close
           </button>

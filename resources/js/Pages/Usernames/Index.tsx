@@ -314,7 +314,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             <button
               type="button"
               onClick={openAddUsernameModal}
-              class="inline-flex items-center justify-center rounded-lg border border-transparent bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
+              class="inline-flex items-center justify-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary sm:w-auto"
             >
               Add Username
             </button>
@@ -344,7 +344,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
               <div class="mt-4">
                 <Link
                   href={(window as any).route('usernames.index')}
-                  class="inline-flex items-center rounded-lg border border-transparent bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium"
+                  class="inline-flex items-center rounded-md border border-transparent bg-primary hover:bg-primary/90 text-black px-4 py-2 text-sm font-medium"
                 >
                   View All Usernames
                 </Link>
@@ -356,7 +356,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
         <div class="space-y-3">
           <For each={rows()}>
             {row => (
-              <div class="bg-surface rounded-lg p-4 border border-border-subtle">
+              <div class="bg-surface rounded-md p-4 border border-border-subtle">
                 <div class="flex flex-wrap items-start justify-between gap-2">
                   <div class="flex items-center flex-wrap gap-2">
                     <button
@@ -594,7 +594,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             value={newUsername()}
             onInput={e => setNewUsername(e.currentTarget.value)}
             type="text"
-            class="block w-full rounded-lg border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5"
+            class="block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 text-white bg-white/5"
             classList={{
               'ring-red-500': !!addUsernameError(),
               'ring-border-subtle': !addUsernameError(),
@@ -605,7 +605,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             <button
               type="button"
               onClick={validateAndAddUsername}
-              class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:cursor-not-allowed"
               disabled={addUsernameLoading()}
             >
               Add Username
@@ -616,7 +616,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
             <button
               type="button"
               onClick={() => setAddUsernameModalOpen(false)}
-              class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-lg"
+              class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-md"
             >
               Cancel
             </button>
@@ -639,7 +639,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
         <select
           value={defaultRecipientId() ?? ''}
           onChange={e => setDefaultRecipientId(e.currentTarget.value || null)}
-          class="block w-full rounded-lg border-border-subtle bg-white/5 text-white sm:text-sm focus:ring-primary focus:border-primary"
+          class="block w-full rounded-md border-border-subtle bg-white/5 text-white sm:text-sm focus:ring-primary focus:border-primary"
         >
           <option value="" class="bg-surface">
             Select recipient
@@ -656,7 +656,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={saveDefaultRecipient}
-            class="px-4 py-2 text-black font-medium bg-primary hover:bg-primary/90 border border-transparent rounded-lg disabled:cursor-not-allowed"
+            class="px-4 py-2 text-black font-medium bg-primary hover:bg-primary/90 border border-transparent rounded-md disabled:cursor-not-allowed"
             disabled={defaultRecipientLoading()}
           >
             Update Default Recipient
@@ -667,7 +667,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeDefaultRecipientModal}
-            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-lg"
+            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-md"
           >
             Cancel
           </button>
@@ -691,7 +691,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={confirmDelete}
-            class="px-4 py-2 text-white font-medium bg-red-500 hover:bg-red-600 border border-transparent rounded-lg disabled:cursor-not-allowed"
+            class="px-4 py-2 text-white font-medium bg-red-500 hover:bg-red-600 border border-transparent rounded-md disabled:cursor-not-allowed"
             disabled={deleteLoading()}
           >
             Delete username
@@ -702,7 +702,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeDeleteModal}
-            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-lg"
+            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-md"
           >
             Cancel
           </button>
@@ -726,7 +726,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={saveMakeDefault}
-            class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-lg disabled:cursor-not-allowed"
+            class="bg-primary hover:bg-primary/90 text-black font-medium py-2 px-4 rounded-md disabled:cursor-not-allowed"
             disabled={makeDefaultLoading()}
           >
             Make default username
@@ -737,7 +737,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={closeMakeDefaultModal}
-            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-lg"
+            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-md"
           >
             Cancel
           </button>
@@ -761,7 +761,7 @@ export default function UsernamesIndex(props: UsernamesProps) {
           <button
             type="button"
             onClick={() => setMoreInfoOpen(false)}
-            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-lg"
+            class="px-4 py-2 font-medium bg-surface hover:bg-white/10 text-grey-100 border border-border-subtle rounded-md"
           >
             Close
           </button>

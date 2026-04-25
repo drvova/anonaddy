@@ -161,7 +161,7 @@ export default function EditDomain(props: DomainProps) {
         </div>
       </div>
 
-      <div class="bg-surface rounded-lg p-4">
+      <div class="bg-surface rounded-md p-4">
         <div class="space-y-8 divide-y divide-border-subtle">
           <div>
             <div class="flex items-center">
@@ -288,7 +288,7 @@ export default function EditDomain(props: DomainProps) {
                     id="from_name"
                     value={fromName()}
                     onInput={e => setFromName(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white ${errors().from_name ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white ${errors().from_name ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="John Doe"
                   />
                   <Show when={errors().from_name}>
@@ -306,7 +306,7 @@ export default function EditDomain(props: DomainProps) {
             <button
               onClick={editFromName}
               disabled={fromNameLoading()}
-              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded-sm w-full disabled:cursor-not-allowed"
             >
               Update From Name
               <Show when={fromNameLoading()}>
@@ -369,7 +369,7 @@ export default function EditDomain(props: DomainProps) {
                     id="auto_create_regex"
                     value={autoCreateRegex()}
                     onInput={e => setAutoCreateRegex(e.currentTarget.value)}
-                    class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white ${errors().auto_create_regex ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
+                    class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white ${errors().auto_create_regex ? 'ring-red-300 placeholder:text-red-300 focus:ring-red-500' : 'ring-grey-300 placeholder:text-grey-400 focus:ring-primary'}`}
                     placeholder="^prefix"
                   />
                   <Show when={errors().auto_create_regex}>
@@ -387,7 +387,7 @@ export default function EditDomain(props: DomainProps) {
             <button
               onClick={editAutoCreateRegex}
               disabled={autoCreateRegexLoading()}
-              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded-sm w-full disabled:cursor-not-allowed"
             >
               Update Auto Create Regex
               <Show when={autoCreateRegexLoading()}>
@@ -420,7 +420,7 @@ export default function EditDomain(props: DomainProps) {
                         id="test_auto_create_regex_local_part"
                         value={testLocalPart()}
                         onInput={e => setTestLocalPart(e.currentTarget.value)}
-                        class={`block w-full min-w-0 flex-1 rounded-none rounded-l-md border-0 py-2 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 bg-white/5 text-white ${testInputClass()}`}
+                        class={`block w-full min-w-0 flex-1 rounded-none rounded-l-md border-0 py-2 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-sm sm:leading-6 bg-white/5 text-white ${testInputClass()}`}
                         placeholder="local-part"
                       />
                       <Show
@@ -463,7 +463,7 @@ export default function EditDomain(props: DomainProps) {
             <button
               onClick={testAutoCreateRegex}
               disabled={testLoading()}
-              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded w-full disabled:cursor-not-allowed"
+              class="bg-primary hover:bg-primary/90 text-grey-950 font-bold py-3 px-4 rounded-sm w-full disabled:cursor-not-allowed"
             >
               Test Auto Create Regex
               <Show when={testLoading()}>

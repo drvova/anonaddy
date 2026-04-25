@@ -319,11 +319,11 @@ function RuleForm(props: {
         }
         id="rule_name"
         type="text"
-        class={`block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 text-white bg-white/5 ${props.errors.ruleName ? 'ring-red-500' : 'ring-border-subtle'}`}
+        class={`block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 text-white bg-white/5 ${props.errors.ruleName ? 'ring-red-500' : 'ring-border-subtle'}`}
         placeholder="Enter name"
       />
 
-      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-md">
         <legend class="px-2 leading-none text-sm text-white">Conditions</legend>
 
         <For each={rule().conditions}>
@@ -351,7 +351,7 @@ function RuleForm(props: {
                 </div>
               </Show>
 
-              <div class="p-3 w-full bg-surface rounded-lg">
+              <div class="p-3 w-full bg-surface rounded-md">
                 <div class="flex flex-col sm:flex-row sm:items-center gap-2">
                   <span class="text-nowrap text-grey-400 text-sm">If the</span>
                   <select
@@ -456,7 +456,7 @@ function RuleForm(props: {
         </Show>
       </fieldset>
 
-      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-md">
         <legend class="px-2 leading-none text-sm text-white">Actions</legend>
 
         <For each={rule().actions}>
@@ -468,7 +468,7 @@ function RuleForm(props: {
                 </div>
               </Show>
 
-              <div class="p-3 w-full bg-surface rounded-lg">
+              <div class="p-3 w-full bg-surface rounded-md">
                 <div class="flex flex-col sm:flex-row gap-2 sm:items-center">
                   <span class="text-grey-400 text-sm shrink-0">Then</span>
                   <select
@@ -596,7 +596,7 @@ function RuleForm(props: {
         </Show>
       </fieldset>
 
-      <fieldset class="border border-primary/30 p-4 my-4 rounded-lg">
+      <fieldset class="border border-primary/30 p-4 my-4 rounded-md">
         <legend class="px-2 leading-none text-sm text-white">Apply rule on</legend>
         <div class="flex gap-6">
           <label class="relative flex items-center cursor-pointer">

@@ -106,13 +106,13 @@ export default function DashboardIndex(props: DashboardProps) {
       </h1>
 
       {Number(bandwidthPercentage()) === 100 && (
-        <div class="mb-6 rounded-lg bg-yellow-500/10 border border-yellow-500/20 px-4 py-3 text-sm text-yellow-400">
+        <div class="mb-6 rounded-md bg-yellow-500/10 border border-yellow-500/20 px-4 py-3 text-sm text-yellow-400">
           Bandwidth limit exceeded for <span class="font-semibold">{props.month}</span>.
         </div>
       )}
 
       {/* Top resource row */}
-      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border-subtle rounded-lg overflow-hidden">
+      <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-px bg-border-subtle rounded-md overflow-hidden">
         {resources.map(item => (
           <Link
             href={item.url}
@@ -147,7 +147,7 @@ export default function DashboardIndex(props: DashboardProps) {
         {/* Alias breakdown */}
         <div>
           <h2 class="text-sm font-medium text-grey-300 mb-3">Aliases</h2>
-          <div class="bg-surface rounded-lg divide-y divide-border-subtle">
+          <div class="bg-surface rounded-md divide-y divide-border-subtle">
             {aliasCounts.map(item => (
               <Link
                 href={item.url}
@@ -165,7 +165,7 @@ export default function DashboardIndex(props: DashboardProps) {
         {/* Email stats */}
         <div>
           <h2 class="text-sm font-medium text-grey-300 mb-3">Activity</h2>
-          <div class="bg-surface rounded-lg divide-y divide-border-subtle">
+          <div class="bg-surface rounded-md divide-y divide-border-subtle">
             {emailCounts.map(item => (
               <div class="flex items-center justify-between px-4 py-3">
                 <span class="text-sm text-grey-400">{item.name}</span>
@@ -185,7 +185,7 @@ export default function DashboardIndex(props: DashboardProps) {
           </Show>
         </h2>
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div class="lg:col-span-2 bg-surface rounded-lg p-4">
+          <div class="lg:col-span-2 bg-surface rounded-md p-4">
             <OutboundMessagesGraph
               forwardsData={forwardsData()}
               repliesData={repliesData()}
@@ -193,7 +193,7 @@ export default function DashboardIndex(props: DashboardProps) {
               labels={labels()}
             />
           </div>
-          <div class="bg-surface rounded-lg p-4 flex items-center justify-center">
+          <div class="bg-surface rounded-md p-4 flex items-center justify-center">
             <Show
               when={outboundMessageTotals()}
               fallback={<span class="text-sm text-grey-400">No data</span>}

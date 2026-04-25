@@ -243,7 +243,7 @@ export default function BlocklistIndex(props: BlocklistProps) {
         </p>
       </div>
 
-      <div class="mb-8 p-5 bg-surface rounded-xl">
+      <div class="mb-8 p-5 bg-surface rounded-md">
         <div class="flex items-center justify-between mb-4">
           <h2 class="text-sm font-medium text-white">Add to blocklist</h2>
           <button

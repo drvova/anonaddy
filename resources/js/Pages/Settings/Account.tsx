@@ -33,10 +33,10 @@ export default function AccountSettings() {
     <SettingsLayout>
       <Title>Account Settings</Title>
       <div class="divide-y divide-grey-200">
-        <div class="py-10">
-          <div class="space-y-1">
-            <h3 class="text-lg font-medium leading-6 text-white">Danger Zone</h3>
-            <p class="text-base text-grey-200">
+        <div class="py-6">
+          <div class="space-y-0.5">
+            <h3 class="text-base font-medium text-white">Danger Zone</h3>
+            <p class="text-sm text-grey-400">
               Once you delete your account, there is no going back.
               <b>This username will not be able to be used again</b>. Please make sure you are
               certain. Before deleting your account, please export any alias data or information
@@ -70,11 +70,11 @@ export default function AccountSettings() {
                       type="password"
                       name="password"
                       id="current-password-delete"
-                      class="block w-full rounded-md border-0 py-2 pr-10 ring-1 ring-inset focus:ring-2 focus:ring-inset sm:text-base sm:leading-6 bg-white/5 text-white"
+                      class="block w-full rounded-md border-0 py-2 pr-10 border border-border-subtle focus:border-primary/60 focus:outline-none sm:text-base sm:leading-6 bg-white/5 text-white"
                       classList={{
-                        'ring-red-300 placeholder:text-red-300 focus:ring-red-500':
+                        'border-red-400 placeholder:text-red-300 focus:border-red-500':
                           !!deleteAccountForm.errors.password,
-                        'ring-grey-300 placeholder:text-grey-400 focus:ring-primary':
+                        'border-border-subtle placeholder:text-grey-400 focus:border-primary/60':
                           !deleteAccountForm.errors.password,
                       }}
                       placeholder="********"
